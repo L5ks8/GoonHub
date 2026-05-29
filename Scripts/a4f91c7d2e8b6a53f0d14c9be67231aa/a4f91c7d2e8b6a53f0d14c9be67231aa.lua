@@ -1,2 +1,0 @@
--- Blox Fruits
-print("Test")
