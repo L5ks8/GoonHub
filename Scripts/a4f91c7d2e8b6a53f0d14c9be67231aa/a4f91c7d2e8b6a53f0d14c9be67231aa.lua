@@ -1,1 +1,2 @@
 -- Blox Fruits
+print("Test")
