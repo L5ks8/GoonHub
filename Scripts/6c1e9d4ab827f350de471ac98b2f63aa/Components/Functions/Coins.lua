@@ -6,13 +6,13 @@ local LocalPlayer = Players.LocalPlayer
 
 local Coins = {}
 local State = {
-    Enabled = false,
-    Speed = 20,
-    AutoReset = true,
-    BagLimit = 40,
+    Enabled = getgenv().GoonHub.Config.Data["Coin farm"] or false,
+    Speed = getgenv().GoonHub.Config.Data["Farm Speed"] or 20,
+    AutoReset = getgenv().GoonHub.Config.Data["Auto Reset (Full Bag)"] or true,
+    BagLimit = getgenv().GoonHub.Config.Data.BagLimit or 40, -- BagLimit is not yet exposed in UI, keeping default
     TeleportDist = 150,
     EventTokenKey = "",
-    Method = "Tween",
+    Method = getgenv().GoonHub.Config.Data["Teleport Methods"] or "Tween",
     SafePosition = CFrame.new(26.183889, 504.818054, -21.357656)
 }
 
@@ -159,19 +159,27 @@ end
 
 function Coins.Toggle(state)
     State.Enabled = state
+    getgenv().GoonHub.Config.Data["Coin farm"] = state
+    getgenv().GoonHub.Config.Save()
     if state then task.spawn(mainLoop) end
 end
 
 function Coins.SetSpeed(val)
     State.Speed = val
+    getgenv().GoonHub.Config.Data["Farm Speed"] = val
+    getgenv().GoonHub.Config.Save()
 end
 
 function Coins.SetAutoReset(state)
     State.AutoReset = state
+    getgenv().GoonHub.Config.Data["Auto Reset (Full Bag)"] = state
+    getgenv().GoonHub.Config.Save()
 end
 
 function Coins.SetMethod(val)
     State.Method = val
+    getgenv().GoonHub.Config.Data["Teleport Methods"] = val
+    getgenv().GoonHub.Config.Save()
 end
 
 return Coins

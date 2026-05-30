@@ -13,6 +13,7 @@ local autoFlingConnection
 -- Noclip Logik
 function Misc.ToggleNoclip(state)
     if noclipConnection then noclipConnection:Disconnect() end
+    getgenv().GoonHub.Config.Data["Noclip"] = state
     if state then
         noclipConnection = RunService.Stepped:Connect(function()
             if LocalPlayer.Character then
@@ -24,11 +25,13 @@ function Misc.ToggleNoclip(state)
             end
         end)
     end
+    getgenv().GoonHub.Config.Save()
 end
 
 -- Anti-Fling Logik (aus Snippet)
 function Misc.ToggleAntiFling(state)
     if antiFlingConnection then antiFlingConnection:Disconnect() end
+    getgenv().GoonHub.Config.Data["Anti-Fling"] = state
     if state then
         antiFlingConnection = RunService.Stepped:Connect(function()
             local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -38,6 +41,7 @@ function Misc.ToggleAntiFling(state)
             end
         end)
     end
+    getgenv().GoonHub.Config.Save()
 end
 
 -- Murderer finden
@@ -73,6 +77,7 @@ end
 -- Auto Fling Toggle
 function Misc.ToggleAutoFling(state)
     if autoFlingConnection then task.cancel(autoFlingConnection) end
+    getgenv().GoonHub.Config.Data["Auto Fling Murderer"] = state
     if state then
         autoFlingConnection = task.spawn(function()
             while state do
@@ -84,10 +89,12 @@ function Misc.ToggleAutoFling(state)
             end
         end)
     end
+    getgenv().GoonHub.Config.Save()
 end
 
 -- Performance Mode (aus Snippet)
 function Misc.EnablePerformanceMode()
+    getgenv().GoonHub.Config.Data["Enable Performance Mode"] = true
     Lighting.FogEnd = 1000000
     Lighting.Brightness = 0
     Lighting.GlobalShadows = false
@@ -96,6 +103,7 @@ function Misc.EnablePerformanceMode()
             v:Destroy()
         end
     end
+    getgenv().GoonHub.Config.Save()
 end
 
 return Misc
