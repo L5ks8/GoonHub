@@ -52,7 +52,7 @@ function UIFunctions.Init(G2L, window)
 
     task.spawn(function()
         while task.wait() and toggleBtn.Parent do
-            btnGradient.Rotation = (btnGradient.Rotation + 2) % 360
+            btnGradient.Rotation = (btnGradient.Rotation + 0.5) % 360
         end
     end)
 
@@ -93,7 +93,7 @@ function UIFunctions.Init(G2L, window)
     end)
 
     RunService.RenderStepped:Connect(function()
-        toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.02)
+        toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.08)
     end)
 
     -- Keybind Toggle (RightControl)
