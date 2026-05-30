@@ -63,20 +63,31 @@ function UIFunctions.Init(G2L, window)
             G2L["a1"].Visible = false
             G2L["b"].Visible = false
             
-            -- Erstelle Kopie der Buttons neben der Drag-Leiste
+            -- Erstelle Kopie der Buttons links neben der Drag-Leiste
             miniButtons = G2L["70"]:Clone()
             miniButtons.Parent = G2L["5"]
-            miniButtons.AnchorPoint = Vector2.new(0, 0.5)
-            miniButtons.Position = UDim2.new(0.5, 45, 0, 17.5) -- Rechts neben der Drag-Leiste (Mitte von 35px)
+            miniButtons.Size = UDim2.new(0, 85, 0, 27) -- Feste Breite erzwingen
+            miniButtons.AnchorPoint = Vector2.new(1, 0.5) -- Rechtsbündiger Anker für linke Position
+            miniButtons.Position = UDim2.new(0.5, -45, 0, 17.5) -- 45px links von der Mitte (Drag-Bar Ende ist bei -35px)
+            miniButtons.ZIndex = 1010
             
-            -- Kopie-Buttons funktionsfähig machen
-            miniButtons:FindFirstChild("close").MouseButton1Click:Connect(closeUI)
-            miniButtons:FindFirstChild("maximize").MouseButton1Click:Connect(toggleMinimize)
-            miniButtons:FindFirstChild("sidebar_toggle").MouseButton1Click:Connect(function()
-                sidebarOpen = not sidebarOpen
-                G2L["16"].Size = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0)
-                G2L["11"].Size = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, 0, 1, 0)
-            end)
+            -- Sicherstellen, dass alle Icons und Kreise sichtbar sind (ZIndex fix)
+            for _, desc in pairs(miniButtons:GetDescendants()) do
+                if desc:IsA("GuiObject") then
+                    desc.ZIndex = miniButtons.ZIndex + (desc.ZIndex % 10)
+                end
+            end
+
+            -- Kopie-Buttons funktionsfähig machen (mit Tweens für Konsistenz)
+            if miniButtons:FindFirstChild("close") then miniButtons.close.MouseButton1Click:Connect(closeUI) end
+            if miniButtons:FindFirstChild("maximize") then miniButtons.maximize.MouseButton1Click:Connect(toggleMinimize) end
+            if miniButtons:FindFirstChild("sidebar_toggle") then
+                miniButtons.sidebar_toggle.MouseButton1Click:Connect(function()
+                    sidebarOpen = not sidebarOpen
+                    TweenService:Create(G2L["16"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0)}):Play()
+                    TweenService:Create(G2L["11"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, 0, 1, 0)}):Play()
+                end)
+            end
         else
             -- Lösche Kopie und zeige Originale
             if miniButtons then miniButtons:Destroy() miniButtons = nil end
