@@ -33,6 +33,16 @@ function UIFunctions.Init(G2L, window)
 
     -- Close & Fullscreen
     if G2L["72"] then G2L["72"].MouseButton1Click:Connect(function() G2L["1"]:Destroy() end) end
+    if G2L["94"] then
+        G2L["94"].MouseButton1Click:Connect(function()
+            isMaximized = not isMaximized
+            local targetSize = isMaximized and UDim2.new(0, G2L["2"].Size.X.Offset, 0, 48) or originalSize
+            
+            TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize}):Play()
+            
+            G2L["11"].Visible, G2L["16"].Visible, G2L["a1"].Visible, G2L["b"].Visible = not isMaximized, not isMaximized, not isMaximized, not isMaximized
+        end)
+    end
 
     -- Resizing
     local resizing, resizeStartPos, resizeStartSize, resizeConn
