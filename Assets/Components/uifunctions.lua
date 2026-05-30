@@ -11,18 +11,67 @@ function UIFunctions.Init(G2L, window)
     local miniButtons = nil
     local miniLogo = nil
 
-    -- Dragging
-    local drag, dragStart, startPos
+    -- Dragging Logic
+    local drag, dragStart, startPos 
+    local btnDrag, btnDragStart, btnStartPos
+
+    -- Floating Toggle Button
+    local toggleBtn = Instance.new("ImageButton")
+    toggleBtn.Name = "GoonToggle"
+    toggleBtn.Parent = G2L["1"]
+    toggleBtn.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+    toggleBtn.BorderSizePixel = 0
+    toggleBtn.Size = UDim2.new(0, 50, 0, 50)
+    toggleBtn.Position = UDim2.new(0, 20, 0.5, -25)
+    toggleBtn.Image = "rbxassetid://135630585467568"
+    toggleBtn.ZIndex = 10000
+    toggleBtn.AutoButtonColor = false
+
+    Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 10)
+    local btnStroke = Instance.new("UIStroke", toggleBtn)
+    btnStroke.Color = Color3.new(1, 1, 1)
+    btnStroke.Transparency = 0.8
+    btnStroke.Thickness = 2
+
+    toggleBtn.MouseButton1Click:Connect(function()
+        G2L["2"].Visible = not G2L["2"].Visible
+    end)
+
+    toggleBtn.InputBegan:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1 then
+            btnDrag, btnDragStart, btnStartPos = true, i.Position, toggleBtn.Position
+        end
+    end)
+
     if G2L["6"] then G2L["6"].InputBegan:Connect(function(i)
         if i.UserInputType == Enum.UserInputType.MouseButton1 then drag, dragStart, startPos = true, i.Position, G2L["2"].Position end
     end) end
+
     UserInputService.InputChanged:Connect(function(i)
-        if drag and i.UserInputType == Enum.UserInputType.MouseMovement then
-            local d = i.Position - dragStart
-            G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+        if i.UserInputType == Enum.UserInputType.MouseMovement then
+            if drag then
+                local d = i.Position - dragStart
+                G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+            elseif btnDrag then
+                local d = i.Position - btnDragStart
+                toggleBtn.Position = UDim2.new(btnStartPos.X.Scale, btnStartPos.X.Offset + d.X, btnStartPos.Y.Scale, btnStartPos.Y.Offset + d.Y)
+            end
         end
     end)
-    UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
+
+    UserInputService.InputEnded:Connect(function(i) 
+        if i.UserInputType == Enum.UserInputType.MouseButton1 then 
+            drag = false 
+            btnDrag = false 
+        end 
+    end)
+
+    -- Keybind Toggle (RightControl)
+    UserInputService.InputBegan:Connect(function(i, processed)
+        if not processed and i.KeyCode == Enum.KeyCode.RightControl then
+            G2L["2"].Visible = not G2L["2"].Visible
+        end
+    end)
 
     -- Sidebar Toggle (Gelber Button)
     if G2L["80"] then
