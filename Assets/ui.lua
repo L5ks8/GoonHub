@@ -52,9 +52,9 @@ function UI.CreateBase(title, versionText)
     local space = New("Frame", {Name = "space", BackgroundTransparency = 1, LayoutOrder = 2}, G2L["65"])
     New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, space)
 
-    G2L["6c"] = New("Frame", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 80, 1, 0), BackgroundTransparency = 1, Name = "logo", LayoutOrder = 3}, G2L["65"])
-    G2L["logo_text"] = New("TextLabel", {Size = UDim2.new(0, 95, 0, 31), Position = UDim2.new(0.04, 0, 0, 0), Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub <font color=\"rgb(150,150,150)\" size=\"12\">%s</font>", versionText), RichText = true, FontFace = fonts.logo, TextSize = 21, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left}, G2L["6c"])
-    New("ImageLabel", {Size = UDim2.new(0, 21, 0, 21), Image = "rbxassetid://13056160366", BackgroundTransparency = 1, Name = "weather", LayoutOrder = 4}, G2L["65"])
+    G2L["6c"] = New("Frame", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), BackgroundTransparency = 1, Name = "logo", LayoutOrder = 3}, G2L["65"])
+    G2L["logo_text"] = New("TextLabel", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub <font color=\"rgb(150,150,150)\" size=\"12\">%s</font>", versionText), RichText = true, FontFace = fonts.logo, TextSize = 21, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center}, G2L["6c"])
+    G2L["weather"] = New("ImageLabel", {Size = UDim2.new(0, 21, 0, 21), Image = "rbxassetid://13056160366", BackgroundTransparency = 1, Name = "weather", LayoutOrder = 4}, G2L["65"])
 
     G2L["70"] = New("Frame", {Size = UDim2.new(1, 0, 0, 27), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(25, 25, 25)}, G2L["6e"])
     New("UICorner", {CornerRadius = UDim.new(1, 0)}, G2L["70"])

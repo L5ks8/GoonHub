@@ -49,7 +49,7 @@ function UIFunctions.Init(G2L, window)
     if G2L["94"] then
         G2L["94"].MouseButton1Click:Connect(function()
             isMinimized = not isMinimized
-            local targetSize = isMinimized and UDim2.new(0, G2L["2"].Size.X.Offset, 0, 35) or originalSize
+            local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or originalSize
             
             local tween = TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize})
             tween:Play()
@@ -59,6 +59,7 @@ function UIFunctions.Init(G2L, window)
                 G2L["16"].Visible = false
                 G2L["a1"].Visible = false
                 G2L["b"].Visible = false
+                if G2L["weather"] then G2L["weather"].Visible = false end
             else
                 tween.Completed:Connect(function()
                     if not isMinimized then
@@ -66,6 +67,7 @@ function UIFunctions.Init(G2L, window)
                         G2L["16"].Visible = true
                         G2L["a1"].Visible = true
                         G2L["b"].Visible = true
+                        if G2L["weather"] then G2L["weather"].Visible = true end
                     end
                 end)
             end
