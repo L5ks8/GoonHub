@@ -78,7 +78,8 @@ function UILayout.Create()
             "Walk"
             },
         Column = "Left",
-        Callback = function()
+        Callback = function(method)
+            Coins.SetMethod(method)
         end
     })
     -- Farm Tab

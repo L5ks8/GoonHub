@@ -11,7 +11,9 @@ local State = {
     AutoReset = true,
     BagLimit = 40,
     TeleportDist = 150,
-    EventTokenKey = ""
+    EventTokenKey = "",
+    Method = "Tween",
+    SafePosition = CFrame.new(26.183889, 504.818054, -21.357656)
 }
 
 local SETTINGS = {
@@ -21,17 +23,19 @@ local SETTINGS = {
 }
 
 -- Prüfen ob Teil wie eine Münze aussieht (Heuristik aus Snippet)
-local function looksLikeCoin(part)
-    if not part or not part:IsA("BasePart") then return false end
-    if not part:FindFirstChildOfClass("TouchTransmitter") and not part:FindFirstChild("TouchInterest") then
+local function looksLikeCoin(obj)
+    local target = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
+    if not target then return false end
+    
+    if not target:FindFirstChildOfClass("TouchTransmitter") and not target:FindFirstChild("TouchInterest") then
         return false
     end
-    local n = string.lower(part.Name or "")
+    local n = string.lower(obj.Name or "")
     for _, guess in ipairs(SETTINGS.EVENT_TOKEN_GUESS_NAMES) do
         if string.find(n, string.lower(guess)) then return true end
     end
-    if part:GetAttribute("CoinID") ~= nil then return true end
-    local p = part.Parent
+    if obj:GetAttribute("CoinID") ~= nil then return true end
+    local p = obj.Parent
     if p then
         local pn = string.lower(p.Name)
         for _, k in ipairs(SETTINGS.COIN_CONTAINER_NAMES) do
@@ -66,7 +70,11 @@ local function moveTo(targetCFrame)
     if dist > State.TeleportDist then
         hrp.CFrame = targetCFrame + Vector3.new(0, 3, 0)
     else
-        local duration = math.max(0.05, dist / math.clamp(State.Speed, 15, 25))
+        local duration = math.max(0.01, dist / math.clamp(State.Speed, 15, 25))
+        
+        hrp.Velocity = Vector3.zero
+        hrp.RotVelocity = Vector3.zero
+        
         local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame + Vector3.new(0, 3, 0)})
         tween:Play()
         return tween
@@ -79,11 +87,17 @@ local function getNearestCoin()
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
 
-    for _, obj in ipairs(Workspace:GetDescendants()) do
-        if looksLikeCoin(obj) then
-            local d = (hrp.Position - obj.Position).Magnitude
-            if d < minDist then
-                nearest, minDist = obj, d
+    local container = Workspace:FindFirstChild("CoinContainer", true)
+    if container then
+        for _, obj in ipairs(container:GetChildren()) do
+            if looksLikeCoin(obj) then
+                local targetPart = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
+                if targetPart then
+                    local d = (hrp.Position - targetPart.Position).Magnitude
+                    if d < minDist then
+                        nearest, minDist = obj, d
+                    end
+                end
             end
         end
     end
@@ -102,15 +116,45 @@ local function mainLoop()
                         task.wait(1)
                     end
                 else
-                    local coin, dist = getNearestCoin()
-                    if coin then
-                        local tween = moveTo(coin.CFrame)
-                        local t0 = os.clock()
-                        while State.Enabled and coin.Parent and os.clock() - t0 < 3 do
-                            if not coin:FindFirstChild("TouchInterest") and not coin:FindFirstChildOfClass("TouchTransmitter") then break end
-                            task.wait(0.05)
+                    if State.Method == "Instant Teleport" then
+                        local coin = getNearestCoin()
+                        if coin and LocalPlayer.Character then
+                            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                            if hrp then
+                                -- Noclip Logik für die Farm-Dauer
+                                for _, part in pairs(LocalPlayer.Character:GetChildren()) do
+                                    if part:IsA("BasePart") then part.CanCollide = false end
+                                end
+                                
+                                hrp.Anchored = true
+                                hrp.CFrame = coin.CFrame
+                                task.wait(0.5) -- Zeit zum Registrieren
+                                hrp.CFrame = State.SafePosition
+                                hrp.Anchored = false
+                                task.wait(2) -- Anti-Kick Pause
+                            end
                         end
-                        if tween then tween:Cancel() end
+                    else
+                        local coin, dist = getNearestCoin()
+                        if coin then
+                            local targetPart = coin:IsA("BasePart") and coin or (coin:FindFirstChild("Hitbox") or coin:FindFirstChildOfClass("BasePart"))
+                            if targetPart then
+                                local tween = moveTo(targetPart.CFrame)
+                                if tween then
+                                    local hrp = LocalPlayer.Character.HumanoidRootPart
+                                    hrp.Anchored = true
+                                    
+                                    local t0 = os.clock()
+                                    while State.Enabled and coin.Parent and os.clock() - t0 < 3 do
+                                        if not targetPart:FindFirstChild("TouchInterest") and not targetPart:FindFirstChildOfClass("TouchTransmitter") then break end
+                                        task.wait()
+                                    end
+                                    
+                                    tween:Cancel()
+                                    hrp.Anchored = false
+                                end
+                            end
+                        end
                     end
                 end
             end
@@ -130,6 +174,10 @@ end
 
 function Coins.SetAutoReset(state)
     State.AutoReset = state
+end
+
+function Coins.SetMethod(val)
+    State.Method = val
 end
 
 return Coins
