@@ -2,6 +2,7 @@ local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
 local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Coins")
+local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Misc")
 
 local UILayout = {}
 
@@ -89,7 +90,29 @@ function UILayout.Create()
     misc:CreateToggle({
         Title = "Noclip",
         Column = "Left",
+        Callback = function(state)
+            Misc.ToggleNoclip(state)
+        end
+    })
+    misc:CreateToggle({
+        Title = "Anti-Fling",
+        Column = "Left",
+        Callback = function(state)
+            Misc.ToggleAntiFling(state)
+        end
+    })
+    misc:CreateToggle({
+        Title = "Auto Fling Murderer",
+        Column = "Left",
+        Callback = function(state)
+            Misc.ToggleAutoFling(state)
+        end
+    })
+    misc:CreateButton({
+        Title = "Enable Performance Mode",
+        Column = "Left",
         Callback = function()
+            Misc.EnablePerformanceMode()
         end
     })
     -- Shop Tab
