@@ -46,9 +46,12 @@ function Coins.Toggle(state)
                 
                 if coinContainer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
                     local hrp = player.Character.HumanoidRootPart
-                    
-                    for _, v in pairs(coinContainer:GetChildren()) do
-                        if not autoFarmEnabled then break end
+                    local coins = coinContainer:GetChildren()
+
+                    if #coins == 0 then 
+                        coinsInBag = 0 
+                    end
+
                     if coinsInBag >= 40 then
                         hrp.CFrame = safePosition
                         if killMurdererAfterBagFull and isSheriff() then
@@ -60,11 +63,8 @@ function Coins.Toggle(state)
                                 end
                             end
                         end
-                        task.wait(1) 
+                        task.wait(1)
                     else
-                        local coins = coinContainer:GetChildren()
-                        if #coins == 0 then coinsInBag = 0 end 
-
                         for _, v in pairs(coins) do
                             if not autoFarmEnabled or coinsInBag >= 40 then break end
                             
