@@ -14,6 +14,9 @@ function UIFunctions.Init(G2L, window)
     -- Dragging Logic
     local drag, dragStart, startPos 
     local btnDrag, btnDragStart, btnStartPos
+    local btnTargetPos = UDim2.new(0, 20, 0.5, -25)
+    local dragThreshold = 5
+    local movedDuringDrag = false
 
     -- Floating Toggle Button
     local toggleBtn = Instance.new("ImageButton")
@@ -28,18 +31,35 @@ function UIFunctions.Init(G2L, window)
     toggleBtn.AutoButtonColor = false
 
     Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 10)
-    local btnStroke = Instance.new("UIStroke", toggleBtn)
+    
+    -- Spinning Border (wie Tabs)
+    local btnStroke = Instance.new("UIStroke")
+    btnStroke.Name = "SelectionStroke"
     btnStroke.Color = Color3.new(1, 1, 1)
-    btnStroke.Transparency = 0.8
-    btnStroke.Thickness = 2
+    btnStroke.Thickness = 1.5
+    btnStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    btnStroke.Transparency = 0.5
+    btnStroke.Parent = toggleBtn
 
-    toggleBtn.MouseButton1Click:Connect(function()
-        G2L["2"].Visible = not G2L["2"].Visible
+    local btnGradient = Instance.new("UIGradient")
+    btnGradient.Transparency = NumberSequence.new({
+        NumberSequenceKeypoint.new(0, 1),
+        NumberSequenceKeypoint.new(0.45, 0),
+        NumberSequenceKeypoint.new(0.55, 0),
+        NumberSequenceKeypoint.new(1, 1)
+    })
+    btnGradient.Parent = btnStroke
+
+    task.spawn(function()
+        while task.wait() and toggleBtn.Parent do
+            btnGradient.Rotation = (btnGradient.Rotation + 2) % 360
+        end
     end)
 
     toggleBtn.InputBegan:Connect(function(i)
         if i.UserInputType == Enum.UserInputType.MouseButton1 then
             btnDrag, btnDragStart, btnStartPos = true, i.Position, toggleBtn.Position
+            movedDuringDrag = false
         end
     end)
 
@@ -54,16 +74,26 @@ function UIFunctions.Init(G2L, window)
                 G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
             elseif btnDrag then
                 local d = i.Position - btnDragStart
-                toggleBtn.Position = UDim2.new(btnStartPos.X.Scale, btnStartPos.X.Offset + d.X, btnStartPos.Y.Scale, btnStartPos.Y.Offset + d.Y)
+                if d.Magnitude > dragThreshold then
+                    movedDuringDrag = true
+                end
+                btnTargetPos = UDim2.new(btnStartPos.X.Scale, btnStartPos.X.Offset + d.X, btnStartPos.Y.Scale, btnStartPos.Y.Offset + d.Y)
             end
         end
     end)
 
     UserInputService.InputEnded:Connect(function(i) 
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then 
-            drag = false 
-            btnDrag = false 
-        end 
+        if i.UserInputType == Enum.UserInputType.MouseButton1 then
+            if btnDrag and not movedDuringDrag then
+                G2L["2"].Visible = not G2L["2"].Visible
+            end
+            drag = false
+            btnDrag = false
+        end
+    end)
+
+    RunService.RenderStepped:Connect(function()
+        toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.15)
     end)
 
     -- Keybind Toggle (RightControl)
