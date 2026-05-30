@@ -59,7 +59,7 @@ function UILayout.Create()
     })
     main:CreateSlider({
         Title = "Kill Murder After Bag Full",
-        Min = 5,
+        Min = 1,
         Max = 5,
         Default = 5,
         Column = "Left",

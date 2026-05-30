@@ -211,15 +211,15 @@ function Widgets.Init(window, G2L)
             local dropped = false
             local selected = cfg.Options[1] or "None"
             
-            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 60), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
-            New("TextLabel", {Size = UDim2.new(1, -160, 0, 35), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
+            New("TextLabel", {Size = UDim2.new(1, -20, 0, 25), Position = UDim2.new(0, 10, 0, 5), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
             
-            local btn = New("TextButton", {Size = UDim2.new(0, 140, 0, 25), Position = UDim2.new(1, -10, 0, 5), AnchorPoint = Vector2.new(1, 0), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, f)
+            local btn = New("TextButton", {Size = UDim2.new(1, -20, 0, 25), Position = UDim2.new(0, 10, 0, 30), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, f)
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
-            local arrow = New("ImageLabel", {Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -20, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Image = "rbxassetid://11419713314", BackgroundTransparency = 1, ImageColor3 = Color3.fromRGB(248, 191, 212)}, btn)
+            local arrow = New("TextLabel", {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -25, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Text = "▼", BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(248, 191, 212), TextSize = 12}, btn)
             
-            local list = New("Frame", {Name = "list", Position = UDim2.new(0, 10, 0, 40), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1, Visible = false}, f)
+            local list = New("Frame", {Name = "list", Position = UDim2.new(0, 10, 0, 60), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1, Visible = false}, f)
             local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
             for _, opt in pairs(cfg.Options) do
@@ -231,7 +231,7 @@ function Widgets.Init(window, G2L)
                     dropped = false 
                     list.Visible = false
                     
-                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 35)}):Play()
+                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 60)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
                     if cfg.Callback then cfg.Callback(opt) end
                 end)
@@ -240,7 +240,7 @@ function Widgets.Init(window, G2L)
             btn.MouseButton1Click:Connect(function()
                 dropped = not dropped
                 list.Visible = dropped
-                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 45) or UDim2.new(1, 0, 0, 35)}):Play()
+                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 70) or UDim2.new(1, 0, 0, 60)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
         end
