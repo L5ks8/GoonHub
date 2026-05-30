@@ -22,8 +22,7 @@ function UILayout.Create()
 
     Widgets.Init(window, G2L)
 
-    local loader = Animation.PlayLoading(G2L)
-    loader:Update(20)
+    Animation.PlayLoading(G2L)
 
     UIFunctions.Init(G2L, window)
 
@@ -33,10 +32,6 @@ function UILayout.Create()
     local MiscTab = window:CreateTab("Misc", false)
     local EspTab = window:CreateTab("Esp", false)
     local ConfigTab = window:CreateTab("Config", false)
-    
-    loader:Update(80)
-    
-    window.Loader = loader
     
     return window
 end

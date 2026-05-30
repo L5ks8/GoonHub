@@ -16,12 +16,6 @@ function Animation.PlayLoading(G2L)
         mainStroke.Transparency = 1
     end
 
-    -- Sound Effekt
-    local loadSound = Instance.new("Sound")
-    loadSound.SoundId = "rbxassetid://134221055367800"
-    loadSound.Volume = 1
-    loadSound.Parent = screenGui
-
     -- Loader Container erstellen
     local loader = Instance.new("CanvasGroup")
     loader.Name = "LoaderOverlay"
@@ -71,46 +65,40 @@ function Animation.PlayLoading(G2L)
     loadingBarFillCorner.Parent = loadingBarFill
 
     -- Animations-Sequenz
-    TweenService:Create(blurEffect, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = 12}):Play()
-    TweenService:Create(loader, TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {GroupTransparency = 0}):Play()
-    
-    local LoaderHandler = {}
+    task.spawn(function()
+        -- Start Blur
+        TweenService:Create(blurEffect, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = 10}):Play()
 
-    function LoaderHandler:Update(percent)
-        TweenService:Create(loadingBarFill, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
-            Size = UDim2.new(math.clamp(percent/100, 0, 1), 0, 1, 0)
-        }):Play()
-    end
+        -- 1. Logo einfaden
+        TweenService:Create(loader, TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {GroupTransparency = 0}):Play()
+        -- Ladebalken füllen über die gesamte Dauer der Logo-Animation
+        TweenService:Create(loadingBarFill, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)}):Play()
 
-    function LoaderHandler:Finish()
-        -- Balken auf 100% zwingen
-        self:Update(100)
-        task.wait(0.2)
+        task.wait(1.5)
 
-        -- Logo ausfaden
-        local fadeOut = TweenService:Create(loader, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {GroupTransparency = 1})
+        -- 2. Logo ausfaden
+        local fadeOut = TweenService:Create(loader, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {GroupTransparency = 1})
         fadeOut:Play()
-        fadeOut.Completed:Wait()
         
-        loader:Destroy()
-        loadSound:Play()
+        fadeOut.Completed:Connect(function()
+            loader:Destroy() -- Loader entfernen
+            -- 3. Hauptmenü mit "Back"-Effekt einblenden
+            local mainTween = TweenService:Create(mainFrame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                GroupTransparency = 0,
+                Size = originalSize
+            })
+            mainTween:Play()
 
-        -- Hauptmenü einblenden
-        TweenService:Create(blurEffect, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = 0}):Play()
-        local mainTween = TweenService:Create(mainFrame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            GroupTransparency = 0,
-            Size = originalSize
-        })
-        mainTween:Play()
-
-        mainTween.Completed:Connect(function()
-            if mainStroke then mainStroke.Transparency = 0.75 end
-            blurEffect:Destroy()
-            loadSound:Destroy()
+            -- Blur entfernen und Stroke des Hauptmenüs wieder sichtbar machen
+            TweenService:Create(blurEffect, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = 0}):Play()
+            mainTween.Completed:Connect(function()
+                if mainStroke then
+                    mainStroke.Transparency = 0.75
+                end
+                blurEffect:Destroy() -- Blur Effekt aufräumen
+            end)
         end)
-    end
-
-    return LoaderHandler
+    end)
 end
 
 return Animation
