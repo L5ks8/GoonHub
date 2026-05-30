@@ -25,6 +25,10 @@ local function isSheriff()
     return player.Character:FindFirstChild("Gun") or player.Backpack:FindFirstChild("Gun")
 end
 
+local function isInRound()
+    return game:GetService("Workspace"):FindFirstChild("Normal") ~= nil
+end
+
 function Coins.Toggle(state)
     autoFarmEnabled = state
 
@@ -44,11 +48,11 @@ function Coins.Toggle(state)
             while autoFarmEnabled do
                 local coinContainer = game:GetService("Workspace"):FindFirstChild("CoinContainer", true)
                 
-                if not coinContainer then
-                    coinsInBag = 0 -- Reset wenn keine Coins da sind (Rundenende)
+                if not coinContainer or not isInRound() then
+                    coinsInBag = 0 
                 end
 
-                if coinContainer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
+                if isInRound() and coinContainer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
                     local coins = coinContainer:GetChildren()
 
                     if coinsInBag >= 40 then
@@ -78,7 +82,7 @@ function Coins.Toggle(state)
                                 task.wait(0.5) 
                                 if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then player.Character.HumanoidRootPart.CFrame = safePosition end
                                 coinsInBag = coinsInBag + 1
-                                task.wait(1.5)
+                                task.wait(2)
                             end
                         end
                     end
