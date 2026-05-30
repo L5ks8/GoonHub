@@ -15,9 +15,6 @@ if not getgenv().GoonHub then
     }
 end
 
-local UILayout = GoonHub.Import("Scripts/a4f91c7d2e8b6a53f0d14c9be67231aa/Components/uilayout")
-local window = UILayout.Create()
-
 local Modules = {
     Colors =  {
         ["Green"] = "0,255,0", 
@@ -26,31 +23,30 @@ local Modules = {
 }
 
 Modules.ChangeColor = function() 
-    game:GetService("RunService").Heartbeat:Connect(function()
-    	if game:GetService("CoreGui"):FindFirstChild("DevConsoleMaster") then 
-	        for _, v in pairs(game:GetService("CoreGui"):FindFirstChild("DevConsoleMaster"):GetDescendants()) do 
-	            if v:IsA("TextLabel") then 
-	                v.RichText = true 
-	            end 
-	        end 
-	    end
-    end)
+    local function fix(v)
+        if v:IsA("TextLabel") then v.RichText = true end
+    end
+    local devConsole = game:GetService("CoreGui"):WaitForChild("DevConsoleMaster", 5)
+    if devConsole then
+        for _, v in pairs(devConsole:GetDescendants()) do fix(v) end
+        devConsole.DescendantAdded:Connect(fix)
+    end
 end
 
 Modules.print = function(color, text, size)
-	if not Modules.Colors[color] then 
-		warn("Color was not found!")
-		return 
-	end 
-	
+	if not Modules.Colors[color] then warn("Color was not found!") return end 
     local Text = '<font color="rgb(' .. Modules.Colors[color] .. ')"'
-    if size then
-        Text = Text .. ' size="' .. tostring(size) .. '"'
-    end
+    if size then Text = Text .. ' size="' .. tostring(size) .. '"' end
     Text = Text .. '>' .. tostring(text) .. '</font>'
     print(Text)
 end
 
-local LoadTime = string.format("%.2f", tick() - StartTime)
 Modules.ChangeColor()
-Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
+local LoadTime = string.format("%.2f", tick() - StartTime)
+task.delay(0.1, function()
+    Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
+end)
+
+
+local UILayout = GoonHub.Import("Scripts/a4f91c7d2e8b6a53f0d14c9be67231aa/Components/uilayout")
+local window = UILayout.Create()
