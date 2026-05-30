@@ -93,7 +93,7 @@ function UIFunctions.Init(G2L, window)
     end)
 
     RunService.RenderStepped:Connect(function()
-        toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.15)
+        toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.08)
     end)
 
     -- Keybind Toggle (RightControl)
