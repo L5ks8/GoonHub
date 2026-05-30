@@ -51,16 +51,14 @@ function UILayout.Create()
         Title = "Kill Murder After Bag Full",
         SubTitle = "Sherriff ONLY",
         Column = "Left",
-        Callback = function(state)
-            Coins.SetKillMurdererAfterBagFull(state)
+        Callback = function()
         end
     })
     main:CreateToggle({
         Title = "Reset Bag Full",
         SubTitle = nil,
         Column = "Left",
-        Callback = function(state)
-            Coins.ResetBag()
+        Callback = function()
         end
     })
     main:CreateSlider({
