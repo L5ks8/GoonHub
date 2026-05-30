@@ -44,14 +44,49 @@ local function looksLikeCoin(obj)
     return false
 end
 
+local function getAllCoins()
+    local targetKey = string.lower(State.EventTokenKey or "")
+    local eventCandidates, normalCandidates = {}, {}
+
+    for _, containerName in ipairs(SETTINGS.COIN_CONTAINER_NAMES) do
+        local container = Workspace:FindFirstChild(containerName, true)
+        if container then
+            for _, obj in ipairs(container:GetChildren()) do
+                local targetPart = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
+                if targetPart and looksLikeCoin(targetPart) then
+                    local nameLower = string.lower(obj.Name)
+                    local parentLower = string.lower(obj.Parent.Name)
+                    local isEvent = (targetKey ~= "" and (string.find(nameLower, targetKey) or string.find(parentLower, targetKey))) or (obj:GetAttribute("IsEvent") == true)
+                    
+                    if not isEvent then
+                        for _, guess in ipairs(SETTINGS.EVENT_TOKEN_GUESS_NAMES) do
+                            if string.find(nameLower, string.lower(guess)) or string.find(parentLower, string.lower(guess)) then
+                                isEvent = true
+                                break
+                            end
+                        end
+                    end
+                    
+                    if isEvent then table.insert(eventCandidates, targetPart) else table.insert(normalCandidates, targetPart) end
+                end
+            end
+        end
+    end
+    return #eventCandidates > 0 and eventCandidates or normalCandidates
+end
+
 local function getBagProgress()
     local gui = LocalPlayer:FindFirstChildOfClass("PlayerGui")
     if gui then
         for _, d in ipairs(gui:GetDescendants()) do
-            if d:IsA("TextLabel") or d:IsA("TextButton") then
-                local a, b = string.match(tostring(d.Text or ""), SETTINGS.BAG_TEXT_REGEX)
+            if (d:IsA("TextLabel") or d:IsA("TextButton")) and d.Visible then
+                local text = tostring(d.Text or "")
+                local a, b = string.match(text, SETTINGS.BAG_TEXT_REGEX)
                 if a and b then
-                    return tonumber(a) or 0, tonumber(b) or State.BagLimit
+                    local ca, cb = tonumber(a), tonumber(b)
+                    if ca and cb and cb > 0 then
+                        return ca, cb
+                    end
                 end
             end
         end
@@ -79,22 +114,15 @@ local function moveTo(targetCFrame)
 end
 
 local function getNearestCoin()
+    local coins = getAllCoins()
     local nearest, minDist = nil, math.huge
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
 
-    local container = Workspace:FindFirstChild("CoinContainer", true)
-    if container then
-        for _, obj in ipairs(container:GetChildren()) do
-            if looksLikeCoin(obj) then
-                local targetPart = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
-                if targetPart then
-                    local d = (hrp.Position - targetPart.Position).Magnitude
-                    if d < minDist then
-                        nearest, minDist = obj, d
-                    end
-                end
-            end
+    for _, targetPart in ipairs(coins) do
+        local d = (hrp.Position - targetPart.Position).Magnitude
+        if d < minDist then
+            nearest, minDist = targetPart, d
         end
     end
     return nearest, minDist
@@ -135,22 +163,19 @@ local function mainLoop()
                     else
                         local coin, dist = getNearestCoin()
                         if coin then
-                            local targetPart = coin:IsA("BasePart") and coin or (coin:FindFirstChild("Hitbox") or coin:FindFirstChildOfClass("BasePart"))
-                            if targetPart then
-                                local tween = moveTo(targetPart.CFrame)
-                                if tween then
-                                    local hrp = LocalPlayer.Character.HumanoidRootPart
-                                    hrp.Anchored = true
-                                    
-                                    local t0 = os.clock()
-                                    while State.Enabled and coin.Parent and os.clock() - t0 < 3 do
-                                        if not targetPart:FindFirstChild("TouchInterest") and not targetPart:FindFirstChildOfClass("TouchTransmitter") then break end
-                                        task.wait()
-                                    end
-                                    
-                                    tween:Cancel()
-                                    hrp.Anchored = false
+                            local tween = moveTo(coin.CFrame)
+                            if tween then
+                                local hrp = LocalPlayer.Character.HumanoidRootPart
+                                hrp.Anchored = true
+                                
+                                local t0 = os.clock()
+                                while State.Enabled and coin.Parent and os.clock() - t0 < 3 do
+                                    if not coin:FindFirstChild("TouchInterest") and not coin:FindFirstChildOfClass("TouchTransmitter") then break end
+                                    task.wait()
                                 end
+                                
+                                pcall(function() tween:Cancel() end)
+                                hrp.Anchored = false
                             end
                         end
                     end
@@ -189,6 +214,10 @@ end
 
 function Coins.SetMethod(val)
     State.Method = val
+end
+
+function Coins.SetEventTokenKey(val)
+    State.EventTokenKey = val
 end
 
 return Coins
