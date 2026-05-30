@@ -72,6 +72,7 @@ function UILayout.Create()
     })
     main:CreateDropdown({
         Title = "Teleport Methods",
+        Default = "Tween",
         Options = {
             "Instant Teleport",
             "Tween",

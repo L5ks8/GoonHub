@@ -65,14 +65,14 @@ local function moveTo(targetCFrame)
     
     local dist = (hrp.Position - targetCFrame.Position).Magnitude
     if dist > State.TeleportDist then
-        hrp.CFrame = targetCFrame * CFrame.new(0, 2, 0)
+        hrp.CFrame = targetCFrame
     else
         local duration = math.max(0.01, dist / math.clamp(State.Speed, 15, 25))
         
         hrp.Velocity = Vector3.zero
         hrp.RotVelocity = Vector3.zero
         
-        local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame * CFrame.new(0, -3.5, 0)})
+        local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame})
         tween:Play()
         return tween
     end
@@ -125,7 +125,7 @@ local function mainLoop()
                             local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                             if hrp then
                                 hrp.Anchored = true
-                                hrp.CFrame = coin.CFrame * CFrame.new(0, -3.5, 0)
+                                hrp.CFrame = coin.CFrame
                                 task.wait(0.3)
                                 hrp.CFrame = State.SafePosition
                                 hrp.Anchored = false
