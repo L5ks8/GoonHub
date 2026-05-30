@@ -16,6 +16,7 @@ local State = {
     SafePosition = CFrame.new(26.183889, 504.818054, -21.357656)
 }
 
+local CharacterCollisionConnection
 local SETTINGS = {
     BAG_TEXT_REGEX = "(%d+)%s*/%s*(%d+)",
     EVENT_TOKEN_GUESS_NAMES = { "Candy","Snow","SnowToken","Token","Present","Heart","CoinEvent","Ball","Orb" },
@@ -64,14 +65,14 @@ local function moveTo(targetCFrame)
     
     local dist = (hrp.Position - targetCFrame.Position).Magnitude
     if dist > State.TeleportDist then
-        hrp.CFrame = targetCFrame + Vector3.new(0, 3, 0)
+        hrp.CFrame = targetCFrame * CFrame.new(0, 2, 0)
     else
         local duration = math.max(0.01, dist / math.clamp(State.Speed, 15, 25))
         
         hrp.Velocity = Vector3.zero
         hrp.RotVelocity = Vector3.zero
         
-        local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame + Vector3.new(0, 3, 0)})
+        local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame * CFrame.new(0, -3.5, 0)})
         tween:Play()
         return tween
     end
@@ -103,6 +104,13 @@ local function mainLoop()
     while State.Enabled do
         pcall(function()
             if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") and LocalPlayer.Character.Humanoid.Health > 0 then
+                -- Disable collisions to prevent lag/stuck
+                for _, part in pairs(LocalPlayer.Character:GetChildren()) do
+                    if part:IsA("BasePart") and part.CanCollide then 
+                        part.CanCollide = false 
+                    end
+                end
+
                 local have, cap = getBagProgress()
                 if have >= cap then
                     if State.AutoReset then
@@ -116,16 +124,12 @@ local function mainLoop()
                         if coin and LocalPlayer.Character then
                             local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                             if hrp then
-                                for _, part in pairs(LocalPlayer.Character:GetChildren()) do
-                                    if part:IsA("BasePart") then part.CanCollide = false end
-                                end
-                                
                                 hrp.Anchored = true
-                                hrp.CFrame = coin.CFrame
-                                task.wait(0.5)
+                                hrp.CFrame = coin.CFrame * CFrame.new(0, -3.5, 0)
+                                task.wait(0.3)
                                 hrp.CFrame = State.SafePosition
                                 hrp.Anchored = false
-                                task.wait(2) 
+                                task.wait(0.1) 
                             end
                         end
                     else
@@ -159,6 +163,19 @@ end
 
 function Coins.Toggle(state)
     State.Enabled = state
+    
+    if CharacterCollisionConnection then CharacterCollisionConnection:Disconnect() end
+    if state then
+        -- Keep collisions disabled during farm to prevent physics lag
+        CharacterCollisionConnection = game:GetService("RunService").Stepped:Connect(function()
+            if State.Enabled and LocalPlayer.Character then
+                for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
+                    if v:IsA("BasePart") then v.CanCollide = false end
+                end
+            end
+        end)
+    end
+
     if state then task.spawn(mainLoop) end
 end
 
