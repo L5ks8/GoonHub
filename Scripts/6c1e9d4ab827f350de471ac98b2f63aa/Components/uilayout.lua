@@ -1,6 +1,7 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
+local Animation = GoonHub.Import("Assets/Components/animation")
 
 local UILayout = {}
 
@@ -20,6 +21,8 @@ function UILayout.Create()
     }
 
     Widgets.Init(window, G2L)
+
+    Animation.PlayLoading(G2L)
 
     UIFunctions.Init(G2L, window)
 
