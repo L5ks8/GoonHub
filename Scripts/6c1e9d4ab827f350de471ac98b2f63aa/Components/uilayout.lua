@@ -5,10 +5,10 @@ local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
 local UILayout = {}
 
 function UILayout.Create()
-    -- Toggle-States initialisieren, falls nicht vorhanden
+
     getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
 
-    -- Basis UI erstellen
+
     local G2L = UI.CreateBase("GoonHub", "1.0.0")
     local window = {
         TabCount = 0, 
@@ -19,13 +19,14 @@ function UILayout.Create()
         }
     }
 
-    -- Widgets initialisieren (fügt window:CreateTab hinzu)
     Widgets.Init(window, G2L)
-    -- Interaktionen (Drag, Close, Zeit) laden
+
     UIFunctions.Init(G2L, window)
 
     -- Game Tabs
     local mainTab = window:CreateTab("Main", false)
+    local FarmTab = window:CreateTab("Farm", false)
+
     local combat = mainTab:CreateSection("Combat", "Left")
     local movement = mainTab:CreateSection("Movement", "Right")
     
