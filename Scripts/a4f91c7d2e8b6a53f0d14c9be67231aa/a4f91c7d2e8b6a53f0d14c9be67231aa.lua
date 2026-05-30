@@ -43,6 +43,11 @@ end
 
 -- Initialize UI
 Modules.ChangeColor()
+local LoadTime = string.format("%.2f", tick() - StartTime)
+task.delay(0.1, function()
+    Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
+end)
+
 local UILayout = GoonHub.Import("Scripts/a4f91c7d2e8b6a53f0d14c9be67231aa/Components/uilayout")
 local window = UILayout.Create()
 
@@ -57,9 +62,3 @@ MainSection:CreateToggle({
     Default = false,
     Callback = function(state) print("Auto Farm:", state) end
 })
-
--- Finalize Authentication
-local LoadTime = string.format("%.2f", tick() - StartTime)
-task.delay(0.1, function()
-    Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
-end)
