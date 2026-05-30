@@ -1,6 +1,13 @@
+local UI = GoonHub.Import("Assets/ui")
+local Widgets = GoonHub.Import("Assets/Components/widgets")
+local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
+
+local UILayout = {}
+
 function UILayout.Create()
 
     getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
+
 
     local G2L = UI.CreateBase("GoonHub", "1.0.0")
     local window = {
@@ -15,6 +22,6 @@ function UILayout.Create()
     Widgets.Init(window, G2L)
 
     UIFunctions.Init(G2L, window)
-
-    return UILayout
+return UILayout
 end
+
