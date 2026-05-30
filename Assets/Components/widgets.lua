@@ -98,26 +98,6 @@ function Widgets.Init(window, G2L)
             local f = New("Frame", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
-            -- Hover Animation (Spinning Stroke)
-            local sel = New("Frame", {Name = "selector", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 0}, f)
-            New("UICorner", {CornerRadius = UDim.new(0, 6)}, sel)
-            local str = New("UIStroke", {Color = Color3.new(1, 1, 1), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = "Border"}, sel)
-            local gra = New("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.45, 0), NumberSequenceKeypoint.new(0.55, 0), NumberSequenceKeypoint.new(1, 1)})}, str)
-
-            task.spawn(function()
-                while task.wait() do
-                    if not f or not f.Parent then break end
-                    gra.Rotation = (gra.Rotation + 1) % 360
-                end
-            end)
-
-            f.MouseEnter:Connect(function()
-                TweenService:Create(str, TweenInfo.new(0.3), {Transparency = 0.7}):Play()
-            end)
-            f.MouseLeave:Connect(function()
-                TweenService:Create(str, TweenInfo.new(0.3), {Transparency = 1}):Play()
-            end)
-
             if hasSub then
                 New("TextLabel", {Size = UDim2.new(1, -50, 0, 16), Position = UDim2.new(0, 10, 0, 6), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 12, TextTruncate = Enum.TextTruncate.AtEnd}, f)
                 New("TextLabel", {Size = UDim2.new(1, -50, 0, 14), Position = UDim2.new(0, 10, 0, 22), Text = cfg.SubTitle, TextColor3 = Color3.fromRGB(180, 180, 180), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.reg, TextSize = 10, TextTruncate = Enum.TextTruncate.AtEnd}, f)
@@ -129,6 +109,27 @@ function Widgets.Init(window, G2L)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, btnTog)
             local circle = New("Frame", {Size = UDim2.new(0, 14, 0, 14), Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = Color3.new(1, 1, 1)}, btnTog)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, circle)
+
+            -- Hover Animation (Spinning Stroke nur auf dem Knopf rechts)
+            local sel = New("Frame", {Name = "selector", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 10}, btnTog)
+            New("UICorner", {CornerRadius = UDim.new(1, 0)}, sel)
+            local str = New("UIStroke", {Color = Color3.new(1, 1, 1), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = "Border"}, sel)
+            local gra = New("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.45, 0), NumberSequenceKeypoint.new(0.55, 0), NumberSequenceKeypoint.new(1, 1)})}, str)
+
+            task.spawn(function()
+                while task.wait() do
+                    if not btnTog or not btnTog.Parent then break end
+                    gra.Rotation = (gra.Rotation + 1) % 360
+                end
+            end)
+
+            f.MouseEnter:Connect(function()
+                TweenService:Create(str, TweenInfo.new(0.3), {Transparency = 0.5}):Play()
+            end)
+            f.MouseLeave:Connect(function()
+                TweenService:Create(str, TweenInfo.new(0.3), {Transparency = 1}):Play()
+            end)
+
             btnTog.MouseButton1Click:Connect(function()
                 state = not state
                 TweenService:Create(btnTog, TweenInfo.new(0.3), {BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(60, 60, 60)}):Play()
@@ -231,15 +232,15 @@ function Widgets.Init(window, G2L)
             local dropped = false
             local selected = cfg.Options[1] or "None"
             
-            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 50), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
-            New("TextLabel", {Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0, 10, 0, 2), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
+            New("TextLabel", {Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 1), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
             
-            local btn = New("TextButton", {Size = UDim2.new(1, -20, 0, 24), Position = UDim2.new(0, 10, 0, 22), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, f)
+            local btn = New("TextButton", {Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 20), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, f)
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
             local arrow = New("TextLabel", {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -25, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Text = "▼", BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(248, 191, 212), TextSize = 12}, btn)
             
-            local list = New("Frame", {Name = "list", Position = UDim2.new(0, 10, 0, 50), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1, Visible = false}, f)
+            local list = New("Frame", {Name = "list", Position = UDim2.new(0, 10, 0, 45), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1, Visible = false}, f)
             local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
             for _, opt in pairs(cfg.Options) do
@@ -251,7 +252,7 @@ function Widgets.Init(window, G2L)
                     dropped = false 
                     list.Visible = false
                     
-                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 50)}):Play()
+                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 45)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
                     if cfg.Callback then cfg.Callback(opt) end
                 end)
@@ -260,7 +261,7 @@ function Widgets.Init(window, G2L)
             btn.MouseButton1Click:Connect(function()
                 dropped = not dropped
                 list.Visible = dropped
-                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 58) or UDim2.new(1, 0, 0, 50)}):Play()
+                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 53) or UDim2.new(1, 0, 0, 45)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
         end
