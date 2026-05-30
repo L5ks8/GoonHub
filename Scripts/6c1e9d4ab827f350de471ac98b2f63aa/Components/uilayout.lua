@@ -41,7 +41,7 @@ function UILayout.Create()
         Title = "Farm Speed",
         Min = 15,
         Max = 25,
-        Default = getgenv().GoonHub.Config.Data.FarmSpeed or 20,
+        Default = getgenv().GoonHub.Config.Data["Farm Speed"] or 20,
         Column = "Left",
         Callback = function(val)
             Coins.SetSpeed(val)
@@ -51,7 +51,7 @@ function UILayout.Create()
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets character when bag is full",
         Column = "Left",
-        Default = getgenv().GoonHub.Config.Data.AutoReset or true,
+        Default = getgenv().GoonHub.Config.Data["Auto Reset (Full Bag)"] or true,
         Callback = function(state)
             Coins.SetAutoReset(state)
         end
@@ -114,7 +114,7 @@ function UILayout.Create()
         Title = "Delay",
         Min = 1,
         Max = 5,
-        Default = getgenv().GoonHub.Config.Data.BoxOpenDelay or 1,
+        Default = getgenv().GoonHub.Config.Data["Delay"] or 1,
         Column = "Left",
         Callback = function(val)
             -- This will need to be implemented in a Shop.lua module

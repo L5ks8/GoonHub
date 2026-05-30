@@ -121,7 +121,7 @@ local function mainLoop()
                                 end
                                 
                                 hrp.Anchored = true
-                                hrp.CFrame = coin.CFrame
+                                hrp.CFrame = coin.CFrame * CFrame.new(0, -0.5, 0) 
                                 task.wait(0.5)
                                 hrp.CFrame = State.SafePosition
                                 hrp.Anchored = false
@@ -133,8 +133,7 @@ local function mainLoop()
                         if coin then
                             local targetPart = coin:IsA("BasePart") and coin or (coin:FindFirstChild("Hitbox") or coin:FindFirstChildOfClass("BasePart"))
                             if targetPart then
-                                local tween = moveTo(targetPart.CFrame)
-                                if tween then
+                                local tween = moveTo(targetPart.CFrame * CFrame.new(0, -0.5, 0)) 
                                     local hrp = LocalPlayer.Character.HumanoidRootPart
                                     hrp.Anchored = true
                                     
