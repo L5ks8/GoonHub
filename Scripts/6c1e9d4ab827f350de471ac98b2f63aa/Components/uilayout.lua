@@ -27,8 +27,10 @@ function UILayout.Create()
     local mainTab = window:CreateTab("Main", false)
     local FarmTab = window:CreateTab("Farm", false)
     local MiscTab = window:CreateTab("Misc", false)
+    local ShopTab = window:CreateTab("Shop", false)
     local EspTab = window:CreateTab("Esp", false)
-
+    
+    -- Main Tab
     local main = mainTab:CreateSection("Coins", "Left")
     main:CreateToggle({
         Title = "Coin farm",
@@ -58,7 +60,7 @@ function UILayout.Create()
         end
     })
     main:CreateSlider({
-        Title = "Kill Murder After Bag Full",
+        Title = "Distance",
         Min = 1,
         Max = 5,
         Default = 5,
@@ -77,7 +79,55 @@ function UILayout.Create()
         Callback = function()
         end
     })
+    -- Farm Tab
 
+    -- Misc Tab
+
+    local misc = MiscTab:CreateSection("Misc", "Left")
+    misc:CreateToggle({
+        Title = "Noclip",
+        Column = "Left",
+        Callback = function()
+        end
+    })
+    -- Shop Tab
+    local shop = ShopTab:CreateSection("Shop", "Left")
+    shop:CreateToggle({
+        Title = "Auto Open Boxes",
+        Column = "Left",
+        Callback = function()
+        end
+    })
+    shop:CreateSlider({
+        Title = "Delay",
+        Min = 1,
+        Max = 5,
+        Default = 1,
+        Column = "Left",
+        Callback = function()
+        end
+    })
+    shop:CreateDropdown({
+        Title = "Boxes",
+        Options = {
+            "MysteryBox1",
+            "MysteryBox2",
+            "KniveBox1",
+            "KniveBox2",
+            "KniveBox3",
+            "KniveBox4",
+            "KniveBox5",
+            "MLG Box",
+            "Gun Box1",
+            "Gun Box2",
+            "Gun Box3"
+        },
+        Column = "Left",
+        Callback = function()
+        end
+    })
+
+    -- Esp Tab
 
 
 
