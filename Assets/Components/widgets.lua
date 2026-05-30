@@ -110,6 +110,52 @@ function Widgets.Init(window, G2L)
             task.spawn(function() cfg.Callback(state) end)
         end
 
+        function tObj:CreateSlider(title, min, max, default, callback, column, overrideParent, layoutOrder)
+            local cfg = type(title) == "table" and title or {Title = title, Min = min, Max = max, Default = default, Callback = callback, Column = column}
+            local col = cfg.Column or self.lastColumn
+            local lOrder = layoutOrder or cfg.LayoutOrder
+            
+            local f = New("Frame", {Size = UDim2.new(1, -10, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
+            
+            local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
+            local valueLabel = New("TextLabel", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13}, f)
+            
+            local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 4), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
+            New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderBg)
+            
+            local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(248, 191, 212)}, sliderBg)
+            New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
+            
+            local function update(input)
+                local pos = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
+                sliderFill.Size = UDim2.new(pos, 0, 1, 0)
+                local value = math.floor(cfg.Min + (pos * (cfg.Max - cfg.Min)))
+                valueLabel.Text = tostring(value)
+                cfg.Callback(value)
+            end
+            
+            local dragging = false
+            f.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = true
+                    update(input)
+                end
+            end)
+            
+            UserInputService.InputChanged:Connect(function(input)
+                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    update(input)
+                end
+            end)
+            
+            UserInputService.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+            end)
+
+            task.spawn(function() cfg.Callback(cfg.Default) end)
+        end
+
         function tObj:CreateButton(title, callback, column, overrideParent, layoutOrder)
             local cfg = type(title) == "table" and title or {Title = title, Callback = callback, Column = column}
             local col = cfg.Column or self.lastColumn
