@@ -9,6 +9,7 @@ function UIFunctions.Init(G2L, window)
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
     local miniButtons = nil
+    local miniLogo = nil
 
     -- Dragging
     local drag, dragStart, startPos
@@ -86,6 +87,23 @@ function UIFunctions.Init(G2L, window)
                 end
             end
 
+            -- Erstelle Kopie des Logos rechts neben der Drag-Leiste
+            miniLogo = G2L["6c"]:Clone()
+            miniLogo.Name = "MiniLogo"
+            miniLogo.Parent = G2L["5"]
+            miniLogo.AnchorPoint = Vector2.new(0, 0.5)
+            miniLogo.Position = UDim2.new(0.5, 40, 0, 17.5) -- 40px rechts von der Mitte
+            miniLogo.ZIndex = 2000
+            miniLogo.Visible = true
+
+            for _, child in pairs(miniLogo:GetDescendants()) do
+                if child:IsA("GuiObject") then
+                    child.ZIndex = miniLogo.ZIndex + 5
+                    if child:IsA("TextLabel") then child.TextTransparency = 0 end
+                    child.Visible = true
+                end
+            end
+
             -- Kopie-Buttons funktionsfähig machen (mit Tweens für Konsistenz)
             if miniButtons:FindFirstChild("close") then miniButtons.close.MouseButton1Click:Connect(closeUI) end
             if miniButtons:FindFirstChild("maximize") then miniButtons.maximize.MouseButton1Click:Connect(toggleMinimize) end
@@ -99,6 +117,7 @@ function UIFunctions.Init(G2L, window)
         else
             -- Lösche Kopie und zeige Originale
             if miniButtons then miniButtons:Destroy() miniButtons = nil end
+            if miniLogo then miniLogo:Destroy() miniLogo = nil end
             G2L["10"].Visible = true
             G2L["a1"].Visible = true
             G2L["b"].Visible = true
