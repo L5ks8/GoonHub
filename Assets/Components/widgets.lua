@@ -148,7 +148,11 @@ function Widgets.Init(window, G2L)
         local info = aboutTab:CreateSection("Information", "Left")
         
         info:CreateParagraph({
-            Text = "GoonHub Version 1.0.0\nDeveloped by L5ks8",
+            Text = "GoonHub Version 1.0.0",
+            Column = "Left"
+        })
+         info:CreateParagraph({
+            Text = "GoonHub Version 1.0.0",
             Column = "Left"
         })
     end)
