@@ -5,6 +5,11 @@ local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 
 function UIFunctions.Init(G2L, window)
+    local isMinimized = false
+    local isMaximized = false
+    local lastSize = G2L["2"].Size
+    local originalSize = G2L["2"].Size
+
     -- Dragging
     local drag, dragStart, startPos
     if G2L["6"] then G2L["6"].InputBegan:Connect(function(i)
@@ -19,26 +24,27 @@ function UIFunctions.Init(G2L, window)
     UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
 
     -- Minimize Toggle
-    local isMinimized = false
-    local lastSize = G2L["2"].Size
-    if G2L["80"] then G2L["80"].MouseButton1Click:Connect(function()
-        isMinimized = not isMinimized
-        if isMinimized then lastSize = G2L["2"].Size end
-        
-        local targetSize = isMinimized and UDim2.new(0, 220, 0, 40) or lastSize
-        TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = targetSize}):Play()
-        
-        G2L["11"].Visible = not isMinimized -- Hauptbildschirm
-        G2L["16"].Visible = not isMinimized -- Seitenleiste
-        G2L["a1"].Visible = not isMinimized -- Debug/Stats Leiste
-        if G2L["b"] then G2L["b"].Visible = not isMinimized end -- Resize Handle
-    end) end
+    if G2L["80"] then 
+        G2L["80"].MouseButton1Click:Connect(function()
+            if not isMinimized then
+                lastSize = G2L["2"].Size
+                isMinimized = true
+                TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 220, 0, 40)}):Play()
+            else
+                isMinimized = false
+                TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize}):Play()
+            end
+            
+            G2L["11"].Visible = not isMinimized
+            G2L["16"].Visible = not isMinimized
+            G2L["a1"].Visible = not isMinimized
+            if G2L["b"] then G2L["b"].Visible = not isMinimized and not isMaximized end
+        end) 
+    end
 
     -- Close & Fullscreen
     if G2L["72"] then G2L["72"].MouseButton1Click:Connect(function() G2L["1"]:Destroy() end) end
     
-    local isMaximized = false
-    local originalSize = G2L["2"].Size
     if G2L["94"] then G2L["94"].MouseButton1Click:Connect(function()
         isMaximized = not isMaximized
         TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = isMaximized and UDim2.new(1, -40, 1, -40) or originalSize}):Play()
