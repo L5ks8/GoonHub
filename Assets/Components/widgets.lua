@@ -113,9 +113,13 @@ function Widgets.Init(window, G2L)
                 state = not state
                 TweenService:Create(btnTog, TweenInfo.new(0.3), {BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(60, 60, 60)}):Play()
                 TweenService:Create(circle, TweenInfo.new(0.3), {Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)}):Play()
-                getgenv().NyroxToggleStates[cfg.Title] = state cfg.Callback(state)
+                getgenv().NyroxToggleStates[cfg.Title] = state 
+                if cfg.Callback then cfg.Callback(state) end
             end)
-            task.spawn(function() cfg.Callback(state) end)
+            
+            if cfg.Callback then
+                task.spawn(function() cfg.Callback(state) end)
+            end
         end
 
         function tObj:CreateSlider(title, min, max, default, callback, column, overrideParent, layoutOrder)
@@ -127,7 +131,7 @@ function Widgets.Init(window, G2L)
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
             local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
-            local valueLabel = New("TextBox", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13, ClearTextOnFocus = false}, f)
+            local valueLabel = New("TextBox", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13, ClearTextOnFocus = false, ZIndex = 10}, f)
             
             local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 4), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderBg)
@@ -156,7 +160,7 @@ function Widgets.Init(window, G2L)
             end
             
             local dragging = false
-            f.InputBegan:Connect(function(input)
+            sliderBg.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
                     dragging = true
                     update(input)
@@ -222,10 +226,14 @@ function Widgets.Init(window, G2L)
                 local optBtn = New("TextButton", {Size = UDim2.new(1, 0, 0, 25), BackgroundColor3 = Color3.fromRGB(35, 35, 35), Text = opt, TextColor3 = Color3.new(0.8, 0.8, 0.8), FontFace = fonts.reg, TextSize = 12}, list)
                 New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
                 optBtn.MouseButton1Click:Connect(function()
-                    selected = opt btn.Text = "  " .. opt dropped = false list.Visible = false
+                    selected = opt 
+                    btn.Text = "  " .. opt 
+                    dropped = false 
+                    list.Visible = false
+                    
                     TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 35)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
-                    cfg.Callback(opt)
+                    if cfg.Callback then cfg.Callback(opt) end
                 end)
             end
             
