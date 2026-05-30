@@ -75,7 +75,6 @@ function UILayout.Create()
         Options = {
             "Instant Teleport",
             "Tween",
-            "Walk"
             },
         Column = "Left",
         Callback = function(method)

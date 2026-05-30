@@ -21,8 +21,6 @@ local SETTINGS = {
     EVENT_TOKEN_GUESS_NAMES = { "Candy","Snow","SnowToken","Token","Present","Heart","CoinEvent","Ball","Orb" },
     COIN_CONTAINER_NAMES = { "CoinContainer","Coins","Coin","Drops","Tokens","CandyContainer" }
 }
-
--- Prüfen ob Teil wie eine Münze aussieht (Heuristik aus Snippet)
 local function looksLikeCoin(obj)
     local target = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
     if not target then return false end
@@ -45,7 +43,6 @@ local function looksLikeCoin(obj)
     return false
 end
 
--- Beutelfortschritt aus der GUI auslesen
 local function getBagProgress()
     local gui = LocalPlayer:FindFirstChildOfClass("PlayerGui")
     if gui then
@@ -61,7 +58,6 @@ local function getBagProgress()
     return 0, State.BagLimit
 end
 
--- Sanfte Bewegung oder TP
 local function moveTo(targetCFrame)
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not hrp then return end
@@ -81,7 +77,6 @@ local function moveTo(targetCFrame)
     end
 end
 
--- Münzen finden
 local function getNearestCoin()
     local nearest, minDist = nil, math.huge
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -121,17 +116,16 @@ local function mainLoop()
                         if coin and LocalPlayer.Character then
                             local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                             if hrp then
-                                -- Noclip Logik für die Farm-Dauer
                                 for _, part in pairs(LocalPlayer.Character:GetChildren()) do
                                     if part:IsA("BasePart") then part.CanCollide = false end
                                 end
                                 
                                 hrp.Anchored = true
                                 hrp.CFrame = coin.CFrame
-                                task.wait(0.5) -- Zeit zum Registrieren
+                                task.wait(0.5)
                                 hrp.CFrame = State.SafePosition
                                 hrp.Anchored = false
-                                task.wait(2) -- Anti-Kick Pause
+                                task.wait(2) 
                             end
                         end
                     else
