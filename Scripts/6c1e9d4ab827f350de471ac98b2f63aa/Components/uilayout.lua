@@ -41,27 +41,26 @@ function UILayout.Create()
             Coins.Toggle(state)
         end
     })
-    main:CreateToggle({
-        Title = "Kill All After Bag Full",
-        SubTitle = "Kills all if murder",
+    main:CreateSlider({
+        Title = "Farm Speed",
+        Min = 15,
+        Max = 25,
+        Default = 20,
         Column = "Left",
-        Callback = function()
+        Callback = function(val)
+            Coins.SetSpeed(val)
         end
     })
     main:CreateToggle({
-        Title = "Kill Murder After Bag Full",
-        SubTitle = "Sherriff ONLY",
+        Title = "Auto Reset (Full Bag)",
+        SubTitle = "Resets character when bag is full",
         Column = "Left",
-        Callback = function()
+        Default = true,
+        Callback = function(state)
+            Coins.SetAutoReset(state)
         end
     })
-    main:CreateToggle({
-        Title = "Reset Bag Full",
-        SubTitle = nil,
-        Column = "Left",
-        Callback = function()
-        end
-    })
+    
     main:CreateSlider({
         Title = "Distance",
         Min = 1,
