@@ -105,7 +105,7 @@ function Widgets.Init(window, G2L)
                 New("TextLabel", {Size = UDim2.new(1, -50, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, f)
             end
 
-            local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(60, 60, 60), Text = ""}, f)
+            local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(60, 60, 60), Text = "", AutoButtonColor = false}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, btnTog)
             local circle = New("Frame", {Size = UDim2.new(0, 14, 0, 14), Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = Color3.new(1, 1, 1)}, btnTog)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, circle)
@@ -207,7 +207,7 @@ function Widgets.Init(window, G2L)
             local lOrder = layoutOrder or cfg.LayoutOrder
             
             local hasSub = cfg.SubTitle ~= nil
-            local bWidget = New("TextButton", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = hasSub and "" or cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            local bWidget = New("TextButton", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = hasSub and "" or cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, LayoutOrder = lOrder, AutoButtonColor = false}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, bWidget)
             
             if hasSub then
@@ -236,7 +236,7 @@ function Widgets.Init(window, G2L)
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             New("TextLabel", {Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 1), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
             
-            local btn = New("TextButton", {Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 20), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, f)
+            local btn = New("TextButton", {Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 20), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, AutoButtonColor = false}, f)
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
             local arrow = New("TextLabel", {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -25, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Text = "▼", BackgroundTransparency = 1, TextColor3 = Color3.fromRGB(248, 191, 212), TextSize = 12}, btn)
             
@@ -244,7 +244,7 @@ function Widgets.Init(window, G2L)
             local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
             for _, opt in pairs(cfg.Options) do
-                local optBtn = New("TextButton", {Size = UDim2.new(1, 0, 0, 25), BackgroundColor3 = Color3.fromRGB(35, 35, 35), Text = opt, TextColor3 = Color3.new(0.8, 0.8, 0.8), FontFace = fonts.reg, TextSize = 12}, list)
+                local optBtn = New("TextButton", {Size = UDim2.new(1, 0, 0, 25), BackgroundColor3 = Color3.fromRGB(35, 35, 35), Text = opt, TextColor3 = Color3.new(0.8, 0.8, 0.8), FontFace = fonts.reg, TextSize = 12, AutoButtonColor = false}, list)
                 New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
                 optBtn.MouseButton1Click:Connect(function()
                     selected = opt 
