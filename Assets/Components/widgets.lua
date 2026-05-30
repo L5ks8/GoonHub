@@ -71,14 +71,13 @@ function Widgets.Init(window, G2L)
         function tObj:CreateSection(title, column)
             local col = column or self.lastColumn
             self.SectionCount = self.SectionCount + 1
-            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = true, LayoutOrder = self.SectionCount}, self[col])
+            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = true, LayoutOrder = self.SectionCount}, self[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, secFrame)
             New("TextLabel", {Size = UDim2.new(1, 0, 0, 32), Text = "  "..title, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, BackgroundTransparency = 1}, secFrame)
-            local container = New("Frame", {Name = "container", Position = UDim2.new(0, 10, 0, 35), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1}, secFrame)
+            local container = New("Frame", {Name = "container", Position = UDim2.new(0, 10, 0, 35), Size = UDim2.new(1, -20, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1}, secFrame)
             local layout = New("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder}, container)
-            layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-                secFrame.Size = UDim2.new(1, -10, 0, layout.AbsoluteContentSize.Y + 45)
-            end)
+            New("UIPadding", {PaddingBottom = UDim.new(0, 10)}, container)
+
             local secObj = {WidgetCount = 0}
             function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end
             function secObj:CreateSlider(title, min, max, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(title, min, max, default, callback, col, container, self.WidgetCount) end
@@ -90,13 +89,22 @@ function Widgets.Init(window, G2L)
         end
 
         function tObj:CreateToggle(title, default, callback, column, overrideParent, layoutOrder)
-            local cfg = type(title) == "table" and title or {Title = title, Default = default, Callback = callback, Column = column}
+            local cfg = type(title) == "table" and title or {Title = title, Default = default, Callback = callback, Column = column, SubTitle = nil}
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             local state = getgenv().NyroxToggleStates[cfg.Title] or cfg.Default
-            local f = New("Frame", {Size = UDim2.new(1, -10, 0, 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            
+            local hasSub = cfg.SubTitle ~= nil
+            local f = New("Frame", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
-            New("TextLabel", {Size = UDim2.new(1, -50, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, f)
+            
+            if hasSub then
+                New("TextLabel", {Size = UDim2.new(1, -50, 0, 16), Position = UDim2.new(0, 10, 0, 6), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 12, TextTruncate = Enum.TextTruncate.AtEnd}, f)
+                New("TextLabel", {Size = UDim2.new(1, -50, 0, 14), Position = UDim2.new(0, 10, 0, 22), Text = cfg.SubTitle, TextColor3 = Color3.fromRGB(180, 180, 180), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.reg, TextSize = 10, TextTruncate = Enum.TextTruncate.AtEnd}, f)
+            else
+                New("TextLabel", {Size = UDim2.new(1, -50, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, f)
+            end
+
             local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(60, 60, 60), Text = ""}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, btnTog)
             local circle = New("Frame", {Size = UDim2.new(0, 14, 0, 14), Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = Color3.new(1, 1, 1)}, btnTog)
@@ -115,7 +123,7 @@ function Widgets.Init(window, G2L)
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             
-            local f = New("Frame", {Size = UDim2.new(1, -10, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
             local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
@@ -157,11 +165,19 @@ function Widgets.Init(window, G2L)
         end
 
         function tObj:CreateButton(title, callback, column, overrideParent, layoutOrder)
-            local cfg = type(title) == "table" and title or {Title = title, Callback = callback, Column = column}
+            local cfg = type(title) == "table" and title or {Title = title, Callback = callback, Column = column, SubTitle = nil}
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
-            local bWidget = New("TextButton", {Size = UDim2.new(1, -10, 0, 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            
+            local hasSub = cfg.SubTitle ~= nil
+            local bWidget = New("TextButton", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = hasSub and "" or cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, bWidget)
+            
+            if hasSub then
+                New("TextLabel", {Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 8), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Center, FontFace = fonts.bold, TextSize = 12, TextTruncate = Enum.TextTruncate.AtEnd}, bWidget)
+                New("TextLabel", {Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 24), Text = cfg.SubTitle, TextColor3 = Color3.fromRGB(180, 180, 180), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Center, FontFace = fonts.reg, TextSize = 10, TextTruncate = Enum.TextTruncate.AtEnd}, bWidget)
+            end
+            
             bWidget.MouseButton1Click:Connect(cfg.Callback)
         end
 

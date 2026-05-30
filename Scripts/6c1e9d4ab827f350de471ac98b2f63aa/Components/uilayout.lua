@@ -1,7 +1,6 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
-local Animation = GoonHub.Import("Assets/Components/animation")
 
 local UILayout = {}
 
@@ -28,50 +27,37 @@ function UILayout.Create()
     local mainTab = window:CreateTab("Main", false)
     local FarmTab = window:CreateTab("Farm", false)
     local MiscTab = window:CreateTab("Misc", false)
+    local EspTab = window:CreateTab("Esp", false)
 
-    local combat = mainTab:CreateSection("Combat", "Left")
-    local movement = mainTab:CreateSection("Movement", "Right")
-    
-    combat:CreateToggle({
-        Title = "Kill All", 
+    local main = mainTab:CreateSection("Coins", "Left")
+    main:CreateButton({
+        Title = "Coin farm",
         Column = "Left",
-        Default = false, 
-        Callback = function(state) print("Kill All:", state) end
+        Callback = function()
+            print("Coin Farm gestartet")
+        end
     })
-
-    combat:CreateButton({
-        Title = "Instant Win",
+    main:CreateButton({
+        Title = "Kill All After Bag Full",
+        SubTitle = "Kills all if murder",
         Column = "Left",
-        Callback = function() print("Instant Win triggered") end
+        Callback = function()
+            print("Kill All gestartet")
+        end
     })
-
-    movement:CreateSlider({
-        Title = "WalkSpeed",
-        Column = "Right",
-        Min = 16,
-        Max = 250,
-        Default = 16,
-        Callback = function(v) pcall(function() game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v end) end
-    })
-
-    local espTab = window:CreateTab("ESP", false)
-    local visuals = espTab:CreateSection("Visuals", "Left")
-    local filters = espTab:CreateSection("Filters", "Right")
-
-    visuals:CreateToggle({
-        Title = "Player ESP",
+    main:CreateButton({
+        Title = "Kill Murder After Bag Full",
+        SubTitle = "Sherriff ONLY",
         Column = "Left",
-        Default = false,
-        Callback = function(state) print("ESP:", state) end
+        Callback = function()
+            print("Kill Murder gestartet")
+        end
     })
 
-    filters:CreateToggle({
-        Title = "Show Team",
-        Column = "Right",
-        Default = true,
-        Callback = function(state) print("Show Team:", state) end
-    })
     return window
 end
 
 return UILayout
+
+
+    
