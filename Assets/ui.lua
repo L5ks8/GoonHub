@@ -28,8 +28,8 @@ function UI.CreateBase(title, versionText)
 
     G2L["1"] = New("ScreenGui", {IgnoreGuiInset = true, Name = "GoonHub", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling}, targetParent)
     G2L["2"] = New("CanvasGroup", {BackgroundColor3 = Color3.fromRGB(36, 36, 36), AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.new(0, 700, 0, 465), Position = UDim2.new(0.5, 0, 0.5, 0), Name = "Main", ClipsDescendants = true}, G2L["1"])
-    New("UICorner", {CornerRadius = UDim.new(0, 18)}, G2L["2"])
-    New("UIStroke", {Transparency = 0.75, Thickness = 2}, G2L["2"])
+    New("UICorner", {CornerRadius = UDim.new(0, 18)}, G2L["2"]) -- Abgerundete Ecken für das Hauptfenster
+    G2L["main_stroke"] = New("UIStroke", {Transparency = 0.75, Thickness = 2}, G2L["2"]) -- Stroke für das Hauptfenster
 
     G2L["4"] = New("Frame", {Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Name = "panel"}, G2L["2"])
     G2L["5"] = New("Frame", {Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 999, Name = "controls"}, G2L["4"])
