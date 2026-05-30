@@ -40,20 +40,27 @@ function UIFunctions.Init(G2L, window)
     -- Minimize Toggle (Grüner Button)
     if G2L["94"] then 
         G2L["94"].MouseButton1Click:Connect(function()
-            isMinimized = not isMinimized
-            
-            if isMinimized then
-                lastSize = G2L["2"].Size
+            if not isMinimized then
+                isMinimized = true
+                -- Nur speichern, wenn das Fenster tatsächlich groß ist
+                if G2L["2"].Size.Y.Offset > 40 then
+                    lastSize = G2L["2"].Size
+                end
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 220, 0, 40)}):Play()
+                
+                G2L["11"].Visible = false
+                G2L["16"].Visible = false
+                G2L["a1"].Visible = false
+                if G2L["b"] then G2L["b"].Visible = false end
             else
                 isMinimized = false
-                TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize}):Play()
+                TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize or originalSize}):Play()
+                
+                G2L["11"].Visible = true
+                G2L["16"].Visible = true
+                G2L["a1"].Visible = true
+                if G2L["b"] then G2L["b"].Visible = true end
             end
-            
-            G2L["11"].Visible = not isMinimized
-            G2L["16"].Visible = not isMinimized
-            G2L["a1"].Visible = not isMinimized
-            if G2L["b"] then G2L["b"].Visible = not isMinimized end
         end) 
     end
 
