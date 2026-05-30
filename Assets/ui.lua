@@ -44,15 +44,15 @@ function UI.CreateBase(title, versionText)
     G2L["10"] = New("Frame", {Size = UDim2.new(1, 0, 1, -35), Position = UDim2.new(0.5, 0, 1, 0), AnchorPoint = Vector2.new(0.5, 1), BackgroundTransparency = 1, Name = "content"}, G2L["4"])
     New("UIPadding", {PaddingTop = UDim.new(0, 10), PaddingBottom = UDim.new(0, 35), PaddingRight = UDim.new(0, 15)}, G2L["10"])
 
-    G2L["65"] = New("ImageButton", {Size = UDim2.new(1, 0, 0, 35), Position = UDim2.new(0, 0, 0, -35), BackgroundTransparency = 1, Name = "topbar", ZIndex = 1001}, G2L["10"])
+    G2L["65"] = New("ImageButton", {Size = UDim2.new(1, 0, 0, 35), Position = UDim2.new(0, 0, 0, -35), BackgroundTransparency = 1, Name = "topbar", ZIndex = 1005, ClipsDescendants = false}, G2L["10"])
     New("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 10)}, G2L["65"])
     New("UIPadding", {PaddingLeft = UDim.new(0, 15), PaddingRight = UDim.new(0, 15)}, G2L["65"])
 
-    G2L["6e"] = New("Frame", {Size = UDim2.new(0, 85, 1, 0), BackgroundTransparency = 1, Name = "actions", LayoutOrder = 1}, G2L["65"])
+    G2L["6e"] = New("Frame", {Size = UDim2.new(0, 85, 0, 35), BackgroundTransparency = 1, Name = "actions", LayoutOrder = 1}, G2L["65"])
     local space = New("Frame", {Name = "space", BackgroundTransparency = 1, LayoutOrder = 2}, G2L["65"])
     New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, space)
 
-    G2L["6c"] = New("Frame", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), BackgroundTransparency = 1, Name = "logo", LayoutOrder = 3}, G2L["65"])
+    G2L["6c"] = New("Frame", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 0, 35), BackgroundTransparency = 1, Name = "logo", LayoutOrder = 3}, G2L["65"])
     G2L["logo_text"] = New("TextLabel", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub <font color=\"rgb(150,150,150)\" size=\"12\">%s</font>", versionText), RichText = true, FontFace = fonts.logo, TextSize = 21, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center}, G2L["6c"])
     G2L["weather"] = New("ImageLabel", {Size = UDim2.new(0, 21, 0, 21), Image = "rbxassetid://13056160366", BackgroundTransparency = 1, Name = "weather", LayoutOrder = 4}, G2L["65"])
 

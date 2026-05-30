@@ -61,15 +61,11 @@ function UIFunctions.Init(G2L, window)
                 G2L["b"].Visible = false
                 if G2L["weather"] then G2L["weather"].Visible = false end
             else
-                tween.Completed:Connect(function()
-                    if not isMinimized then
-                        G2L["11"].Visible = true
-                        G2L["16"].Visible = true
-                        G2L["a1"].Visible = true
-                        G2L["b"].Visible = true
-                        if G2L["weather"] then G2L["weather"].Visible = true end
-                    end
-                end)
+                G2L["11"].Visible = true
+                G2L["16"].Visible = true
+                G2L["a1"].Visible = true
+                G2L["b"].Visible = true
+                if G2L["weather"] then G2L["weather"].Visible = true end
             end
         end)
     end
