@@ -22,8 +22,6 @@ function UILayout.Create()
 
     Widgets.Init(window, G2L)
 
-    Animation.PlayLoading(G2L)
-
     UIFunctions.Init(G2L, window)
 
     -- Game Tabs
