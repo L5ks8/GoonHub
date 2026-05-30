@@ -5,9 +5,7 @@ local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 
 function UIFunctions.Init(G2L, window)
-    local isMinimized = false
     local isMaximized = false
-    local lastSize = G2L["2"].Size
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
 
@@ -27,7 +25,6 @@ function UIFunctions.Init(G2L, window)
     -- Sidebar Toggle (Gelber Button)
     if G2L["80"] then
         G2L["80"].MouseButton1Click:Connect(function()
-            if isMinimized then return end
             sidebarOpen = not sidebarOpen
             TweenService:Create(G2L["16"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0)}):Play()
             TweenService:Create(G2L["11"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, 0, 1, 0)}):Play()
@@ -36,26 +33,6 @@ function UIFunctions.Init(G2L, window)
 
     -- Close & Fullscreen
     if G2L["72"] then G2L["72"].MouseButton1Click:Connect(function() G2L["1"]:Destroy() end) end
-    
-    -- Minimize Toggle (Grüner Button)
-    if G2L["94"] then 
-        G2L["94"].MouseButton1Click:Connect(function()
-            isMinimized = not isMinimized
-            
-            if isMinimized then
-                lastSize = G2L["2"].Size
-                TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 220, 0, 40)}):Play()
-            else
-                isMinimized = false
-                TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize}):Play()
-            end
-            
-            G2L["11"].Visible = not isMinimized
-            G2L["16"].Visible = not isMinimized
-            G2L["a1"].Visible = not isMinimized
-            if G2L["b"] then G2L["b"].Visible = not isMinimized end
-        end) 
-    end
 
     -- Resizing
     local resizing, resizeStartPos, resizeStartSize, resizeConn
