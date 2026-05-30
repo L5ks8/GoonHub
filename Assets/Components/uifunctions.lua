@@ -8,6 +8,7 @@ function UIFunctions.Init(G2L, window)
     local isMinimized = false
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
+    local miniButtons = nil
 
     -- Dragging
     local drag, dragStart, startPos
@@ -31,44 +32,61 @@ function UIFunctions.Init(G2L, window)
         end)
     end
 
+    -- Hilfsfunktion für Schließen
+    local function closeUI()
+        local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+            GroupTransparency = 1,
+            Size = UDim2.new(0, G2L["2"].Size.X.Offset - 100, 0, G2L["2"].Size.Y.Offset - 100),
+        })
+        closeTween:Play()
+        closeTween.Completed:Connect(function()
+            G2L["1"]:Destroy() 
+        end)
+    end
+
     -- Close
     if G2L["72"] then 
-        G2L["72"].MouseButton1Click:Connect(function() 
-            local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-                GroupTransparency = 1,
-                Size = UDim2.new(0, G2L["2"].Size.X.Offset - 100, 0, G2L["2"].Size.Y.Offset - 100),
-            })
-            closeTween:Play()
-            closeTween.Completed:Connect(function()
-                G2L["1"]:Destroy() 
-            end)
-        end) 
+        G2L["72"].MouseButton1Click:Connect(closeUI) 
     end
 
     -- Minimize
-    if G2L["94"] then
-        G2L["94"].MouseButton1Click:Connect(function()
-            isMinimized = not isMinimized
-            local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or originalSize
+    local function toggleMinimize()
+        isMinimized = not isMinimized
+        local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or originalSize
+        
+        local tween = TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize})
+        tween:Play()
+        
+        if isMinimized then
+            -- Verstecke Original-Inhalte
+            G2L["10"].Visible = false
+            G2L["a1"].Visible = false
+            G2L["b"].Visible = false
             
-            local tween = TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize})
-            tween:Play()
+            -- Erstelle Kopie der Buttons neben der Drag-Leiste
+            miniButtons = G2L["70"]:Clone()
+            miniButtons.Parent = G2L["5"]
+            miniButtons.AnchorPoint = Vector2.new(0, 0.5)
+            miniButtons.Position = UDim2.new(0.5, 45, 0, 17.5) -- Rechts neben der Drag-Leiste (Mitte von 35px)
             
-            if isMinimized then
-                G2L["11"].Visible = false
-                G2L["16"].Visible = false
-                G2L["a1"].Visible = false
-                G2L["b"].Visible = false
-                if G2L["weather"] then G2L["weather"].Visible = false end
-            else
-                G2L["11"].Visible = true
-                G2L["16"].Visible = true
-                G2L["a1"].Visible = true
-                G2L["b"].Visible = true
-                if G2L["weather"] then G2L["weather"].Visible = true end
-            end
-        end)
+            -- Kopie-Buttons funktionsfähig machen
+            miniButtons:FindFirstChild("close").MouseButton1Click:Connect(closeUI)
+            miniButtons:FindFirstChild("maximize").MouseButton1Click:Connect(toggleMinimize)
+            miniButtons:FindFirstChild("sidebar_toggle").MouseButton1Click:Connect(function()
+                sidebarOpen = not sidebarOpen
+                G2L["16"].Size = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0)
+                G2L["11"].Size = sidebarOpen and UDim2.new(1, -235, 1, 0) or UDim2.new(1, 0, 1, 0)
+            end)
+        else
+            -- Lösche Kopie und zeige Originale
+            if miniButtons then miniButtons:Destroy() miniButtons = nil end
+            G2L["10"].Visible = true
+            G2L["a1"].Visible = true
+            G2L["b"].Visible = true
+        end
     end
+
+    if G2L["94"] then G2L["94"].MouseButton1Click:Connect(toggleMinimize) end
 
     -- Resizing
     local resizing, resizeStartPos, resizeStartSize, resizeConn
