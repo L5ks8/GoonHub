@@ -68,25 +68,6 @@ function UILayout.Create()
         Default = true,
         Callback = function(state) print("Show Team:", state) end
     })
-
-    -- System Tabs (Werden immer am Ende angehängt)
-    local function AddSystemTabs()
-        local settingsTab = window:CreateTab("Settings", true)
-        local uiSettings = settingsTab:CreateSection("UI Settings", "Left")
-        uiSettings:CreateButton({
-            Title = "Destroy UI",
-            Column = "Left",
-            Callback = function() game:GetService("CoreGui").GoonHub:Destroy() end
-        })
-
-        local aboutTab = window:CreateTab("About", true)
-        local info = aboutTab:CreateSection("Information", "Left")
-        info:CreateParagraph({Text = "GoonHub Version 1.0.0", Column = "Left"})
-        info:CreateParagraph({Text = "Developed by L5ks8", Column = "Left"})
-    end
-
-    AddSystemTabs()
-
     return window
 end
 

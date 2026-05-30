@@ -124,6 +124,34 @@ function Widgets.Init(window, G2L)
 
         return tObj
     end
+
+    -- Sidebar Layout Fix: Sicherstellen, dass die unteren Bereiche Platz haben
+    if G2L["18"] and not G2L["18"]:FindFirstChildOfClass("UIFlexItem") then
+        New("UIFlexItem", {FlexMode = Enum.UIFlexMode.None}, G2L["18"])
+    end
+
+    -- System-Tabs (Settings, About) automatisch am Ende der Initialisierung hinzufügen
+    -- task.defer stellt sicher, dass sie NACH den Spiel-Tabs (Main, ESP) erscheinen
+    task.defer(function()
+        local settingsTab = window:CreateTab("Settings", true)
+        local uiSettings = settingsTab:CreateSection("UI Settings", "Left")
+        
+        uiSettings:CreateButton({
+            Title = "Destroy UI",
+            Column = "Left",
+            Callback = function() 
+                if G2L["1"] then G2L["1"]:Destroy() end
+            end
+        })
+
+        local aboutTab = window:CreateTab("About", true)
+        local info = aboutTab:CreateSection("Information", "Left")
+        
+        info:CreateParagraph({
+            Text = "GoonHub Version 1.0.0\nDeveloped by L5ks8",
+            Column = "Left"
+        })
+    end)
 end
 
 return Widgets
