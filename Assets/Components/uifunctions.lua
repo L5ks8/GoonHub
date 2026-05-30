@@ -63,18 +63,26 @@ function UIFunctions.Init(G2L, window)
             G2L["a1"].Visible = false
             G2L["b"].Visible = false
             
-            -- Erstelle Kopie der Buttons links neben der Drag-Leiste
+            -- Erstelle Kopie der Buttons links neben der Drag-Leiste (Mitte)
             miniButtons = G2L["70"]:Clone()
+            miniButtons.Name = "MiniButtons"
             miniButtons.Parent = G2L["5"]
-            miniButtons.Size = UDim2.new(0, 85, 0, 27) -- Feste Breite erzwingen
-            miniButtons.AnchorPoint = Vector2.new(1, 0.5) -- Rechtsbündiger Anker für linke Position
-            miniButtons.Position = UDim2.new(0.5, -45, 0, 17.5) -- 45px links von der Mitte (Drag-Bar Ende ist bei -35px)
-            miniButtons.ZIndex = 1010
+            miniButtons.Size = UDim2.new(0, 85, 0, 27)
+            miniButtons.AnchorPoint = Vector2.new(1, 0.5) 
+            miniButtons.Position = UDim2.new(0.5, -40, 0, 17.5) -- Direkt links neben dem Drag-Handle
+            miniButtons.ZIndex = 2000
+            miniButtons.Visible = true
             
-            -- Sicherstellen, dass alle Icons und Kreise sichtbar sind (ZIndex fix)
-            for _, desc in pairs(miniButtons:GetDescendants()) do
-                if desc:IsA("GuiObject") then
-                    desc.ZIndex = miniButtons.ZIndex + (desc.ZIndex % 10)
+            -- Icons und Kreise erzwingen (Sichtbarkeit & ZIndex Fix)
+            for _, child in pairs(miniButtons:GetDescendants()) do
+                if child:IsA("GuiObject") then
+                    child.ZIndex = miniButtons.ZIndex + 5
+                    if child:IsA("ImageLabel") then
+                        child.ImageTransparency = 0
+                    elseif child:IsA("Frame") and child.Name ~= "MiniButtons" then
+                        child.BackgroundTransparency = child.BackgroundTransparency -- behalte original
+                    end
+                    child.Visible = true
                 end
             end
 
