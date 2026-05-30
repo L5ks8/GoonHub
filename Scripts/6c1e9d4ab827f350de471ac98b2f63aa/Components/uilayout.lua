@@ -59,7 +59,8 @@ function UILayout.Create()
         Title = "Reset Bag Full",
         SubTitle = nil,
         Column = "Left",
-        Callback = function()
+        Callback = function(state)
+            Coins.ResetBag()
         end
     })
     main:CreateSlider({
