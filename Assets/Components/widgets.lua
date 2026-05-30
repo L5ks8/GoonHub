@@ -127,13 +127,25 @@ function Widgets.Init(window, G2L)
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
             local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
-            local valueLabel = New("TextLabel", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13}, f)
+            local valueLabel = New("TextBox", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13, ClearTextOnFocus = false}, f)
             
             local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 4), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderBg)
             
             local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(248, 191, 212)}, sliderBg)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
+
+            valueLabel.FocusLost:Connect(function()
+                local val = tonumber(valueLabel.Text)
+                if val then
+                    val = math.clamp(val, cfg.Min, cfg.Max)
+                    valueLabel.Text = tostring(val)
+                    sliderFill.Size = UDim2.new(math.clamp((val - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0)
+                    cfg.Callback(val)
+                else
+                    valueLabel.Text = tostring(math.floor(cfg.Min + (sliderFill.Size.X.Scale * (cfg.Max - cfg.Min))))
+                end
+            end)
             
             local function update(input)
                 local pos = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
@@ -186,6 +198,43 @@ function Widgets.Init(window, G2L)
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             return New("TextLabel", {Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = cfg.Text, TextColor3 = Color3.fromRGB(180, 180, 180), FontFace = fonts.reg, TextSize = 13, BackgroundTransparency = 1, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+        end
+
+        function tObj:CreateDropdown(title, options, callback, column, overrideParent, layoutOrder)
+            local cfg = type(title) == "table" and title or {Title = title, Options = options, Callback = callback, Column = column}
+            local col = cfg.Column or self.lastColumn
+            local lOrder = layoutOrder or cfg.LayoutOrder
+            local dropped = false
+            local selected = cfg.Options[1] or "None"
+            
+            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
+            New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
+            New("TextLabel", {Size = UDim2.new(1, -160, 0, 35), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
+            
+            local btn = New("TextButton", {Size = UDim2.new(0, 140, 0, 25), Position = UDim2.new(1, -10, 0, 5), AnchorPoint = Vector2.new(1, 0), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left}, f)
+            New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
+            local arrow = New("ImageLabel", {Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(1, -20, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Image = "rbxassetid://11419713314", BackgroundTransparency = 1, ImageColor3 = Color3.fromRGB(248, 191, 212)}, btn)
+            
+            local list = New("Frame", {Name = "list", Position = UDim2.new(0, 10, 0, 40), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1, Visible = false}, f)
+            local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
+            
+            for _, opt in pairs(cfg.Options) do
+                local optBtn = New("TextButton", {Size = UDim2.new(1, 0, 0, 25), BackgroundColor3 = Color3.fromRGB(35, 35, 35), Text = opt, TextColor3 = Color3.new(0.8, 0.8, 0.8), FontFace = fonts.reg, TextSize = 12}, list)
+                New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
+                optBtn.MouseButton1Click:Connect(function()
+                    selected = opt btn.Text = "  " .. opt dropped = false list.Visible = false
+                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 35)}):Play()
+                    TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
+                    cfg.Callback(opt)
+                end)
+            end
+            
+            btn.MouseButton1Click:Connect(function()
+                dropped = not dropped
+                list.Visible = dropped
+                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 45) or UDim2.new(1, 0, 0, 35)}):Play()
+                TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
+            end)
         end
 
         return tObj
