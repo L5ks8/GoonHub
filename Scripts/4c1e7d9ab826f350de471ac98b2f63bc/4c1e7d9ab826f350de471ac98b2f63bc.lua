@@ -48,11 +48,12 @@ Modules.print = function(color, text, size)
 end
 
 Modules.ChangeColor()
-local LoadTime = string.format("%.2f", tick() - StartTime)
-task.delay(0.1, function()
-    Modules.print("Green", "[Jailbreak]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
-end)
 
 -- UI laden
 local UILayout = GoonHub.Import("Scripts/4c1e7d9ab826f350de471ac98b2f63bc/Components/uilayout")
 local window = UILayout.Create()
+
+local FinalLoadTime = string.format("%.2f", tick() - StartTime)
+Modules.print("Green", "[Jailbreak]: [   SUCCESS   ] - Authenticated in (" .. FinalLoadTime .. "s)")
+
+window.Loader:Finish()

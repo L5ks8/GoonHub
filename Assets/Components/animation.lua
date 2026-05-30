@@ -20,7 +20,16 @@ function Animation.PlayLoading(G2L)
     local loadSound = Instance.new("Sound")
     loadSound.SoundId = "rbxassetid://134221055367800"
     loadSound.Volume = 1
-    loadSound.Parent = screenGui
+    loadSound.Parent = game:GetService("SoundService")
+
+    -- Dunkler Hintergrund für den Blur-Effekt
+    local darkOverlay = Instance.new("Frame")
+    darkOverlay.Name = "DarkOverlay"
+    darkOverlay.Size = UDim2.new(1, 0, 1, 0)
+    darkOverlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    darkOverlay.BackgroundTransparency = 1
+    darkOverlay.ZIndex = 9990
+    darkOverlay.Parent = screenGui
 
     -- Loader Container erstellen
     local loader = Instance.new("CanvasGroup")
@@ -71,7 +80,8 @@ function Animation.PlayLoading(G2L)
     loadingBarFillCorner.Parent = loadingBarFill
 
     -- Animations-Sequenz
-    TweenService:Create(blurEffect, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = 12}):Play()
+    TweenService:Create(blurEffect, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = 16}):Play()
+    TweenService:Create(darkOverlay, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {BackgroundTransparency = 0.45}):Play()
     TweenService:Create(loader, TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {GroupTransparency = 0}):Play()
     
     local LoaderHandler = {}
@@ -93,10 +103,13 @@ function Animation.PlayLoading(G2L)
         fadeOut.Completed:Wait()
         
         loader:Destroy()
-        loadSound:Play()
 
         -- Hauptmenü einblenden
         TweenService:Create(blurEffect, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = 0}):Play()
+        TweenService:Create(darkOverlay, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
+        
+        loadSound:Play()
+        
         local mainTween = TweenService:Create(mainFrame, TweenInfo.new(0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
             GroupTransparency = 0,
             Size = originalSize
@@ -106,6 +119,7 @@ function Animation.PlayLoading(G2L)
         mainTween.Completed:Connect(function()
             if mainStroke then mainStroke.Transparency = 0.75 end
             blurEffect:Destroy()
+            darkOverlay:Destroy()
             loadSound:Destroy()
         end)
     end

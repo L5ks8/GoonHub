@@ -48,11 +48,12 @@ Modules.print = function(color, text, size)
 end
 
 Modules.ChangeColor()
-local LoadTime = string.format("%.2f", tick() - StartTime)
-task.delay(0.1, function()
-    Modules.print("Green", "[99 Nights in the Forest]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
-end)
 
 -- UI laden
 local UILayout = GoonHub.Import("Scripts/9d3e5f1ab847c260de91f4a72bc8e6d1/Components/uilayout")
 local window = UILayout.Create()
+
+local FinalLoadTime = string.format("%.2f", tick() - StartTime)
+Modules.print("Green", "[99 Nights in the Forest]: [   SUCCESS   ] - Authenticated in (" .. FinalLoadTime .. "s)")
+
+window.Loader:Finish()

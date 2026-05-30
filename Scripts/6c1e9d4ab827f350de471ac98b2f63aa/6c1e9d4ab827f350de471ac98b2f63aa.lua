@@ -49,10 +49,12 @@ Modules.print = function(color, text, size)
 end
 
 Modules.ChangeColor()
-local LoadTime = string.format("%.2f", tick() - StartTime)
-task.delay(0.1, function()
-    Modules.print("Green", "[MM2]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
-end)
 
 local UILayout = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/uilayout")
 local window = UILayout.Create()
+
+local FinalLoadTime = string.format("%.2f", tick() - StartTime)
+Modules.print("Green", "[MM2]: [   SUCCESS   ] - Authenticated in (" .. FinalLoadTime .. "s)")
+
+
+window.Loader:Finish()
