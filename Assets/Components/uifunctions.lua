@@ -15,6 +15,7 @@ function UIFunctions.Init(G2L, window)
     local origRedPos = G2L["72"] and G2L["72"].Position
     local origYellowPos = G2L["80"] and G2L["80"].Position
     local origGreenPos = G2L["94"] and G2L["94"].Position
+    local topBarLayout = G2L["6"] and G2L["6"]:FindFirstChildOfClass("UIListLayout")
 
     -- Dragging
     local drag, dragStart, startPos
@@ -47,6 +48,9 @@ function UIFunctions.Init(G2L, window)
         G2L["94"].MouseButton1Click:Connect(function()
             if not isMinimized then
                 isMinimized = true
+                -- Layout deaktivieren, damit wir Buttons frei schieben können
+                if topBarLayout then topBarLayout.Enabled = false end
+                
                 -- Nur speichern, wenn das Fenster tatsächlich groß ist
                 if G2L["2"].Size.Y.Offset > 40 then
                     lastSize = G2L["2"].Size
@@ -65,6 +69,9 @@ function UIFunctions.Init(G2L, window)
                 if G2L["time_text"] then G2L["time_text"].Visible = false end
             else
                 isMinimized = false
+                -- Layout wieder aktivieren
+                if topBarLayout then topBarLayout.Enabled = true end
+                
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize or originalSize}):Play()
                 
                 -- Buttons zurück an ihre originale Position schieben
