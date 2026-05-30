@@ -6,13 +6,13 @@ local LocalPlayer = Players.LocalPlayer
 
 local Coins = {}
 local State = {
-    Enabled = getgenv().GoonHub.Config.Data["Coin farm"] or false,
-    Speed = getgenv().GoonHub.Config.Data["Farm Speed"] or 20,
-    AutoReset = getgenv().GoonHub.Config.Data["Auto Reset (Full Bag)"] or true,
-    BagLimit = getgenv().GoonHub.Config.Data.BagLimit or 40, -- BagLimit is not yet exposed in UI, keeping default
+    Enabled = false,
+    Speed = 20,
+    AutoReset = true,
+    BagLimit = 40,
     TeleportDist = 150,
     EventTokenKey = "",
-    Method = getgenv().GoonHub.Config.Data["Teleport Methods"] or "Tween",
+    Method = "Tween",
     SafePosition = CFrame.new(26.183889, 504.818054, -21.357656)
 }
 
@@ -21,14 +21,6 @@ local SETTINGS = {
     EVENT_TOKEN_GUESS_NAMES = { "Candy","Snow","SnowToken","Token","Present","Heart","CoinEvent","Ball","Orb" },
     COIN_CONTAINER_NAMES = { "CoinContainer","Coins","Coin","Drops","Tokens","CandyContainer" }
 }
-
-local function isAlive()
-    return LocalPlayer.Character 
-        and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") 
-        and LocalPlayer.Character:FindFirstChild("Humanoid") 
-        and LocalPlayer.Character.Humanoid.Health > 0
-end
-
 local function looksLikeCoin(obj)
     local target = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
     if not target then return false end
@@ -72,14 +64,14 @@ local function moveTo(targetCFrame)
     
     local dist = (hrp.Position - targetCFrame.Position).Magnitude
     if dist > State.TeleportDist then
-        hrp.CFrame = targetCFrame
+        hrp.CFrame = targetCFrame + Vector3.new(0, 3, 0)
     else
         local duration = math.max(0.01, dist / math.clamp(State.Speed, 15, 25))
         
         hrp.Velocity = Vector3.zero
         hrp.RotVelocity = Vector3.zero
         
-        local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame})
+        local tween = TweenService:Create(hrp, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame + Vector3.new(0, 3, 0)})
         tween:Play()
         return tween
     end
@@ -88,7 +80,7 @@ end
 local function getNearestCoin()
     local nearest, minDist = nil, math.huge
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp or not isAlive() then return end
+    if not hrp then return end
 
     local container = Workspace:FindFirstChild("CoinContainer", true)
     if container then
@@ -110,7 +102,7 @@ end
 local function mainLoop()
     while State.Enabled do
         pcall(function()
-            if isAlive() then
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") and LocalPlayer.Character.Humanoid.Health > 0 then
                 local have, cap = getBagProgress()
                 if have >= cap then
                     if State.AutoReset then
@@ -120,45 +112,40 @@ local function mainLoop()
                     end
                 else
                     if State.Method == "Instant Teleport" then
-                        local coin, dist = getNearestCoin()
-                        if coin and isAlive() then
-                            local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                            if hrp then -- Re-check hrp
-                                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do -- Noclip (Descendants is safer)
+                        local coin = getNearestCoin()
+                        if coin and LocalPlayer.Character then
+                            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                            if hrp then
+                                for _, part in pairs(LocalPlayer.Character:GetChildren()) do
                                     if part:IsA("BasePart") then part.CanCollide = false end
                                 end
                                 
                                 hrp.Anchored = true
-                                hrp.CFrame = coin.CFrame * CFrame.new(0, -0.5, 0) 
+                                hrp.CFrame = coin.CFrame
                                 task.wait(0.5)
-                                if isAlive() and hrp then -- Re-check hrp after wait
-                                    hrp.CFrame = State.SafePosition
-                                    hrp.Anchored = false
-                                end
+                                hrp.CFrame = State.SafePosition
+                                hrp.Anchored = false
                                 task.wait(2) 
                             end
                         end
                     else
                         local coin, dist = getNearestCoin()
-                        if coin and isAlive() then
+                        if coin then
                             local targetPart = coin:IsA("BasePart") and coin or (coin:FindFirstChild("Hitbox") or coin:FindFirstChildOfClass("BasePart"))
-                            if targetPart and isAlive() then
-                                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                                if hrp then -- Re-check hrp
-                                local tween = moveTo(targetPart.CFrame * CFrame.new(0, -0.5, 0)) 
-                                    if tween then -- Only anchor if a tween is actually playing
-                                        hrp.Anchored = true
-                                    end
+                            if targetPart then
+                                local tween = moveTo(targetPart.CFrame)
+                                if tween then
+                                    local hrp = LocalPlayer.Character.HumanoidRootPart
+                                    hrp.Anchored = true
                                     
                                     local t0 = os.clock()
                                     while State.Enabled and coin.Parent and os.clock() - t0 < 3 do
-                                        if not isAlive() or not hrp or not hrp.Parent then break end -- Re-check hrp and isAlive
-                                        if not targetPart:FindFirstChild("TouchInterest") and not targetPart:FindFirstChildOfClass("TouchTransmitter") then break end -- Check if coin is still collectible
+                                        if not targetPart:FindFirstChild("TouchInterest") and not targetPart:FindFirstChildOfClass("TouchTransmitter") then break end
                                         task.wait()
                                     end
                                     
-                                    if tween then tween:Cancel() end
-                                    if hrp and hrp.Anchored then hrp.Anchored = false end -- Only unanchor if it was anchored by this script
+                                    tween:Cancel()
+                                    hrp.Anchored = false
                                 end
                             end
                         end
@@ -172,27 +159,19 @@ end
 
 function Coins.Toggle(state)
     State.Enabled = state
-    getgenv().GoonHub.Config.Data["Coin farm"] = state
-    getgenv().GoonHub.Config.Save()
     if state then task.spawn(mainLoop) end
 end
 
 function Coins.SetSpeed(val)
     State.Speed = val
-    getgenv().GoonHub.Config.Data["Farm Speed"] = val
-    getgenv().GoonHub.Config.Save()
 end
 
 function Coins.SetAutoReset(state)
     State.AutoReset = state
-    getgenv().GoonHub.Config.Data["Auto Reset (Full Bag)"] = state
-    getgenv().GoonHub.Config.Save()
 end
 
 function Coins.SetMethod(val)
     State.Method = val
-    getgenv().GoonHub.Config.Data["Teleport Methods"] = val
-    getgenv().GoonHub.Config.Save()
 end
 
 return Coins

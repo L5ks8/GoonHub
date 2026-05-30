@@ -1,12 +1,16 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
-local Config = GoonHub.Import("Assets/Components/Config") -- Import Config module
 local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Coins")
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Misc")
 
 local UILayout = {}
+
 function UILayout.Create()
+
+    getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
+
+
     local G2L = UI.CreateBase("GoonHub", "1.0.0")
     local window = {
         TabCount = 0, 
@@ -17,7 +21,7 @@ function UILayout.Create()
         }
     }
 
-    Widgets.Init(window, G2L, getgenv().GoonHub.Config.Data) -- Pass configData
+    Widgets.Init(window, G2L)
 
     UIFunctions.Init(G2L, window)
 
@@ -29,36 +33,44 @@ function UILayout.Create()
     local EspTab = window:CreateTab("Esp", false)
     
     -- Main Tab
-    local mainSection = mainTab:CreateSection("Coins", "Left")
-    mainSection:CreateToggle({
+    local main = mainTab:CreateSection("Coins", "Left")
+    main:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
         Callback = function(state)
             Coins.Toggle(state)
         end
     })
-    mainSection:CreateSlider({
+    main:CreateSlider({
         Title = "Farm Speed",
         Min = 15,
         Max = 25,
-        Default = getgenv().GoonHub.Config.Data["Farm Speed"] or 20,
+        Default = 20,
         Column = "Left",
         Callback = function(val)
             Coins.SetSpeed(val)
         end
     })
-    mainSection:CreateToggle({
+    main:CreateToggle({
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets character when bag is full",
         Column = "Left",
-        Default = getgenv().GoonHub.Config.Data["Auto Reset (Full Bag)"] or true,
+        Default = true,
         Callback = function(state)
             Coins.SetAutoReset(state)
         end
     })
     
-    -- The "Distance" slider is not yet implemented in Coins.lua, so no callback for now.
-    mainSection:CreateDropdown({
+    main:CreateSlider({
+        Title = "Distance",
+        Min = 1,
+        Max = 5,
+        Default = 5,
+        Column = "Left",
+        Callback = function()
+        end
+    })
+    main:CreateDropdown({
         Title = "Teleport Methods",
         Options = {
             "Instant Teleport",
@@ -72,29 +84,30 @@ function UILayout.Create()
     -- Farm Tab
 
     -- Misc Tab
-    local miscSection = MiscTab:CreateSection("Misc", "Left")
-    miscSection:CreateToggle({
+
+    local misc = MiscTab:CreateSection("Misc", "Left")
+    misc:CreateToggle({
         Title = "Noclip",
         Column = "Left",
         Callback = function(state)
             Misc.ToggleNoclip(state)
         end
     })
-    miscSection:CreateToggle({
+    misc:CreateToggle({
         Title = "Anti-Fling",
         Column = "Left",
         Callback = function(state)
             Misc.ToggleAntiFling(state)
         end
     })
-    miscSection:CreateToggle({
+    misc:CreateToggle({
         Title = "Auto Fling Murderer",
         Column = "Left",
         Callback = function(state)
             Misc.ToggleAutoFling(state)
         end
     })
-    miscSection:CreateButton({
+    misc:CreateButton({
         Title = "Enable Performance Mode",
         Column = "Left",
         Callback = function()
@@ -106,21 +119,18 @@ function UILayout.Create()
     shop:CreateToggle({
         Title = "Auto Open Boxes",
         Column = "Left",
-        Callback = function(state)
-            -- This will need to be implemented in a Shop.lua module
+        Callback = function()
         end
     })
     shop:CreateSlider({
         Title = "Delay",
         Min = 1,
         Max = 5,
-        Default = getgenv().GoonHub.Config.Data["Delay"] or 1,
+        Default = 1,
         Column = "Left",
-        Callback = function(val)
-            -- This will need to be implemented in a Shop.lua module
+        Callback = function()
         end
     })
-    -- The dropdown for boxes will also need to be implemented in a Shop.lua module
     shop:CreateDropdown({
         Title = "Boxes",
         Options = {
@@ -138,7 +148,6 @@ function UILayout.Create()
         },
         Column = "Left",
         Callback = function()
-            -- This will need to be implemented in a Shop.lua module
         end
     })
 

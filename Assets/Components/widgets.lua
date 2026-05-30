@@ -3,7 +3,7 @@ local UI = GoonHub.Import("Assets/ui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
-function Widgets.Init(window, G2L, configData)
+function Widgets.Init(window, G2L)
     local New, fonts = UI.New, UI.GetFonts()
 
     function window:CreateTab(name, isFixed)
@@ -82,7 +82,7 @@ function Widgets.Init(window, G2L, configData)
             function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end
             function secObj:CreateSlider(title, min, max, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(title, min, max, default, callback, col, container, self.WidgetCount) end
             function secObj:CreateButton(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(title, callback, col, container, self.WidgetCount) end
-            -- function secObj:CreateKeybind(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(title, callback, col, container, self.WidgetCount) end -- Keybind not implemented
+            function secObj:CreateKeybind(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(title, callback, col, container, self.WidgetCount) end
             function secObj:CreateParagraph(text) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(text, col, container, self.WidgetCount) end
             function secObj:CreateDropdown(title, options, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(title, options, callback, col, container, self.WidgetCount) end
             return secObj
@@ -91,8 +91,8 @@ function Widgets.Init(window, G2L, configData)
         function tObj:CreateToggle(title, default, callback, column, overrideParent, layoutOrder)
             local cfg = type(title) == "table" and title or {Title = title, Default = default, Callback = callback, Column = column, SubTitle = nil}
             local col = cfg.Column or self.lastColumn
-            local lOrder = layoutOrder or cfg.LayoutOrder            
-            local state = configData[cfg.Title] ~= nil and configData[cfg.Title] or cfg.Default
+            local lOrder = layoutOrder or cfg.LayoutOrder
+            local state = getgenv().NyroxToggleStates[cfg.Title] or cfg.Default
             
             local hasSub = cfg.SubTitle ~= nil
             local f = New("Frame", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
@@ -134,8 +134,7 @@ function Widgets.Init(window, G2L, configData)
                 state = not state
                 TweenService:Create(btnTog, TweenInfo.new(0.3), {BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(45, 45, 45)}):Play()
                 TweenService:Create(circle, TweenInfo.new(0.3), {Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)}):Play()
-                configData[cfg.Title] = state -- Update config data
-                getgenv().GoonHub.Config.Save() -- Save config
+                getgenv().NyroxToggleStates[cfg.Title] = state 
                 if cfg.Callback then cfg.Callback(state) end
             end)
             
@@ -147,19 +146,18 @@ function Widgets.Init(window, G2L, configData)
         function tObj:CreateSlider(title, min, max, default, callback, column, overrideParent, layoutOrder)
             local cfg = type(title) == "table" and title or {Title = title, Min = min, Max = max, Default = default, Callback = callback, Column = column}
             local col = cfg.Column or self.lastColumn
-            local lOrder = layoutOrder or cfg.LayoutOrder            
-            local initialValue = configData[cfg.Title] ~= nil and configData[cfg.Title] or cfg.Default
+            local lOrder = layoutOrder or cfg.LayoutOrder
             
             local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
             local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
-            local valueLabel = New("TextBox", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(initialValue), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13, ClearTextOnFocus = false, ZIndex = 10}, f)
+            local valueLabel = New("TextBox", {Size = UDim2.new(0, 50, 0, 25), Position = UDim2.new(1, -10, 0, 0), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = Color3.fromRGB(248, 191, 212), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = fonts.bold, TextSize = 13, ClearTextOnFocus = false, ZIndex = 10}, f)
             
             local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 4), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderBg)
             
-            local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((initialValue - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(248, 191, 212)}, sliderBg)
+            local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = Color3.fromRGB(248, 191, 212)}, sliderBg)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
 
             valueLabel.FocusLost:Connect(function()
@@ -168,8 +166,6 @@ function Widgets.Init(window, G2L, configData)
                     val = math.clamp(val, cfg.Min, cfg.Max)
                     valueLabel.Text = tostring(val)
                     sliderFill.Size = UDim2.new(math.clamp((val - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0)
-                    configData[cfg.Title] = val -- Update config data
-                    getgenv().GoonHub.Config.Save() -- Save config
                     cfg.Callback(val)
                 else
                     valueLabel.Text = tostring(math.floor(cfg.Min + (sliderFill.Size.X.Scale * (cfg.Max - cfg.Min))))
@@ -181,8 +177,6 @@ function Widgets.Init(window, G2L, configData)
                 sliderFill.Size = UDim2.new(pos, 0, 1, 0)
                 local value = math.floor(cfg.Min + (pos * (cfg.Max - cfg.Min)))
                 valueLabel.Text = tostring(value)
-                configData[cfg.Title] = value -- Update config data
-                getgenv().GoonHub.Config.Save() -- Save config
                 cfg.Callback(value)
             end
             
@@ -204,7 +198,7 @@ function Widgets.Init(window, G2L, configData)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
             end)
 
-            task.spawn(function() cfg.Callback(initialValue) end)
+            task.spawn(function() cfg.Callback(cfg.Default) end)
         end
 
         function tObj:CreateButton(title, callback, column, overrideParent, layoutOrder)
@@ -234,10 +228,9 @@ function Widgets.Init(window, G2L, configData)
         function tObj:CreateDropdown(title, options, callback, column, overrideParent, layoutOrder)
             local cfg = type(title) == "table" and title or {Title = title, Options = options, Callback = callback, Column = column}
             local col = cfg.Column or self.lastColumn
-            local lOrder = layoutOrder or cfg.LayoutOrder            
-            local initialSelection = configData[cfg.Title] ~= nil and configData[cfg.Title] or (cfg.Options[1] or "None")
+            local lOrder = layoutOrder or cfg.LayoutOrder
             local dropped = false
-            local selected = initialSelection
+            local selected = cfg.Options[1] or "None"
             
             local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
@@ -261,8 +254,6 @@ function Widgets.Init(window, G2L, configData)
                     
                     TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 45)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
-                    configData[cfg.Title] = opt -- Update config data
-                    getgenv().GoonHub.Config.Save() -- Save config
                     if cfg.Callback then cfg.Callback(opt) end
                 end)
             end
@@ -273,7 +264,6 @@ function Widgets.Init(window, G2L, configData)
                 TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 53) or UDim2.new(1, 0, 0, 45)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
-            task.spawn(function() if cfg.Callback then cfg.Callback(initialSelection) end end)
         end
 
         return tObj
