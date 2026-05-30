@@ -1,6 +1,7 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
+local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Coins")
 
 local UILayout = {}
 
@@ -35,7 +36,8 @@ function UILayout.Create()
     main:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
-        Callback = function()
+        Callback = function(state)
+            Coins.Toggle(state)
         end
     })
     main:CreateToggle({
@@ -49,7 +51,8 @@ function UILayout.Create()
         Title = "Kill Murder After Bag Full",
         SubTitle = "Sherriff ONLY",
         Column = "Left",
-        Callback = function()
+        Callback = function(state)
+            Coins.SetKillMurdererAfterBagFull(state)
         end
     })
     main:CreateToggle({
