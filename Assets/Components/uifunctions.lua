@@ -34,10 +34,9 @@ function UIFunctions.Init(G2L, window)
     -- Close
     if G2L["72"] then 
         G2L["72"].MouseButton1Click:Connect(function() 
-            local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+            local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
                 GroupTransparency = 1,
-                Size = UDim2.new(0, G2L["2"].Size.X.Offset - 60, 0, G2L["2"].Size.Y.Offset - 60),
-                Position = G2L["2"].Position + UDim2.new(0, 0, 0, 30)
+                Size = UDim2.new(0, G2L["2"].Size.X.Offset - 100, 0, G2L["2"].Size.Y.Offset - 100),
             })
             closeTween:Play()
             closeTween.Completed:Connect(function()
@@ -46,20 +45,32 @@ function UIFunctions.Init(G2L, window)
         end) 
     end
 
+    -- Minimize
     if G2L["94"] then
         G2L["94"].MouseButton1Click:Connect(function()
             isMinimized = not isMinimized
-            local targetSize = isMinimized and UDim2.new(0, G2L["2"].Size.X.Offset, 0, 48) or originalSize
+            local targetSize = isMinimized and UDim2.new(0, G2L["2"].Size.X.Offset, 0, 35) or originalSize
             
-            TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize}):Play()
+            local tween = TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize})
+            tween:Play()
             
-            G2L["11"].Visible = not isMinimized
-            G2L["16"].Visible = not isMinimized
-            G2L["a1"].Visible = not isMinimized
-            G2L["b"].Visible = not isMinimized
+            if isMinimized then
+                G2L["11"].Visible = false
+                G2L["16"].Visible = false
+                G2L["a1"].Visible = false
+                G2L["b"].Visible = false
+            else
+                tween.Completed:Connect(function()
+                    if not isMinimized then
+                        G2L["11"].Visible = true
+                        G2L["16"].Visible = true
+                        G2L["a1"].Visible = true
+                        G2L["b"].Visible = true
+                    end
+                end)
+            end
         end)
     end
-    -- Minimize
 
     -- Resizing
     local resizing, resizeStartPos, resizeStartSize, resizeConn
