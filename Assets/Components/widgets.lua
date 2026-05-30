@@ -80,12 +80,12 @@ function Widgets.Init(window, G2L)
                 secFrame.Size = UDim2.new(1, -10, 0, layout.AbsoluteContentSize.Y + 45)
             end)
             local secObj = {WidgetCount = 0}
-            function secObj:CreateToggle(...) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(..., nil, nil, col, container, self.WidgetCount) end
-            function secObj:CreateSlider(...) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(..., nil, nil, nil, nil, col, container, self.WidgetCount) end
-            function secObj:CreateButton(...) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(..., nil, col, container, self.WidgetCount) end
-            function secObj:CreateKeybind(...) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(..., nil, col, container, self.WidgetCount) end
-            function secObj:CreateParagraph(...) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(..., col, container, self.WidgetCount) end
-            function secObj:CreateDropdown(...) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(..., nil, nil, col, container, self.WidgetCount) end
+            function secObj:CreateToggle(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(c, nil, nil, col, container, self.WidgetCount) end
+            function secObj:CreateSlider(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(c, nil, nil, nil, nil, col, container, self.WidgetCount) end
+            function secObj:CreateButton(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(c, nil, col, container, self.WidgetCount) end
+            function secObj:CreateKeybind(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(c, nil, col, container, self.WidgetCount) end
+            function secObj:CreateParagraph(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(c, col, container, self.WidgetCount) end
+            function secObj:CreateDropdown(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(c, nil, nil, col, container, self.WidgetCount) end
             return secObj
         end
 
