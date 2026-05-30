@@ -11,6 +11,11 @@ function UIFunctions.Init(G2L, window)
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
 
+    -- Originale Button-Positionen speichern
+    local origRedPos = G2L["72"] and G2L["72"].Position
+    local origYellowPos = G2L["80"] and G2L["80"].Position
+    local origGreenPos = G2L["94"] and G2L["94"].Position
+
     -- Dragging
     local drag, dragStart, startPos
     if G2L["6"] then G2L["6"].InputBegan:Connect(function(i)
@@ -48,18 +53,30 @@ function UIFunctions.Init(G2L, window)
                 end
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 220, 0, 40)}):Play()
                 
+                -- Buttons nach links schieben beim Minimieren
+                if G2L["72"] then TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 15, 0.5, 0)}):Play() end
+                if G2L["80"] then TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 40, 0.5, 0)}):Play() end
+                if G2L["94"] then TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 65, 0.5, 0)}):Play() end
+
                 G2L["11"].Visible = false
                 G2L["16"].Visible = false
                 G2L["a1"].Visible = false
                 if G2L["b"] then G2L["b"].Visible = false end
+                if G2L["time_text"] then G2L["time_text"].Visible = false end
             else
                 isMinimized = false
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize or originalSize}):Play()
                 
+                -- Buttons zurück an ihre originale Position schieben
+                if G2L["72"] then TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origRedPos}):Play() end
+                if G2L["80"] then TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origYellowPos}):Play() end
+                if G2L["94"] then TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origGreenPos}):Play() end
+
                 G2L["11"].Visible = true
                 G2L["16"].Visible = true
                 G2L["a1"].Visible = true
                 if G2L["b"] then G2L["b"].Visible = true end
+                if G2L["time_text"] then G2L["time_text"].Visible = true end
             end
         end) 
     end
