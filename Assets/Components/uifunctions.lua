@@ -18,12 +18,20 @@ function UIFunctions.Init(G2L, window)
     end)
     UserInputService.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
 
-    -- Sidebar Toggle
-    local sidebarOpen = true
+    -- Minimize Toggle
+    local isMinimized = false
+    local lastSize = G2L["2"].Size
     if G2L["80"] then G2L["80"].MouseButton1Click:Connect(function()
-        sidebarOpen = not sidebarOpen
-        TweenService:Create(G2L["16"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = sidebarOpen and UDim2.new(0, 220, 1, 0) or UDim2.new(0, 0, 1, 0)}):Play()
-        TweenService:Create(G2L["11"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = sidebarOpen and UDim2.new(1, -235, 1, -30) or UDim2.new(1, -30, 1, -30)}):Play()
+        isMinimized = not isMinimized
+        if isMinimized then lastSize = G2L["2"].Size end
+        
+        local targetSize = isMinimized and UDim2.new(0, 220, 0, 40) or lastSize
+        TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = targetSize}):Play()
+        
+        G2L["11"].Visible = not isMinimized -- Hauptbildschirm
+        G2L["16"].Visible = not isMinimized -- Seitenleiste
+        G2L["a1"].Visible = not isMinimized -- Debug/Stats Leiste
+        if G2L["b"] then G2L["b"].Visible = not isMinimized end -- Resize Handle
     end) end
 
     -- Close & Fullscreen
