@@ -1,6 +1,7 @@
 -- Blox Fruits
 local StartTime = tick()
 
+
 if not getgenv().GoonHub then
     getgenv().GoonHub = {
         Import = function(path)
@@ -34,31 +35,24 @@ Modules.ChangeColor = function()
 end
 
 Modules.print = function(color, text, size)
-	if not Modules.Colors[color] then warn("Color was not found!") return end 
+	if not Modules.Colors[color] then 
+		warn("Color was not found!")
+		return 
+	end 
+	
     local Text = '<font color="rgb(' .. Modules.Colors[color] .. ')"'
-    if size then Text = Text .. ' size="' .. tostring(size) .. '"' end
+    if size then
+        Text = Text .. ' size="' .. tostring(size) .. '"'
+    end
     Text = Text .. '>' .. tostring(text) .. '</font>'
     print(Text)
 end
 
--- Initialize UI
 Modules.ChangeColor()
 local LoadTime = string.format("%.2f", tick() - StartTime)
 task.delay(0.1, function()
-    Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
+    Modules.print("Green", "[Bloxfruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
 end)
 
 local UILayout = GoonHub.Import("Scripts/a4f91c7d2e8b6a53f0d14c9be67231aa/Components/uilayout")
 local window = UILayout.Create()
-
--- Extra Tabs (Game Specific)
-local BloxTab = window:CreateTab("Blox Fruits", false)
-local MainSection = BloxTab:CreateSection("Main", "Left")
-
--- The rest (Script Logic)
-MainSection:CreateToggle({
-    Title = "Auto Farm",
-    Column = "Left",
-    Default = false,
-    Callback = function(state) print("Auto Farm:", state) end
-})
