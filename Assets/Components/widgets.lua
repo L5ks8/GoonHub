@@ -80,12 +80,12 @@ function Widgets.Init(window, G2L)
                 secFrame.Size = UDim2.new(1, -10, 0, layout.AbsoluteContentSize.Y + 45)
             end)
             local secObj = {WidgetCount = 0}
-            function secObj:CreateToggle(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(c, nil, nil, col, container, self.WidgetCount) end
-            function secObj:CreateSlider(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(c, nil, nil, nil, nil, col, container, self.WidgetCount) end
-            function secObj:CreateButton(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(c, nil, col, container, self.WidgetCount) end
-            function secObj:CreateKeybind(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(c, nil, col, container, self.WidgetCount) end
-            function secObj:CreateParagraph(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(c, col, container, self.WidgetCount) end
-            function secObj:CreateDropdown(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(c, nil, nil, col, container, self.WidgetCount) end
+            function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end
+            function secObj:CreateSlider(title, min, max, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(title, min, max, default, callback, col, container, self.WidgetCount) end
+            function secObj:CreateButton(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(title, callback, col, container, self.WidgetCount) end
+            function secObj:CreateKeybind(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(title, callback, col, container, self.WidgetCount) end
+            function secObj:CreateParagraph(text) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(text, col, container, self.WidgetCount) end
+            function secObj:CreateDropdown(title, options, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(title, options, callback, col, container, self.WidgetCount) end
             return secObj
         end
 
