@@ -34,7 +34,6 @@ function UILayout.Create()
         Title = "Coin farm",
         Column = "Left",
         Callback = function()
-            print("Coin Farm gestartet")
         end
     })
     main:CreateToggle({
@@ -42,7 +41,6 @@ function UILayout.Create()
         SubTitle = "Kills all if murder",
         Column = "Left",
         Callback = function()
-            print("Kill All gestartet")
         end
     })
     main:CreateToggle({
@@ -50,9 +48,40 @@ function UILayout.Create()
         SubTitle = "Sherriff ONLY",
         Column = "Left",
         Callback = function()
-            print("Kill Murder gestartet")
         end
     })
+    main:CreateToggle({
+        Title = "Reset Bag Full",
+        SubTitle = nil,
+        Column = "Left",
+        Callback = function()
+        end
+    })
+    main:CreateSlider({
+        Title = "Kill Murder After Bag Full",
+        Min = 5,
+        Max = 5,
+        Default = 5,
+        Column = "Left",
+        Callback = function()
+        end
+    })
+    main:CreateDropdown({
+        Title = "Teleport Methods",
+        Options = {
+            "Instant Teleport",
+            "Tween",
+            "Walk"
+            },
+        Column = "Left",
+        Callback = function()
+        end
+    })
+
+
+
+
+
 
     return window
 end
