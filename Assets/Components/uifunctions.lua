@@ -11,15 +11,16 @@ function UIFunctions.Init(G2L, window)
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
 
-    -- Originale Button-Positionen speichern
-    local origRedPos = G2L["72"] and G2L["72"].Position
-    local origYellowPos = G2L["80"] and G2L["80"].Position
-    local origGreenPos = G2L["94"] and G2L["94"].Position
+    -- Originale Button-Daten speichern
+    local origRedPos, origYellowPos, origGreenPos
+    local origRedAnchor, origYellowAnchor, origGreenAnchor
     
-    -- Originale AnchorPoints speichern (verhindert Verschwinden der Buttons)
-    local origRedAnchor = G2L["72"] and G2L["72"].AnchorPoint
-    local origYellowAnchor = G2L["80"] and G2L["80"].AnchorPoint
-    local origGreenAnchor = G2L["94"] and G2L["94"].AnchorPoint
+    local function saveOriginals()
+        if G2L["72"] and not origRedPos then origRedPos, origRedAnchor = G2L["72"].Position, G2L["72"].AnchorPoint end
+        if G2L["80"] and not origYellowPos then origYellowPos, origYellowAnchor = G2L["80"].Position, G2L["80"].AnchorPoint end
+        if G2L["94"] and not origGreenPos then origGreenPos, origGreenAnchor = G2L["94"].Position, G2L["94"].AnchorPoint end
+    end
+    saveOriginals()
 
     local topBarLayout = G2L["6"] and G2L["6"]:FindFirstChildOfClass("UIListLayout")
 
@@ -52,44 +53,47 @@ function UIFunctions.Init(G2L, window)
     -- Minimize Toggle (Grüner Button)
     if G2L["94"] then 
         G2L["94"].MouseButton1Click:Connect(function()
+            saveOriginals()
             if not isMinimized then
                 isMinimized = true
-                -- Layout deaktivieren, damit wir Buttons frei schieben können
                 if topBarLayout then topBarLayout.Enabled = false end
                 
-                -- Nur speichern, wenn das Fenster tatsächlich groß ist
                 if G2L["2"].Size.Y.Offset > 40 then
                     lastSize = G2L["2"].Size
                 end
+                
+                -- Fenster verkleinern
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 220, 0, 40)}):Play()
                 
-                -- Buttons nach links schieben und Ausrichtung anpassen
-                if G2L["72"] then G2L["72"].AnchorPoint = Vector2.new(0, 0.5) TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 15, 0.5, 0)}):Play() end
-                if G2L["80"] then G2L["80"].AnchorPoint = Vector2.new(0, 0.5) TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 40, 0.5, 0)}):Play() end
-                if G2L["94"] then G2L["94"].AnchorPoint = Vector2.new(0, 0.5) TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 65, 0.5, 0)}):Play() end
+                -- Buttons sichtbar machen und nach links schieben
+                local btnIds = {"72", "80", "94"}
+                for i, id in ipairs(btnIds) do
+                    if G2L[id] then
+                        G2L[id].Visible = true
+                        G2L[id].ZIndex = 100
+                        G2L[id].AnchorPoint = Vector2.new(0, 0.5)
+                        TweenService:Create(G2L[id], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 15 + (i-1)*25, 0.5, 0)}):Play()
+                    end
+                end
 
-                if G2L["11"] then G2L["11"].Visible = false end
-                if G2L["16"] then G2L["16"].Visible = false end
-                if G2L["a1"] then G2L["a1"].Visible = false end
-                if G2L["b"] then G2L["b"].Visible = false end
-                if G2L["time_text"] then G2L["time_text"].Visible = false end
+                local hideElements = {"11", "16", "a1", "b", "time_text"}
+                for _, id in ipairs(hideElements) do
+                    if G2L[id] then G2L[id].Visible = false end
+                end
             else
                 isMinimized = false
-                -- Layout wieder aktivieren
                 if topBarLayout then topBarLayout.Enabled = true end
                 
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize or originalSize}):Play()
                 
-                -- Buttons zurück an ihre originale Position schieben
-                if G2L["72"] then G2L["72"].AnchorPoint = origRedAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origRedPos}):Play() end
-                if G2L["80"] then G2L["80"].AnchorPoint = origYellowAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origYellowPos}):Play() end
-                if G2L["94"] then G2L["94"].AnchorPoint = origGreenAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origGreenPos}):Play() end
+                if G2L["72"] then G2L["72"].AnchorPoint = origRedAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["72"], TweenInfo.new(0.4), {Position = origRedPos}):Play() end
+                if G2L["80"] then G2L["80"].AnchorPoint = origYellowAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["80"], TweenInfo.new(0.4), {Position = origYellowPos}):Play() end
+                if G2L["94"] then G2L["94"].AnchorPoint = origGreenAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["94"], TweenInfo.new(0.4), {Position = origGreenPos}):Play() end
 
-                if G2L["11"] then G2L["11"].Visible = true end
-                if G2L["16"] then G2L["16"].Visible = true end
-                if G2L["a1"] then G2L["a1"].Visible = true end
-                if G2L["b"] then G2L["b"].Visible = true end
-                if G2L["time_text"] then G2L["time_text"].Visible = true end
+                local showElements = {"11", "16", "a1", "b", "time_text"}
+                for _, id in ipairs(showElements) do
+                    if G2L[id] then G2L[id].Visible = true end
+                end
             end
         end) 
     end
@@ -116,11 +120,11 @@ function UIFunctions.Init(G2L, window)
     task.spawn(function()
         while task.wait(1) and G2L["1"].Parent do
             local fps = math.floor(1/RunService.RenderStepped:Wait())
-            window.Stats.FPS.Text = "FPS: " .. fps .. "/s"
-            G2L["time_text"].Text = os.date("%I:%M %p")
+            if window.Stats.FPS then window.Stats.FPS.Text = "FPS: " .. fps .. "/s" end
+            if G2L["time_text"] then G2L["time_text"].Text = os.date("%I:%M %p") end
             pcall(function()
-                window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms"
-                window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb())
+                if window.Stats.Ping then window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms" end
+                if window.Stats.Memory then window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb()) end
             end)
         end
     end)
