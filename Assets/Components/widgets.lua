@@ -32,7 +32,7 @@ function Widgets.Init(window, G2L)
         local page = New("Frame", {Name = name.."Tab", Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, LayoutOrder = tabIndex}, G2L["11"])
         local function makeCol(n, pos)
             local c = New("ScrollingFrame", {Name = n, Size = UDim2.new(0.5, -10, 1, -15), Position = pos, BackgroundTransparency = 1, ScrollBarThickness = 0, AutomaticCanvasSize = Enum.AutomaticSize.Y}, page)
-            New("UIListLayout", {Padding = UDim.new(0, 8)}, c) return c
+            New("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder}, c) return c
         end
         local leftCol, rightCol = makeCol("Left", UDim2.new(0, 10, 0, 10)), makeCol("Right", UDim2.new(0.5, 5, 0, 10))
 
@@ -66,33 +66,35 @@ function Widgets.Init(window, G2L)
             ic.ImageTransparency = 0
         end
 
-        local tObj = {Left = leftCol, Right = rightCol, lastColumn = "Left", currentParent = {Left = leftCol, Right = rightCol}}
+        local tObj = {Left = leftCol, Right = rightCol, lastColumn = "Left", currentParent = {Left = leftCol, Right = rightCol}, SectionCount = 0}
 
         function tObj:CreateSection(title, column)
             local col = column or self.lastColumn
-            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = true}, self[col])
+            self.SectionCount = self.SectionCount + 1
+            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = true, LayoutOrder = self.SectionCount}, self[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, secFrame)
             New("TextLabel", {Size = UDim2.new(1, 0, 0, 32), Text = "  "..title, TextColor3 = Color3.fromRGB(248, 191, 212), FontFace = fonts.bold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, BackgroundTransparency = 1}, secFrame)
             local container = New("Frame", {Name = "container", Position = UDim2.new(0, 10, 0, 35), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1}, secFrame)
-            local layout = New("UIListLayout", {Padding = UDim.new(0, 8)}, container)
+            local layout = New("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder}, container)
             layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
                 secFrame.Size = UDim2.new(1, -10, 0, layout.AbsoluteContentSize.Y + 45)
             end)
-            local secObj = {}
-            function secObj:CreateToggle(c) return tObj:CreateToggle(c, nil, nil, col, container) end
-            function secObj:CreateSlider(c) return tObj:CreateSlider(c, nil, nil, nil, nil, col, container) end
-            function secObj:CreateButton(c) return tObj:CreateButton(c, nil, col, container) end
-            function secObj:CreateKeybind(c) return tObj:CreateKeybind(c, nil, col, container) end
-            function secObj:CreateParagraph(c) return tObj:CreateParagraph(c, col, container) end
-            function secObj:CreateDropdown(c) return tObj:CreateDropdown(c, nil, nil, col, container) end
+            local secObj = {WidgetCount = 0}
+            function secObj:CreateToggle(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(c, nil, nil, col, container, self.WidgetCount) end
+            function secObj:CreateSlider(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateSlider(c, nil, nil, nil, nil, col, container, self.WidgetCount) end
+            function secObj:CreateButton(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(c, nil, col, container, self.WidgetCount) end
+            function secObj:CreateKeybind(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(c, nil, col, container, self.WidgetCount) end
+            function secObj:CreateParagraph(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(c, col, container, self.WidgetCount) end
+            function secObj:CreateDropdown(c) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(c, nil, nil, col, container, self.WidgetCount) end
             return secObj
         end
 
-        function tObj:CreateToggle(title, default, callback, column, overrideParent)
+        function tObj:CreateToggle(title, default, callback, column, overrideParent, layoutOrder)
             local cfg = type(title) == "table" and title or {Title = title, Default = default, Callback = callback, Column = column}
             local col = cfg.Column or self.lastColumn
+            local lOrder = layoutOrder or cfg.LayoutOrder
             local state = getgenv().NyroxToggleStates[cfg.Title] or cfg.Default
-            local f = New("Frame", {Size = UDim2.new(1, -10, 0, 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30)}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {Size = UDim2.new(1, -10, 0, 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             New("TextLabel", {Size = UDim2.new(1, -50, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, f)
             local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(60, 60, 60), Text = ""}, f)
@@ -108,18 +110,20 @@ function Widgets.Init(window, G2L)
             task.spawn(function() cfg.Callback(state) end)
         end
 
-        function tObj:CreateButton(title, callback, column, overrideParent)
+        function tObj:CreateButton(title, callback, column, overrideParent, layoutOrder)
             local cfg = type(title) == "table" and title or {Title = title, Callback = callback, Column = column}
             local col = cfg.Column or self.lastColumn
-            local bWidget = New("TextButton", {Size = UDim2.new(1, -10, 0, 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, overrideParent or self.currentParent[col])
+            local lOrder = layoutOrder or cfg.LayoutOrder
+            local bWidget = New("TextButton", {Size = UDim2.new(1, -10, 0, 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, bWidget)
             bWidget.MouseButton1Click:Connect(cfg.Callback)
         end
 
-        function tObj:CreateParagraph(text, column, overrideParent)
+        function tObj:CreateParagraph(text, column, overrideParent, layoutOrder)
             local cfg = type(text) == "table" and text or {Text = text, Column = column}
             local col = cfg.Column or self.lastColumn
-            return New("TextLabel", {Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = cfg.Text, TextColor3 = Color3.fromRGB(180, 180, 180), FontFace = fonts.reg, TextSize = 13, BackgroundTransparency = 1, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left}, overrideParent or self.currentParent[col])
+            local lOrder = layoutOrder or cfg.LayoutOrder
+            return New("TextLabel", {Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = cfg.Text, TextColor3 = Color3.fromRGB(180, 180, 180), FontFace = fonts.reg, TextSize = 13, BackgroundTransparency = 1, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
         end
 
         return tObj
@@ -148,11 +152,7 @@ function Widgets.Init(window, G2L)
         local info = aboutTab:CreateSection("Information", "Left")
         
         info:CreateParagraph({
-            Text = "GoonHub Version 1.0.0",
-            Column = "Left"
-        })
-         info:CreateParagraph({
-            Text = "GoonHub Version 1.0.0",
+            Text = "GoonHub Version 1.0.0\nDeveloped by L5ks8",
             Column = "Left"
         })
     end)
