@@ -48,12 +48,11 @@ Modules.print = function(color, text, size)
 end
 
 Modules.ChangeColor()
+local LoadTime = string.format("%.2f", tick() - StartTime)
+task.delay(0.1, function()
+    Modules.print("Green", "[Dead Rails]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
+end)
 
 -- UI laden
 local UILayout = GoonHub.Import("Scripts/d5f3a7c1e98b4602cf71da84b2e639ff/Components/uilayout")
 local window = UILayout.Create()
-
-local FinalLoadTime = string.format("%.2f", tick() - StartTime)
-Modules.print("Green", "[Dead Rails]: [   SUCCESS   ] - Authenticated in (" .. FinalLoadTime .. "s)")
-
-window.Loader:Finish()

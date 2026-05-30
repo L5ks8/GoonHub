@@ -22,16 +22,13 @@ function UILayout.Create()
 
     Widgets.Init(window, G2L)
 
-    local loader = Animation.PlayLoading(G2L)
-    loader:Update(20)
+    Animation.PlayLoading(G2L)
 
     UIFunctions.Init(G2L, window)
 
     -- Game Tabs
     local mainTab = window:CreateTab("Main", false)
-    loader:Update(40)
     local FarmTab = window:CreateTab("Farm", false)
-    loader:Update(60)
     local MiscTab = window:CreateTab("Misc", false)
 
     local combat = mainTab:CreateSection("Combat", "Left")
@@ -76,11 +73,6 @@ function UILayout.Create()
         Default = true,
         Callback = function(state) print("Show Team:", state) end
     })
-
-    loader:Update(90)
-
-    window.Loader = loader
-
     return window
 end
 
