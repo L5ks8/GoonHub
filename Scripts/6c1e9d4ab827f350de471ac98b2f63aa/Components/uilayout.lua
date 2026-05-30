@@ -30,14 +30,14 @@ function UILayout.Create()
     local EspTab = window:CreateTab("Esp", false)
 
     local main = mainTab:CreateSection("Coins", "Left")
-    main:CreateButton({
+    main:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
         Callback = function()
             print("Coin Farm gestartet")
         end
     })
-    main:CreateButton({
+    main:CreateToggle({
         Title = "Kill All After Bag Full",
         SubTitle = "Kills all if murder",
         Column = "Left",
@@ -45,7 +45,7 @@ function UILayout.Create()
             print("Kill All gestartet")
         end
     })
-    main:CreateButton({
+    main:CreateToggle({
         Title = "Kill Murder After Bag Full",
         SubTitle = "Sherriff ONLY",
         Column = "Left",
