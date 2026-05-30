@@ -10,7 +10,7 @@ local noclipConnection
 local antiFlingConnection
 local autoFlingConnection
 
--- Noclip Logik
+-- Noclip
 function Misc.ToggleNoclip(state)
     if noclipConnection then noclipConnection:Disconnect() end
     if state then
@@ -26,7 +26,7 @@ function Misc.ToggleNoclip(state)
     end
 end
 
--- Anti-Fling Logik (aus Snippet)
+-- Anti-Fling
 function Misc.ToggleAntiFling(state)
     if antiFlingConnection then antiFlingConnection:Disconnect() end
     if state then
@@ -40,7 +40,7 @@ function Misc.ToggleAntiFling(state)
     end
 end
 
--- Murderer finden
+-- Murder finder
 local function getMurderer()
     for _, plr in pairs(Players:GetPlayers()) do
         if plr ~= LocalPlayer and plr.Character then
@@ -52,7 +52,7 @@ local function getMurderer()
     return nil
 end
 
--- Fling Funktion (aus Snippet)
+-- Fling Funktion
 function Misc.Fling(target)
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
     if not hrp or not target then return end
@@ -70,7 +70,7 @@ function Misc.Fling(target)
     hrp.CFrame = oldCFrame
 end
 
--- Auto Fling Toggle
+--  Fling Toggle
 function Misc.ToggleAutoFling(state)
     if autoFlingConnection then task.cancel(autoFlingConnection) end
     if state then
@@ -86,7 +86,6 @@ function Misc.ToggleAutoFling(state)
     end
 end
 
--- Performance Mode (aus Snippet)
 function Misc.EnablePerformanceMode()
     Lighting.FogEnd = 1000000
     Lighting.Brightness = 0
