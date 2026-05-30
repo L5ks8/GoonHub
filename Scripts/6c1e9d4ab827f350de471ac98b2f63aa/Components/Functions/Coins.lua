@@ -21,6 +21,14 @@ local SETTINGS = {
     EVENT_TOKEN_GUESS_NAMES = { "Candy","Snow","SnowToken","Token","Present","Heart","CoinEvent","Ball","Orb" },
     COIN_CONTAINER_NAMES = { "CoinContainer","Coins","Coin","Drops","Tokens","CandyContainer" }
 }
+
+local function isAlive()
+    return LocalPlayer.Character 
+        and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") 
+        and LocalPlayer.Character:FindFirstChild("Humanoid") 
+        and LocalPlayer.Character.Humanoid.Health > 0
+end
+
 local function looksLikeCoin(obj)
     local target = obj:IsA("BasePart") and obj or (obj:FindFirstChild("Hitbox") or obj:FindFirstChildOfClass("BasePart"))
     if not target then return false end
@@ -116,8 +124,8 @@ local function mainLoop()
                         if coin and isAlive() then
                             local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
                             if hrp then -- Re-check hrp
-                                for _, part in pairs(LocalPlayer.Character:GetChildren()) do -- Noclip
-                                    if part:IsA("BasePart") then part.CanCollide = false end 
+                                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do -- Noclip (Descendants is safer)
+                                    if part:IsA("BasePart") then part.CanCollide = false end
                                 end
                                 
                                 hrp.Anchored = true
