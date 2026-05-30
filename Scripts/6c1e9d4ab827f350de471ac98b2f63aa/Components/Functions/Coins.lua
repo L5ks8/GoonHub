@@ -80,7 +80,7 @@ end
 local function getNearestCoin()
     local nearest, minDist = nil, math.huge
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
+    if not hrp or not isAlive() then return end
 
     local container = Workspace:FindFirstChild("CoinContainer", true)
     if container then
@@ -102,7 +102,7 @@ end
 local function mainLoop()
     while State.Enabled do
         pcall(function()
-            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") and LocalPlayer.Character.Humanoid.Health > 0 then
+            if isAlive() then
                 local have, cap = getBagProgress()
                 if have >= cap then
                     if State.AutoReset then
@@ -112,39 +112,45 @@ local function mainLoop()
                     end
                 else
                     if State.Method == "Instant Teleport" then
-                        local coin = getNearestCoin()
-                        if coin and LocalPlayer.Character then
-                            local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-                            if hrp then
-                                for _, part in pairs(LocalPlayer.Character:GetChildren()) do
-                                    if part:IsA("BasePart") then part.CanCollide = false end
+                        local coin, dist = getNearestCoin()
+                        if coin and isAlive() then
+                            local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                            if hrp then -- Re-check hrp
+                                for _, part in pairs(LocalPlayer.Character:GetChildren()) do -- Noclip
+                                    if part:IsA("BasePart") then part.CanCollide = false end 
                                 end
                                 
                                 hrp.Anchored = true
                                 hrp.CFrame = coin.CFrame * CFrame.new(0, -0.5, 0) 
                                 task.wait(0.5)
-                                hrp.CFrame = State.SafePosition
-                                hrp.Anchored = false
+                                if isAlive() and hrp then -- Re-check hrp after wait
+                                    hrp.CFrame = State.SafePosition
+                                    hrp.Anchored = false
+                                end
                                 task.wait(2) 
                             end
                         end
                     else
                         local coin, dist = getNearestCoin()
-                        if coin then
+                        if coin and isAlive() then
                             local targetPart = coin:IsA("BasePart") and coin or (coin:FindFirstChild("Hitbox") or coin:FindFirstChildOfClass("BasePart"))
-                            if targetPart then
+                            if targetPart and isAlive() then
+                                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                                if hrp then -- Re-check hrp
                                 local tween = moveTo(targetPart.CFrame * CFrame.new(0, -0.5, 0)) 
-                                    local hrp = LocalPlayer.Character.HumanoidRootPart
-                                    hrp.Anchored = true
+                                    if tween then -- Only anchor if a tween is actually playing
+                                        hrp.Anchored = true
+                                    end
                                     
                                     local t0 = os.clock()
                                     while State.Enabled and coin.Parent and os.clock() - t0 < 3 do
-                                        if not targetPart:FindFirstChild("TouchInterest") and not targetPart:FindFirstChildOfClass("TouchTransmitter") then break end
+                                        if not isAlive() or not hrp or not hrp.Parent then break end -- Re-check hrp and isAlive
+                                        if not targetPart:FindFirstChild("TouchInterest") and not targetPart:FindFirstChildOfClass("TouchTransmitter") then break end -- Check if coin is still collectible
                                         task.wait()
                                     end
                                     
-                                    tween:Cancel()
-                                    hrp.Anchored = false
+                                    if tween then tween:Cancel() end
+                                    if hrp and hrp.Anchored then hrp.Anchored = false end -- Only unanchor if it was anchored by this script
                                 end
                             end
                         end
