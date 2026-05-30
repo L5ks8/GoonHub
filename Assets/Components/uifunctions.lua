@@ -99,7 +99,10 @@ function UIFunctions.Init(G2L, window)
             for _, child in pairs(miniLogo:GetDescendants()) do
                 if child:IsA("GuiObject") then
                     child.ZIndex = miniLogo.ZIndex + 5
-                    if child:IsA("TextLabel") then child.TextTransparency = 0 end
+                    if child:IsA("TextLabel") then 
+                        child.TextTransparency = 0
+                        child.Text = '<font color="rgb(248, 191, 212)">Goon</font>Hub'
+                    end
                     child.Visible = true
                 end
             end
