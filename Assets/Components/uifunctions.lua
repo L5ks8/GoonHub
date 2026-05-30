@@ -5,7 +5,7 @@ local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 
 function UIFunctions.Init(G2L, window)
-    local isMaximized = false
+    local isMinimized = false
     local originalSize = G2L["2"].Size
     local sidebarOpen = true
 
@@ -31,18 +31,35 @@ function UIFunctions.Init(G2L, window)
         end)
     end
 
-    -- Close & Fullscreen
-    if G2L["72"] then G2L["72"].MouseButton1Click:Connect(function() G2L["1"]:Destroy() end) end
+    -- Close
+    if G2L["72"] then 
+        G2L["72"].MouseButton1Click:Connect(function() 
+            local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+                GroupTransparency = 1,
+                Size = UDim2.new(0, G2L["2"].Size.X.Offset - 60, 0, G2L["2"].Size.Y.Offset - 60),
+                Position = G2L["2"].Position + UDim2.new(0, 0, 0, 30)
+            })
+            closeTween:Play()
+            closeTween.Completed:Connect(function()
+                G2L["1"]:Destroy() 
+            end)
+        end) 
+    end
+
     if G2L["94"] then
         G2L["94"].MouseButton1Click:Connect(function()
-            isMaximized = not isMaximized
-            local targetSize = isMaximized and UDim2.new(0, G2L["2"].Size.X.Offset, 0, 48) or originalSize
+            isMinimized = not isMinimized
+            local targetSize = isMinimized and UDim2.new(0, G2L["2"].Size.X.Offset, 0, 48) or originalSize
             
             TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize}):Play()
             
-            G2L["11"].Visible, G2L["16"].Visible, G2L["a1"].Visible, G2L["b"].Visible = not isMaximized, not isMaximized, not isMaximized, not isMaximized
+            G2L["11"].Visible = not isMinimized
+            G2L["16"].Visible = not isMinimized
+            G2L["a1"].Visible = not isMinimized
+            G2L["b"].Visible = not isMinimized
         end)
     end
+    -- Minimize
 
     -- Resizing
     local resizing, resizeStartPos, resizeStartSize, resizeConn
@@ -54,7 +71,7 @@ function UIFunctions.Init(G2L, window)
                     if move.UserInputType == Enum.UserInputType.MouseMovement then
                         local delta = move.Position - resizeStartPos
                         G2L["2"].Size = UDim2.new(0, math.clamp(resizeStartSize.X + delta.X, 500, 1200), 0, math.clamp(resizeStartSize.Y + delta.Y, 350, 800))
-                        if not isMaximized then originalSize = G2L["2"].Size end
+                        if not isMinimized then originalSize = G2L["2"].Size end
                     end
                 end)
             end
