@@ -105,7 +105,7 @@ function Widgets.Init(window, G2L)
                 New("TextLabel", {Size = UDim2.new(1, -50, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, f)
             end
 
-            local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = Color3.fromRGB(45, 45, 45), Text = "", AutoButtonColor = false}, f)
+            local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(45, 45, 45), Text = "", AutoButtonColor = false}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, btnTog)
             local circle = New("Frame", {Size = UDim2.new(0, 14, 0, 14), Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = Color3.new(1, 1, 1)}, btnTog)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, circle)
@@ -132,6 +132,7 @@ function Widgets.Init(window, G2L)
 
             btnTog.MouseButton1Click:Connect(function()
                 state = not state
+                TweenService:Create(btnTog, TweenInfo.new(0.3), {BackgroundColor3 = state and Color3.fromRGB(248, 191, 212) or Color3.fromRGB(45, 45, 45)}):Play()
                 TweenService:Create(circle, TweenInfo.new(0.3), {Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)}):Play()
                 getgenv().NyroxToggleStates[cfg.Title] = state 
                 if cfg.Callback then cfg.Callback(state) end
