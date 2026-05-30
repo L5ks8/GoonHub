@@ -7,9 +7,11 @@ local safePosition = CFrame.new(14.384642, 516.698608, -25.254295)
 
 local autoFarmEnabled = false
 local noclipConnection
+local coinsCollected = 0
 
 function Coins.Toggle(state)
     autoFarmEnabled = state
+    coinsCollected = 0
 
     if autoFarmEnabled then
         -- Noclip aktivieren
@@ -40,9 +42,16 @@ function Coins.Toggle(state)
                         
                         if targetPart and targetPart.Parent then
                             hrp.CFrame = targetPart.CFrame
-                            task.wait(0.5) 
+                            task.wait(0.5)
+                            coinsCollected = coinsCollected + 1
+
                             hrp.CFrame = safePosition
                             task.wait(2)
+
+                            if coinsCollected >= 40 then
+                                autoFarmEnabled = false
+                                break
+                            end
                         end
                     end
                 end
