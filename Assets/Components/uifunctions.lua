@@ -15,6 +15,12 @@ function UIFunctions.Init(G2L, window)
     local origRedPos = G2L["72"] and G2L["72"].Position
     local origYellowPos = G2L["80"] and G2L["80"].Position
     local origGreenPos = G2L["94"] and G2L["94"].Position
+    
+    -- Originale AnchorPoints speichern (verhindert Verschwinden der Buttons)
+    local origRedAnchor = G2L["72"] and G2L["72"].AnchorPoint
+    local origYellowAnchor = G2L["80"] and G2L["80"].AnchorPoint
+    local origGreenAnchor = G2L["94"] and G2L["94"].AnchorPoint
+
     local topBarLayout = G2L["6"] and G2L["6"]:FindFirstChildOfClass("UIListLayout")
 
     -- Dragging
@@ -57,14 +63,14 @@ function UIFunctions.Init(G2L, window)
                 end
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = UDim2.new(0, 220, 0, 40)}):Play()
                 
-                -- Buttons nach links schieben beim Minimieren
-                if G2L["72"] then TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 15, 0.5, 0)}):Play() end
-                if G2L["80"] then TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 40, 0.5, 0)}):Play() end
-                if G2L["94"] then TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 65, 0.5, 0)}):Play() end
+                -- Buttons nach links schieben und Ausrichtung anpassen
+                if G2L["72"] then G2L["72"].AnchorPoint = Vector2.new(0, 0.5) TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 15, 0.5, 0)}):Play() end
+                if G2L["80"] then G2L["80"].AnchorPoint = Vector2.new(0, 0.5) TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 40, 0.5, 0)}):Play() end
+                if G2L["94"] then G2L["94"].AnchorPoint = Vector2.new(0, 0.5) TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = UDim2.new(0, 65, 0.5, 0)}):Play() end
 
-                G2L["11"].Visible = false
-                G2L["16"].Visible = false
-                G2L["a1"].Visible = false
+                if G2L["11"] then G2L["11"].Visible = false end
+                if G2L["16"] then G2L["16"].Visible = false end
+                if G2L["a1"] then G2L["a1"].Visible = false end
                 if G2L["b"] then G2L["b"].Visible = false end
                 if G2L["time_text"] then G2L["time_text"].Visible = false end
             else
@@ -75,13 +81,13 @@ function UIFunctions.Init(G2L, window)
                 TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Size = lastSize or originalSize}):Play()
                 
                 -- Buttons zurück an ihre originale Position schieben
-                if G2L["72"] then TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origRedPos}):Play() end
-                if G2L["80"] then TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origYellowPos}):Play() end
-                if G2L["94"] then TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origGreenPos}):Play() end
+                if G2L["72"] then G2L["72"].AnchorPoint = origRedAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["72"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origRedPos}):Play() end
+                if G2L["80"] then G2L["80"].AnchorPoint = origYellowAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["80"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origYellowPos}):Play() end
+                if G2L["94"] then G2L["94"].AnchorPoint = origGreenAnchor or Vector2.new(0, 0.5) TweenService:Create(G2L["94"], TweenInfo.new(0.4, Enum.EasingStyle.Quart), {Position = origGreenPos}):Play() end
 
-                G2L["11"].Visible = true
-                G2L["16"].Visible = true
-                G2L["a1"].Visible = true
+                if G2L["11"] then G2L["11"].Visible = true end
+                if G2L["16"] then G2L["16"].Visible = true end
+                if G2L["a1"] then G2L["a1"].Visible = true end
                 if G2L["b"] then G2L["b"].Visible = true end
                 if G2L["time_text"] then G2L["time_text"].Visible = true end
             end

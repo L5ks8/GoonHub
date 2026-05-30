@@ -48,29 +48,11 @@ Modules.print = function(color, text, size)
     print(Text)
 end
 
-Modules.ChangeColor()
-local LoadTime = string.format("%.2f", tick() - StartTime)
-task.delay(0.1, function()
+task.spawn(function()
+    Modules.ChangeColor()
+    local LoadTime = string.format("%.2f", tick() - StartTime)
     Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. LoadTime .. "s)")
 end)
 
 local UILayout = GoonHub.Import("Scripts/a4f91c7d2e8b6a53f0d14c9be67231aa/Components/uilayout")
 local window = UILayout.Create()
-
--- Erstelle Tabs erst nach einer kurzen Verzögerung, um Ladefehler zu vermeiden
-task.wait(0.2)
-
-local MainTab = window:CreateTab("Main")
-local FarmSection = MainTab:CreateSection("Auto Farm")
-
-FarmSection:CreateToggle({
-    Title = "Auto Farm Level",
-    Default = false,
-    Callback = function(state) print("Auto Farm Level:", state) end
-})
-
-FarmSection:CreateToggle({
-    Title = "Auto Farm Level",
-    Default = false,
-    Callback = function(state) print("Auto Farm Level:", state) end
-})
