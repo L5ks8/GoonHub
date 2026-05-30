@@ -55,3 +55,6 @@ local window = UILayout.Create()
 
 local FinalLoadTime = string.format("%.2f", tick() - StartTime)
 Modules.print("Green", "[Blox Fruits]: [   SUCCESS   ] - Authenticated in (" .. FinalLoadTime .. "s)")
+
+-- Loader finalisieren und UI zeigen
+window.Loader:Finish()
