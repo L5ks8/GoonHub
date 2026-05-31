@@ -230,7 +230,7 @@ function Widgets.Init(window, G2L)
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             local dropped = false
-            local selected = cfg.Options[1] or "None"
+            local selected = cfg.Default or cfg.Options[1] or "None"
             
             local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
@@ -276,11 +276,22 @@ function Widgets.Init(window, G2L)
 
 
     task.defer(function()
+        local Theme = GoonHub.Import("Assets/Config/themes")
+        local savedTheme = Theme.Load()
+        
+        UI.SetTheme(G2L, savedTheme)
+
         local settingsTab = window:CreateTab("Settings", true)
-        local uiSettings = settingsTab:CreateSection("UI Settings", "Left")
-        uiSettings:CreateDropdown("Theme", {"Dark", "Light", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose"}, function(value)
-            UI.SetTheme(G2L, value)
-        end)
+        local themeSection = settingsTab:CreateSection("Themes", "Left")
+        themeSection:CreateDropdown({
+            Title = "Theme",
+            Options = {"Dark", "Light", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest"},
+            Default = savedTheme,
+            Callback = function(value)
+                UI.SetTheme(G2L, value)
+                Theme.Save(value)
+            end
+        })
 
         local aboutTab = window:CreateTab("About", true)
         local info = aboutTab:CreateSection("Information", "Left")

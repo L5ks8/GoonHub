@@ -12,7 +12,12 @@ UI.Themes = {
     Purple = { Main = Color3.fromRGB(25, 15, 35), Accent = Color3.fromRGB(180, 100, 255) },
     Midnight = { Main = Color3.fromRGB(12, 12, 18), Accent = Color3.fromRGB(90, 90, 255) },
     Ocean = { Main = Color3.fromRGB(10, 35, 40), Accent = Color3.fromRGB(0, 220, 220) },
-    Rose = { Main = Color3.fromRGB(40, 30, 35), Accent = Color3.fromRGB(255, 140, 180) }
+    Rose = { Main = Color3.fromRGB(40, 30, 35), Accent = Color3.fromRGB(255, 140, 180) },
+    Emerald = { Main = Color3.fromRGB(20, 30, 25), Accent = Color3.fromRGB(0, 255, 120) },
+    Amber = { Main = Color3.fromRGB(30, 25, 20), Accent = Color3.fromRGB(255, 170, 0) },
+    Sakura = { Main = Color3.fromRGB(35, 25, 30), Accent = Color3.fromRGB(255, 180, 220) },
+    Cyberpunk = { Main = Color3.fromRGB(25, 10, 40), Accent = Color3.fromRGB(0, 255, 255) },
+    Forest = { Main = Color3.fromRGB(15, 25, 15), Accent = Color3.fromRGB(100, 200, 100) }
 }
 
 function UI.SetTheme(G2L, themeName)
