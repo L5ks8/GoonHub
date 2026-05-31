@@ -154,6 +154,7 @@ function UIFunctions.Init(G2L, window)
         if isMinimized then
             -- Verstecke Original-Inhalte
             G2L["10"].Visible = false
+            G2L["65"].Visible = false
             G2L["a1"].Visible = false
             G2L["b"].Visible = false
             
@@ -170,12 +171,7 @@ function UIFunctions.Init(G2L, window)
             -- Icons und Kreise erzwingen (Sichtbarkeit & ZIndex Fix)
             for _, child in pairs(miniButtons:GetDescendants()) do
                 if child:IsA("GuiObject") then
-                    child.ZIndex = miniButtons.ZIndex + 5
-                    if child:IsA("ImageLabel") then
-                        child.ImageTransparency = 0
-                    elseif child:IsA("Frame") and child.Name ~= "MiniButtons" then
-                        child.BackgroundTransparency = child.BackgroundTransparency -- behalte original
-                    end
+                    child.ZIndex = child.ZIndex + 2000
                     child.Visible = true
                 end
             end
@@ -212,6 +208,7 @@ function UIFunctions.Init(G2L, window)
             if miniButtons then miniButtons:Destroy() miniButtons = nil end
             if miniLogo then miniLogo:Destroy() miniLogo = nil end
             G2L["10"].Visible = true
+            G2L["65"].Visible = true
             G2L["a1"].Visible = true
             G2L["b"].Visible = true
         end
