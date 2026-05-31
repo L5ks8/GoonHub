@@ -549,8 +549,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 13,
-                RichText = true
+                TextSize = 13
             }, f)
             
             local btn = New("TextButton", {
@@ -562,7 +561,6 @@ function Widgets.Init(window, G2L)
                 FontFace = fonts.bold,
                 TextSize = 12,
                 TextXAlignment = Enum.TextXAlignment.Left,
-                RichText = true,
                 AutoButtonColor = false
             }, f)
 
@@ -590,55 +588,25 @@ function Widgets.Init(window, G2L)
                 CanvasSize = UDim2.new(0, 0, 0, 0)
             }, f)
 
-            local listLayout = New("UIListLayout", {
-                Padding = UDim.new(0, 4),
-                SortOrder = Enum.SortOrder.LayoutOrder
-            }, list)
-
-            New("UIPadding", {
-                PaddingTop = UDim.new(0, 2),
-                PaddingBottom = UDim.new(0, 2),
-                PaddingLeft = UDim.new(0, 2),
-                PaddingRight = UDim.new(0, 2)
-            }, list)
+            local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
-            for i, opt in pairs(cfg.Options) do
+            for _, opt in pairs(cfg.Options) do
                 local optBtn = New("TextButton", {
-                    Size = UDim2.new(1, 0, 0, 26),
+                    Size = UDim2.new(1, 0, 0, 25),
                     BackgroundColor3 = Color3.fromRGB(35, 35, 35),
-                    Text = "  " .. opt,
-                    TextColor3 = (opt == selected) and UI.CurrentAccent or Color3.new(0.8, 0.8, 0.8),
-                    FontFace = (opt == selected) and fonts.bold or fonts.reg,
+                    Text = opt,
+                    TextColor3 = Color3.new(0.8, 0.8, 0.8),
+                    FontFace = fonts.reg,
                     TextSize = 12,
-                    TextXAlignment = Enum.TextXAlignment.Left,
-                    LayoutOrder = i,
-                    RichText = true,
                     AutoButtonColor = false
                 }, list)
 
                 New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
-
-                optBtn.MouseEnter:Connect(function()
-                    TweenService:Create(optBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(45, 45, 45)}):Play()
-                end)
-                optBtn.MouseLeave:Connect(function()
-                    TweenService:Create(optBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play()
-                end)
-
                 optBtn.MouseButton1Click:Connect(function()
                     selected = opt 
                     btn.Text = "  " .. opt 
                     dropped = false 
                     list.Visible = false
-
-                    for _, b in pairs(list:GetChildren()) do
-                        if b:IsA("TextButton") then
-                            local isThis = (b.Text == "  " .. opt)
-                            b.TextColor3 = isThis and UI.CurrentAccent or Color3.new(0.8, 0.8, 0.8)
-                            b.FontFace = isThis and fonts.bold or fonts.reg
-                        end
-                    end
-
                     if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
                     
                     TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 45)}):Play()
