@@ -99,7 +99,7 @@ function Widgets.Init(window, G2L)
             local cfg = type(title) == "table" and title or {Title = title, Default = default, Callback = callback, Column = column, SubTitle = nil}
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
-            local state = getgenv().NyroxToggleStates[cfg.Title] or cfg.Default
+            local state = (getgenv().GoonHubToggleStates and getgenv().GoonHubToggleStates[cfg.Title]) or cfg.Default
             
             local hasSub = cfg.SubTitle ~= nil
             local f = New("Frame", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
