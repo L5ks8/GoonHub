@@ -113,15 +113,10 @@ function UIFunctions.Init(G2L, window)
     end
 
     local function closeUI()
-        local fadeOut = TweenService:Create(G2L["2"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {
-            BackgroundTransparency = 1
+        local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+            Size = UDim2.new(0, 0, 0, 0),
         })
         
-        local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-            Size = UDim2.new(0, G2L["2"].Size.X.Offset - 100, 0, G2L["2"].Size.Y.Offset - 100),
-        })
-        
-        fadeOut:Play()
         closeTween:Play()
         closeTween.Completed:Connect(function()
             G2L["1"]:Destroy() 
@@ -233,12 +228,20 @@ function UIFunctions.Init(G2L, window)
     -- Stats Loop
     task.spawn(function()
         while task.wait(1) and G2L["1"].Parent do
-            local fps = math.floor(1/RunService.RenderStepped:Wait())
             pcall(function()
-                if window.Stats then
-                    if window.Stats.FPS then window.Stats.FPS.Text = "FPS: " .. fps .. "/s" end
-                    if window.Stats.Ping then window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms" end
-                    if window.Stats.Memory then window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb()) end
+                local fps = math.floor(1/RunService.RenderStepped:Wait())
+                
+                -- Sicherstellen, dass window und Stats existieren, bevor wir darauf zugreifen
+                if window and window.Stats then
+                    if window.Stats.FPS and window.Stats.FPS:IsA("TextLabel") then 
+                        window.Stats.FPS.Text = "FPS: " .. fps .. "/s" 
+                    end
+                    if window.Stats.Ping then 
+                        window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms" 
+                    end
+                    if window.Stats.Memory then 
+                        window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb()) 
+                    end
                 end
                 
                 if G2L["time_text"] then

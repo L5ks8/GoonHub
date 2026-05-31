@@ -8,9 +8,9 @@ function Widgets.Init(window, G2L)
     getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
 
     window.Stats = {
-        FPS = G2L["fps_label"],
-        Ping = G2L["ping_label"],
-        Memory = G2L["mem_label"]
+        FPS = G2L["fps_label"] or nil,
+        Ping = G2L["ping_label"] or nil,
+        Memory = G2L["mem_label"] or nil
     }
 
     function window:CreateTab(name, isFixed)
@@ -288,7 +288,7 @@ function Widgets.Init(window, G2L)
 
     task.defer(function()
         local Theme = GoonHub.Import("Assets/Config/themes")
-        local savedTheme = Theme.Load()
+        local savedTheme = Theme and Theme.Load() or "Dark"
         
         local settingsTab = window:CreateTab("Settings", true)
         local themeSection = settingsTab:CreateSection("Themes", "Left")
@@ -298,7 +298,7 @@ function Widgets.Init(window, G2L)
             Default = savedTheme,
             Callback = function(value)
                 UI.SetTheme(G2L, value)
-                Theme.Save(value)
+                if Theme then Theme.Save(value) end
             end
         })
 
