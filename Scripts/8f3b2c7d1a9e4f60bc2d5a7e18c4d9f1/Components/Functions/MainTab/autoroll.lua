@@ -1,32 +1,26 @@
-local AutoRoll = {
-    Running = false
-}
+local AutoRoll = {}
+local rollConnection
 
 function AutoRoll.Toggle(state)
-    AutoRoll.Running = state
-    
+    if rollConnection then 
+        task.cancel(rollConnection)
+        rollConnection = nil
+    end
+
     if state then
-        task.spawn(function()
-            while AutoRoll.Running do
-                local Services = getgenv().SlimeServices
-                local Config = getgenv().SlimeConfig
-                local handle = getgenv().handleNewRoll
+        rollConnection = task.spawn(function()
+            while true do
+                local config = getgenv().SlimeConfig
+                local services = getgenv().SlimeServices
+                local delay = (config and config.RollDelay) or 0.1
                 
-                task.wait(Config and Config.RollDelay or 0.1)
-                if not AutoRoll.Running then break end
-                
-                if Services and Services.Roll and handle then
-                    pcall(function()
-                        local results = Services.Roll:InvokeServer("requestRoll")
-                        if results and type(results) == "table" then
-                            for _, rollResult in ipairs(results) do
-                                local slime = rollResult[#rollResult]
-                                if slime and type(slime) == "table" and slime.id then
-                                    handle(slime)
-                                end
-                            end
-                        end
-                    end)
+                task.wait(delay)
+
+                if services and services.Roll then
+                    local success, result = pcall(function() return services.Roll:InvokeServer("requestRoll") end)
+                    if success and result and getgenv().handleNewRoll then
+                        getgenv().handleNewRoll(result)
+                    end
                 end
             end
         end)
