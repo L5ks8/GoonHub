@@ -52,10 +52,10 @@ end
 
 function UI.GetFonts()
     return {
-        reg = Font.new("rbxassetid://12187365364"),
-        bold = Font.new("rbxassetid://12187365364", Enum.FontWeight.Bold),
-        med = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium),
-        logo = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold)
+        reg = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.Regular),
+        bold = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.Bold),
+        med = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.Medium),
+        logo = Font.new("rbxasset://fonts/families/Inter.json", Enum.FontWeight.ExtraBold)
     }
 end
 
