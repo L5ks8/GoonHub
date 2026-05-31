@@ -102,11 +102,20 @@ function UIFunctions.Init(G2L, window)
         end
 
         if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
-            -- Wenn gpe wahr ist, wurde auf einen Button, Slider oder TextBox geklickt.
-            -- In diesem Fall darf kein Fenster-Drag starten.
-            if gpe or resizing then return end
+            if resizing then return end
 
             local pos = input.Position
+            local onInteractive = false
+            local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
+            for _, obj in pairs(objects) do
+                if obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsA("TextBox") then
+                    onInteractive = true
+                    break
+                end
+            end
+
+            if onInteractive or gpe then return end
+
             local absPos = G2L["2"].AbsolutePosition
             local absSize = G2L["2"].AbsoluteSize
 
