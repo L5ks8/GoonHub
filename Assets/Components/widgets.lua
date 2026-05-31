@@ -297,7 +297,7 @@ function Widgets.Init(window, G2L)
         local themeSection = settingsTab:CreateSection("Themes", "Left")
         themeSection:CreateDropdown({
             Title = "Theme",
-            Options = {"Dark", "Light", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest"},
+            Options = {"Dark", "Light", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest", "Coffee", "Nord", "Dracula", "Gold", "Sky", "Synthwave"},
             Default = savedTheme,
             Callback = function(value)
                 UI.SetTheme(G2L, value)
