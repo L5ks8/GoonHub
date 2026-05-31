@@ -63,10 +63,6 @@ function UIFunctions.Init(G2L, window)
         end
     end)
 
-    if G2L["65"] then G2L["65"].InputBegan:Connect(function(i)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 then drag, dragStart, startPos = true, i.Position, G2L["2"].Position end
-    end) end
-
     UserInputService.InputChanged:Connect(function(i)
         if i.UserInputType == Enum.UserInputType.MouseMovement then
             if drag then
@@ -98,8 +94,18 @@ function UIFunctions.Init(G2L, window)
 
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(i, processed)
-        if not processed and i.KeyCode == Enum.KeyCode.RightControl then
-            G2L["2"].Visible = not G2L["2"].Visible
+        if not processed then
+            if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["65"] then
+                local pos = i.Position
+                local absPos = G2L["65"].AbsolutePosition
+                local absSize = G2L["65"].AbsoluteSize
+                
+                if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
+                    drag, dragStart, startPos = true, pos, G2L["2"].Position
+                end
+            elseif i.KeyCode == Enum.KeyCode.RightControl then
+                G2L["2"].Visible = not G2L["2"].Visible
+            end
         end
     end)
 

@@ -87,7 +87,7 @@ function UI.CreateBase(title, versionText)
     G2L["10"] = New("Frame", {Size = UDim2.new(1, 0, 1, -35), Position = UDim2.new(0.5, 0, 1, 0), AnchorPoint = Vector2.new(0.5, 1), BackgroundTransparency = 1, Name = "content"}, G2L["4"])
     New("UIPadding", {PaddingTop = UDim.new(0, 10), PaddingBottom = UDim.new(0, 35), PaddingRight = UDim.new(0, 15)}, G2L["10"])
 
-    G2L["65"] = New("ImageButton", {Size = UDim2.new(1, 0, 0, 35), Position = UDim2.new(0, 0, 0, -35), BackgroundTransparency = 1, Name = "topbar", ZIndex = 1005, ClipsDescendants = false}, G2L["10"])
+    G2L["65"] = New("Frame", {Size = UDim2.new(1, 0, 0, 35), Position = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1, Name = "topbar", ZIndex = 1005, ClipsDescendants = false}, G2L["4"])
     New("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 10)}, G2L["65"])
     New("UIPadding", {PaddingLeft = UDim.new(0, 15), PaddingRight = UDim.new(0, 15)}, G2L["65"])
 
