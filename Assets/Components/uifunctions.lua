@@ -66,7 +66,7 @@ function UIFunctions.Init(G2L, window)
 
     UserInputService.InputChanged:Connect(function(i)
         if i.UserInputType == Enum.UserInputType.MouseMovement then
-            if drag then
+            if drag and not resizing then
                 local d = i.Position - dragStart
                 G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
             elseif btnDrag then
@@ -121,7 +121,16 @@ function UIFunctions.Init(G2L, window)
                     end
                 end
                 
-                if not interactable then
+                -- Zusätzlicher Check für den Resize-Button, um gleichzeitiges Draggen zu verhindern
+                local overResize = false
+                if G2L["b"] then
+                    local bPos, bSize = G2L["b"].AbsolutePosition, G2L["b"].AbsoluteSize
+                    if pos.X >= bPos.X and pos.X <= bPos.X + bSize.X and pos.Y >= bPos.Y and pos.Y <= bPos.Y + bSize.Y then
+                        overResize = true
+                    end
+                end
+
+                if not interactable and not overResize then
                     drag, dragStart, startPos = true, pos, G2L["2"].Position
                 end
             end
