@@ -123,7 +123,7 @@ function UI.CreateBase(title, versionText)
 
     G2L["11"] = New("Frame", {Size = UDim2.new(1, -235, 1, 0), Position = UDim2.new(1, 0, 1, 0), AnchorPoint = Vector2.new(1, 1), BackgroundColor3 = Color3.fromRGB(21, 21, 21), BackgroundTransparency = 0.7, ClipsDescendants = true, Name = "screen"}, G2L["10"])
     New("UICorner", {CornerRadius = UDim.new(0, 12)}, G2L["11"])
-    G2L["14"] = New("UIPageLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Animated = true}, G2L["11"])
+    G2L["14"] = New("UIPageLayout", {SortOrder = Enum.SortOrder.LayoutOrder, Animated = true, EasingStyle = Enum.EasingStyle.Quart, EasingDirection = Enum.EasingDirection.Out, TweenTime = 0.45, ScrollWheelInputEnabled = false, TouchInputEnabled = false}, G2L["11"])
 
     G2L["16"] = New("Frame", {Size = UDim2.new(0, 220, 1, 0), BackgroundTransparency = 1, Name = "bar", ClipsDescendants = true}, G2L["10"])
     New("UIListLayout", {Padding = UDim.new(0, 7), HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder}, G2L["16"])
