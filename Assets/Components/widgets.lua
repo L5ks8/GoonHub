@@ -167,6 +167,8 @@ function Widgets.Init(window, G2L)
             local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = UI.CurrentAccent}, sliderBg)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
 
+            local sliderTrigger = New("TextButton", {Size = UDim2.new(1, -20, 0, 20), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundTransparency = 1, Text = "", AutoButtonColor = false}, f)
+
             valueLabel.FocusLost:Connect(function()
                 local val = tonumber(valueLabel.Text)
                 if val then
@@ -180,7 +182,7 @@ function Widgets.Init(window, G2L)
             end)
             
             local function update(input)
-                local pos = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
+                local pos = math.clamp((input.Position.X - sliderTrigger.AbsolutePosition.X) / sliderTrigger.AbsoluteSize.X, 0, 1)
                 sliderFill.Size = UDim2.new(pos, 0, 1, 0)
                 local value = math.floor(cfg.Min + (pos * (cfg.Max - cfg.Min)))
                 valueLabel.Text = tostring(value)
@@ -188,7 +190,7 @@ function Widgets.Init(window, G2L)
             end
             
             local dragging = false
-            sliderBg.InputBegan:Connect(function(input)
+            sliderTrigger.InputBegan:Connect(function(input)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then
                     dragging = true
                     update(input)
