@@ -11,6 +11,7 @@ function UIFunctions.Init(G2L, window)
     local sidebarOpen = true
     local miniButtons = nil
     local miniLogo = nil
+    local resizing, resizeStartPos, resizeStartSize, resizeConn
 
     -- Dragging Logic
     local drag, dragStart, startPos 
@@ -241,12 +242,12 @@ function UIFunctions.Init(G2L, window)
     if G2L["94"] then G2L["94"].MouseButton1Click:Connect(toggleMinimize) end
 
     -- Resizing
-    local resizing, resizeStartPos, resizeStartSize, resizeConn
     if G2L["b"] then
 
         G2L["b"].Size = UDim2.new(0, 30, 0, 30)
         G2L["b"].InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                drag = false
                 resizing, resizeStartPos, resizeStartSize = true, input.Position, G2L["2"].AbsoluteSize
                 resizeConn = UserInputService.InputChanged:Connect(function(move)
                     if move.UserInputType == Enum.UserInputType.MouseMovement then
