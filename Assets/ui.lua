@@ -80,10 +80,6 @@ function UI.CreateBase(title, versionText)
 
     G2L["4"] = New("Frame", {Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, Name = "panel"}, G2L["2"])
     G2L["5"] = New("Frame", {Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 999, Name = "controls"}, G2L["4"])
-    G2L["6"] = New("ImageButton", {Size = UDim2.new(0, 70, 0, 35), Position = UDim2.new(0.5, 0, 0, 0), AnchorPoint = Vector2.new(0.5, 0), BackgroundTransparency = 1, Name = "drag"}, G2L["5"])
-    local bar = New("Frame", {BackgroundColor3 = Color3.fromRGB(150, 150, 150), AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.new(1, 0, 0, 5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0.3}, G2L["6"])
-    New("UICorner", {CornerRadius = UDim.new(1, 0)}, bar)
-
     -- Resize Handle
     G2L["b"] = New("ImageButton", {Size = UDim2.new(0, 35, 0, 35), Position = UDim2.new(1, -8, 1, -8), AnchorPoint = Vector2.new(1, 1), BackgroundTransparency = 1, ZIndex = 1005, Name = "resize"}, G2L["5"])
     New("ImageLabel", {Size = UDim2.new(1,0,1,0), Image = "rbxassetid://88780680171023", ImageColor3 = Color3.fromRGB(91, 91, 91), BackgroundTransparency = 1}, G2L["b"])
@@ -95,12 +91,12 @@ function UI.CreateBase(title, versionText)
     New("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 10)}, G2L["65"])
     New("UIPadding", {PaddingLeft = UDim.new(0, 15), PaddingRight = UDim.new(0, 15)}, G2L["65"])
 
-    G2L["6e"] = New("Frame", {Size = UDim2.new(0, 85, 0, 35), BackgroundTransparency = 1, Name = "actions", LayoutOrder = 1}, G2L["65"])
+    G2L["6e"] = New("Frame", {Size = UDim2.new(0, 85, 0, 35), BackgroundTransparency = 1, Name = "actions", LayoutOrder = 3}, G2L["65"])
     local space = New("Frame", {Name = "space", BackgroundTransparency = 1, LayoutOrder = 2}, G2L["65"])
     New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, space)
 
-    G2L["6c"] = New("Frame", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 0, 35), BackgroundTransparency = 1, Name = "logo", LayoutOrder = 3}, G2L["65"])
-    G2L["logo_text"] = New("TextLabel", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub <font color=\"rgb(150,150,150)\" size=\"12\">%s</font>", versionText), RichText = true, FontFace = fonts.logo, TextSize = 21, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center}, G2L["6c"])
+    G2L["6c"] = New("Frame", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 0, 35), BackgroundTransparency = 1, Name = "logo", LayoutOrder = 1}, G2L["65"])
+    G2L["logo_text"] = New("TextLabel", {AutomaticSize = Enum.AutomaticSize.X, Size = UDim2.new(0, 0, 1, 0), Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub <font color=\"rgb(150,150,150)\">| %s</font> <font color=\"rgb(100,100,100)\" size=\"12\">%s</font>", title, versionText), RichText = true, FontFace = fonts.logo, TextSize = 21, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Center}, G2L["6c"])
     G2L["weather"] = New("ImageLabel", {Size = UDim2.new(0, 21, 0, 21), Image = "rbxassetid://13056160366", BackgroundTransparency = 1, Name = "weather", LayoutOrder = 4}, G2L["65"])
 
     G2L["70"] = New("Frame", {Size = UDim2.new(1, 0, 0, 27), AnchorPoint = Vector2.new(0.5, 0.5), Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0, BackgroundColor3 = Color3.fromRGB(25, 25, 25)}, G2L["6e"])

@@ -9,7 +9,7 @@ function UILayout.Create()
     getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
 
 
-    local G2L = UI.CreateBase("GoonHub", "1.0.0")
+    local G2L = UI.CreateBase("Blox Fruits", "1.0.0")
     local window = {
         TabCount = 0, 
         Stats = {

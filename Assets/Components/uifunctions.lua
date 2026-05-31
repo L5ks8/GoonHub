@@ -63,7 +63,7 @@ function UIFunctions.Init(G2L, window)
         end
     end)
 
-    if G2L["6"] then G2L["6"].InputBegan:Connect(function(i)
+    if G2L["65"] then G2L["65"].InputBegan:Connect(function(i)
         if i.UserInputType == Enum.UserInputType.MouseButton1 then drag, dragStart, startPos = true, i.Position, G2L["2"].Position end
     end) end
 

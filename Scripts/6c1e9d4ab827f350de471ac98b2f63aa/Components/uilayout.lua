@@ -8,7 +8,7 @@ local UILayout = {}
 
 function UILayout.Create()
 
-    local G2L = UI.CreateBase("GoonHub", "1.0.0")
+    local G2L = UI.CreateBase("Murder Mystery 2", "1.0.0")
     local window = {
         TabCount = 0, 
         Stats = {
