@@ -20,6 +20,37 @@ function UIFunctions.Init(G2L, window)
     local dragThreshold = 5
     local movedDuringDrag = false
 
+    local isToggling = false
+    local function animateToggle()
+        if isToggling then return end
+        isToggling = true
+        
+        if G2L["2"].Visible then
+            -- Smooth Scale Down
+            local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+                Size = UDim2.new(0, 0, 0, 0),
+            })
+            closeTween:Play()
+            closeTween.Completed:Connect(function()
+                G2L["2"].Visible = false
+                isToggling = false
+            end)
+        else
+            -- Smooth Scale Up
+            local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or originalSize
+            G2L["2"].Size = UDim2.new(0, 0, 0, 0)
+            G2L["2"].Visible = true
+            
+            local openTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+                Size = targetSize,
+            })
+            openTween:Play()
+            openTween.Completed:Connect(function()
+                isToggling = false
+            end)
+        end
+    end
+
     -- Floating Toggle Button
     local toggleBtn = Instance.new("ImageButton")
     toggleBtn.Name = "GoonToggle"
@@ -89,7 +120,7 @@ function UIFunctions.Init(G2L, window)
     UserInputService.InputEnded:Connect(function(i) 
         if i.UserInputType == Enum.UserInputType.MouseButton1 then
             if btnDrag and not movedDuringDrag then
-                G2L["2"].Visible = not G2L["2"].Visible
+                animateToggle()
             end
             drag, windowDragged = false, false
             btnDrag = false
@@ -106,7 +137,7 @@ function UIFunctions.Init(G2L, window)
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(input, gpe)
         if not gpe and input.KeyCode == Enum.KeyCode.RightControl then
-            G2L["2"].Visible = not G2L["2"].Visible
+            animateToggle()
             return
         end
 
