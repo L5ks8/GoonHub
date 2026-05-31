@@ -37,6 +37,7 @@ function UILayout.Create()
     main:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
+        Default = false,
         Callback = function(state)
             Coins.Toggle(state)
         end
@@ -55,7 +56,7 @@ function UILayout.Create()
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets character when bag is full",
         Column = "Left",
-        Default = true,
+        Default = false,
         Callback = function(state)
             Coins.SetAutoReset(state)
         end
@@ -90,6 +91,7 @@ function UILayout.Create()
     misc:CreateToggle({
         Title = "Noclip",
         Column = "Left",
+        Default = false,
         Callback = function(state)
             Misc.ToggleNoclip(state)
         end
@@ -97,6 +99,7 @@ function UILayout.Create()
     misc:CreateToggle({
         Title = "Anti-Fling",
         Column = "Left",
+        Default = false,
         Callback = function(state)
             Misc.ToggleAntiFling(state)
         end
@@ -104,6 +107,7 @@ function UILayout.Create()
     misc:CreateToggle({
         Title = "Auto Fling Murderer",
         Column = "Left",
+        Default = false,
         Callback = function(state)
             Misc.ToggleAutoFling(state)
         end
@@ -120,6 +124,7 @@ function UILayout.Create()
     shop:CreateToggle({
         Title = "Auto Open Boxes",
         Column = "Left",
+        Default = false,
         Callback = function()
         end
     })
@@ -148,15 +153,12 @@ function UILayout.Create()
             "Gun Box3"
         },
         Column = "Left",
+        Default = "MysteryBox1",
         Callback = function()
         end
     })
 
     -- Esp Tab
-
-
-
-
 
     return window
 end
