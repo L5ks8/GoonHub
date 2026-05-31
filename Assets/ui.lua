@@ -33,6 +33,8 @@ function UI.SetTheme(G2L, themeName)
             v.TextColor3 = newAccent
         elseif (v:IsA("Frame") or v:IsA("ScrollingFrame")) and v.BackgroundColor3 == UI.CurrentAccent then
             v.BackgroundColor3 = newAccent
+        elseif v:IsA("ScrollingFrame") and v.ScrollBarImageColor3 == UI.CurrentAccent then
+            v.ScrollBarImageColor3 = newAccent
         end
 
         -- Text-Lesbarkeit für Light-Mode fixen (Weißer Text -> Dunkel)
