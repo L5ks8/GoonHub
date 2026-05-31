@@ -277,9 +277,9 @@ function Widgets.Init(window, G2L)
 
     task.defer(function()
         local settingsTab = window:CreateTab("Settings", true)
+        local uiSettings = settingsTab:CreateSection("UI Settings", "Left")
         uiSettings:CreateDropdown("Theme", {"Dark", "Light", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose"}, function(value)
             UI.SetTheme(G2L, value)
-
         end)
 
         local aboutTab = window:CreateTab("About", true)
