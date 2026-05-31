@@ -27,9 +27,11 @@ function UIFunctions.Init(G2L, window)
         
         if G2L["2"].Visible then
             -- Smooth Scale Down
-            local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-                Size = UDim2.new(0, 0, 0, 0),
-            })
+            local closeTween = TweenService:Create(
+                G2L["2"], 
+                TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), 
+                { Size = UDim2.new(0, 0, 0, 0) }
+            )
             closeTween:Play()
             closeTween.Completed:Connect(function()
                 G2L["2"].Visible = false
@@ -41,9 +43,11 @@ function UIFunctions.Init(G2L, window)
             G2L["2"].Size = UDim2.new(0, 0, 0, 0)
             G2L["2"].Visible = true
             
-            local openTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                Size = targetSize,
-            })
+            local openTween = TweenService:Create(
+                G2L["2"], 
+                TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), 
+                { Size = targetSize }
+            )
             openTween:Play()
             openTween.Completed:Connect(function()
                 isToggling = false
@@ -175,10 +179,11 @@ function UIFunctions.Init(G2L, window)
     end
 
     local function closeUI()
-        local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-            Size = UDim2.new(0, 0, 0, 0),
-        })
-        
+        local closeTween = TweenService:Create(
+            G2L["2"], 
+            TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.In), 
+            { Size = UDim2.new(0, 0, 0, 0) }
+        )
         closeTween:Play()
         closeTween.Completed:Connect(function()
             G2L["1"]:Destroy() 
@@ -194,8 +199,11 @@ function UIFunctions.Init(G2L, window)
     local function toggleMinimize()
         isMinimized = not isMinimized
         local targetSize = isMinimized and UDim2.new(0, 260, 0, 35) or originalSize
-        
-        local tween = TweenService:Create(G2L["2"], TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = targetSize})
+
+        local tween = TweenService:Create(
+            G2L["2"], 
+            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), 
+            { Size = targetSize })
         tween:Play()
         
         if isMinimized then

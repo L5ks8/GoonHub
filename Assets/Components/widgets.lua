@@ -15,31 +15,133 @@ function Widgets.Init(window, G2L)
 
     function window:CreateTab(name, isFixed)
         self.TabCount = self.TabCount + 1
-        local tabIndex, iconId = self.TabCount, (name == "Home" and "11433532654") or (name == "Settings" and "11293977610") or (name == "About" and "11419720347") or "11433532654"
+        local tabIndex = self.TabCount
+        local iconId = (name == "Home" and "11433532654") 
+            or (name == "Settings" and "11293977610") 
+            or (name == "About" and "11419720347") 
+            or "11433532654"
         
         -- Nav Button
         local parent = isFixed and G2L["19"] or G2L["4c"]
-        local b = New("ImageButton", {Name = name, Size = UDim2.new(1, 0, 0, 31), BackgroundTransparency = 1, AutoButtonColor = false, LayoutOrder = tabIndex, ClipsDescendants = false}, parent)
-        local item = New("Frame", {Name = "item", Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, ZIndex = 2}, b)
-        local sel = New("Frame", {Name = "selector", AnchorPoint = Vector2.new(0.5,0.5), Position = UDim2.new(0.5,0,0.5,0), Size = UDim2.new(1,0,1,0), BackgroundColor3 = Color3.fromRGB(41,41,41), BackgroundTransparency = 1, ZIndex = 0}, b)
+        local b = New("ImageButton", {
+            Name = name,
+            Size = UDim2.new(1, 0, 0, 31),
+            BackgroundTransparency = 1,
+            AutoButtonColor = false,
+            LayoutOrder = tabIndex,
+            ClipsDescendants = false
+        }, parent)
+
+        local item = New("Frame", {
+            Name = "item",
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            ZIndex = 2
+        }, b)
+
+        local sel = New("Frame", {
+            Name = "selector",
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundColor3 = Color3.fromRGB(41, 41, 41),
+            BackgroundTransparency = 1,
+            ZIndex = 0
+        }, b)
+
         New("UICorner", {CornerRadius = UDim.new(0, 10)}, sel)
-        local str = New("UIStroke", {Name = "SelectionStroke", Color = Color3.new(1,1,1), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = "Border"}, sel)
-        local gra = New("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.45, 0), NumberSequenceKeypoint.new(0.55, 0), NumberSequenceKeypoint.new(1, 1)})}, str)
-        New("UIListLayout", {FillDirection = Enum.FillDirection.Horizontal, VerticalAlignment = Enum.VerticalAlignment.Center, Padding = UDim.new(0, 10)}, item)
-        New("UIPadding", {PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 12)}, item)
-        local h = New("ImageLabel", {Name = "holder", Size = UDim2.new(0, 20, 0, 20), BackgroundColor3 = Color3.new(0,0,0), BackgroundTransparency = 0.8, ImageTransparency = 1, LayoutOrder = 1, ZIndex = 3}, item)
+
+        local str = New("UIStroke", {
+            Name = "SelectionStroke",
+            Color = Color3.new(1, 1, 1),
+            Thickness = 1.5,
+            Transparency = 1,
+            ApplyStrokeMode = "Border"
+        }, sel)
+
+        local gra = New("UIGradient", {
+            Transparency = NumberSequence.new({
+                NumberSequenceKeypoint.new(0, 1),
+                NumberSequenceKeypoint.new(0.45, 0),
+                NumberSequenceKeypoint.new(0.55, 0),
+                NumberSequenceKeypoint.new(1, 1)
+            })
+        }, str)
+
+        New("UIListLayout", {
+            FillDirection = Enum.FillDirection.Horizontal,
+            VerticalAlignment = Enum.VerticalAlignment.Center,
+            Padding = UDim.new(0, 10)
+        }, item)
+
+        New("UIPadding", {
+            PaddingLeft = UDim.new(0, 12),
+            PaddingRight = UDim.new(0, 12)
+        }, item)
+
+        local h = New("ImageLabel", {
+            Name = "holder",
+            Size = UDim2.new(0, 20, 0, 20),
+            BackgroundColor3 = Color3.new(0, 0, 0),
+            BackgroundTransparency = 0.8,
+            ImageTransparency = 1,
+            LayoutOrder = 1,
+            ZIndex = 3
+        }, item)
+
         New("UICorner", {CornerRadius = UDim.new(0,6)}, h)
-        local ic = New("ImageLabel", {Name = "icon", Size = UDim2.new(0, 14, 0, 14), Position = UDim2.new(0.5,0,0.5,0), AnchorPoint = Vector2.new(0.5,0.5), Image = "rbxassetid://"..iconId, ImageTransparency = 0.5, ZIndex = 4, BackgroundTransparency = 1}, h)
-        local lb = New("TextLabel", {Name = "label", Text = name, FontFace = fonts.med, TextSize = 14, TextColor3 = Color3.new(1,1,1), TextTransparency = 0.5, BackgroundTransparency = 1, LayoutOrder = 2, ZIndex = 3, TextXAlignment = Enum.TextXAlignment.Left}, item)
+
+        local ic = New("ImageLabel", {
+            Name = "icon",
+            Size = UDim2.new(0, 14, 0, 14),
+            Position = UDim2.new(0.5, 0, 0.5, 0),
+            AnchorPoint = Vector2.new(0.5, 0.5),
+            Image = "rbxassetid://" .. iconId,
+            ImageTransparency = 0.5,
+            ZIndex = 4,
+            BackgroundTransparency = 1
+        }, h)
+
+        local lb = New("TextLabel", {
+            Name = "label",
+            Text = name,
+            FontFace = fonts.med,
+            TextSize = 14,
+            TextColor3 = Color3.new(1, 1, 1),
+            TextTransparency = 0.5,
+            BackgroundTransparency = 1,
+            LayoutOrder = 2,
+            ZIndex = 3,
+            TextXAlignment = Enum.TextXAlignment.Left
+        }, item)
+
         New("UIFlexItem", {FlexMode = Enum.UIFlexMode.Fill}, lb)
 
         task.spawn(function() while task.wait() do if not b or not b.Parent then break end gra.Rotation = (gra.Rotation + 0.1) % 360 end end)
 
         -- Page
-        local page = New("Frame", {Name = name.."Tab", Size = UDim2.new(1,0,1,0), BackgroundTransparency = 1, LayoutOrder = tabIndex}, G2L["11"])
+        local page = New("Frame", {
+            Name = name .. "Tab",
+            Size = UDim2.new(1, 0, 1, 0),
+            BackgroundTransparency = 1,
+            LayoutOrder = tabIndex
+        }, G2L["11"])
+
         local function makeCol(n, pos)
-            local c = New("ScrollingFrame", {Name = n, Size = UDim2.new(0.5, -10, 1, -15), Position = pos, BackgroundTransparency = 1, ScrollBarThickness = 0, AutomaticCanvasSize = Enum.AutomaticSize.Y}, page)
-            New("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder}, c) return c
+            local c = New("ScrollingFrame", {
+                Name = n,
+                Size = UDim2.new(0.5, -10, 1, -15),
+                Position = pos,
+                BackgroundTransparency = 1,
+                ScrollBarThickness = 0,
+                AutomaticCanvasSize = Enum.AutomaticSize.Y
+            }, page)
+
+            New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                SortOrder = Enum.SortOrder.LayoutOrder
+            }, c)
+            return c
         end
         local leftCol, rightCol = makeCol("Left", UDim2.new(0, 10, 0, 10)), makeCol("Right", UDim2.new(0.5, 5, 0, 10))
 
@@ -78,11 +180,40 @@ function Widgets.Init(window, G2L)
         function tObj:CreateSection(title, column)
             local col = column or self.lastColumn
             self.SectionCount = self.SectionCount + 1
-            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = false, LayoutOrder = self.SectionCount}, self[col])
+
+            local secFrame = New("Frame", {
+                Size = UDim2.new(1, -10, 0, 32),
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                ClipsDescendants = false,
+                LayoutOrder = self.SectionCount
+            }, self[col])
+
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, secFrame)
-            New("TextLabel", {Size = UDim2.new(1, 0, 0, 32), Text = "  "..title, TextColor3 = UI.CurrentAccent, FontFace = fonts.bold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, BackgroundTransparency = 1}, secFrame)
-            local container = New("Frame", {Name = "container", Position = UDim2.new(0, 10, 0, 35), Size = UDim2.new(1, -20, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1}, secFrame)
-            local layout = New("UIListLayout", {Padding = UDim.new(0, 8), SortOrder = Enum.SortOrder.LayoutOrder}, container)
+
+            New("TextLabel", {
+                Size = UDim2.new(1, 0, 0, 32),
+                Text = "  " .. title,
+                TextColor3 = UI.CurrentAccent,
+                FontFace = fonts.bold,
+                TextSize = 13,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                BackgroundTransparency = 1
+            }, secFrame)
+
+            local container = New("Frame", {
+                Name = "container",
+                Position = UDim2.new(0, 10, 0, 35),
+                Size = UDim2.new(1, -20, 0, 0),
+                AutomaticSize = Enum.AutomaticSize.Y,
+                BackgroundTransparency = 1
+            }, secFrame)
+
+            local layout = New("UIListLayout", {
+                Padding = UDim.new(0, 8),
+                SortOrder = Enum.SortOrder.LayoutOrder
+            }, container)
+
             New("UIPadding", {PaddingBottom = UDim.new(0, 10)}, container)
 
             local secObj = {WidgetCount = 0}
@@ -96,32 +227,102 @@ function Widgets.Init(window, G2L)
         end
 
         function tObj:CreateToggle(title, default, callback, column, overrideParent, layoutOrder)
-            local cfg = type(title) == "table" and title or {Title = title, Default = default, Callback = callback, Column = column, SubTitle = nil}
+            local cfg = type(title) == "table" and title or {
+                Title = title,
+                Default = default,
+                Callback = callback,
+                Column = column,
+                SubTitle = nil
+            }
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             local state = (getgenv().GoonHubToggleStates and getgenv().GoonHubToggleStates[cfg.Title]) or cfg.Default
             
             local hasSub = cfg.SubTitle ~= nil
-            local f = New("Frame", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 35), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {
+                Size = UDim2.new(1, 0, 0, hasSub and 45 or 35),
+                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                LayoutOrder = lOrder
+            }, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
             if hasSub then
-                New("TextLabel", {Size = UDim2.new(1, -50, 0, 16), Position = UDim2.new(0, 10, 0, 6), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 12, TextTruncate = Enum.TextTruncate.AtEnd}, f)
-                New("TextLabel", {Size = UDim2.new(1, -50, 0, 14), Position = UDim2.new(0, 10, 0, 22), Text = cfg.SubTitle, TextColor3 = Color3.fromRGB(180, 180, 180), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.reg, TextSize = 10, TextTruncate = Enum.TextTruncate.AtEnd}, f)
+                New("TextLabel", {
+                    Size = UDim2.new(1, -50, 0, 16),
+                    Position = UDim2.new(0, 10, 0, 6),
+                    Text = cfg.Title,
+                    TextColor3 = Color3.new(1, 1, 1),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    FontFace = fonts.med,
+                    TextSize = 12,
+                    TextTruncate = Enum.TextTruncate.AtEnd
+                }, f)
+                New("TextLabel", {
+                    Size = UDim2.new(1, -50, 0, 14),
+                    Position = UDim2.new(0, 10, 0, 22),
+                    Text = cfg.SubTitle,
+                    TextColor3 = Color3.fromRGB(180, 180, 180),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    FontFace = fonts.reg,
+                    TextSize = 10,
+                    TextTruncate = Enum.TextTruncate.AtEnd
+                }, f)
             else
-                New("TextLabel", {Size = UDim2.new(1, -50, 1, 0), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd}, f)
+                New("TextLabel", {
+                    Size = UDim2.new(1, -50, 1, 0),
+                    Position = UDim2.new(0, 10, 0, 0),
+                    Text = cfg.Title,
+                    TextColor3 = Color3.new(1, 1, 1),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    FontFace = fonts.med,
+                    TextSize = 13,
+                    TextTruncate = Enum.TextTruncate.AtEnd
+                }, f)
             end
 
-            local btnTog = New("TextButton", {Size = UDim2.new(0, 34, 0, 18), Position = UDim2.new(1, -12, 0.5, 0), AnchorPoint = Vector2.new(1, 0.5), BackgroundColor3 = state and UI.CurrentAccent or Color3.fromRGB(45, 45, 45), Text = "", AutoButtonColor = false}, f)
+            local btnTog = New("TextButton", {
+                Size = UDim2.new(0, 34, 0, 18),
+                Position = UDim2.new(1, -12, 0.5, 0),
+                AnchorPoint = Vector2.new(1, 0.5),
+                BackgroundColor3 = state and UI.CurrentAccent or Color3.fromRGB(45, 45, 45),
+                Text = "",
+                AutoButtonColor = false
+            }, f)
+
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, btnTog)
-            local circle = New("Frame", {Size = UDim2.new(0, 14, 0, 14), Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), BackgroundColor3 = Color3.new(1, 1, 1)}, btnTog)
+            local circle = New("Frame", {
+                Size = UDim2.new(0, 14, 0, 14),
+                Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0),
+                AnchorPoint = Vector2.new(0, 0.5),
+                BackgroundColor3 = Color3.new(1, 1, 1)
+            }, btnTog)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, circle)
 
-            -- Hover Animation (Spinning Stroke nur auf dem Knopf rechts)
-            local sel = New("Frame", {Name = "selector", Size = UDim2.new(1, 0, 1, 0), BackgroundTransparency = 1, ZIndex = 10}, btnTog)
+            -- Hover Animation
+            local sel = New("Frame", {
+                Name = "selector",
+                Size = UDim2.new(1, 0, 1, 0),
+                BackgroundTransparency = 1,
+                ZIndex = 10
+            }, btnTog)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sel)
-            local str = New("UIStroke", {Color = Color3.new(1, 1, 1), Thickness = 1.5, Transparency = 1, ApplyStrokeMode = "Border"}, sel)
-            local gra = New("UIGradient", {Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.45, 0), NumberSequenceKeypoint.new(0.55, 0), NumberSequenceKeypoint.new(1, 1)})}, str)
+            local str = New("UIStroke", {
+                Color = Color3.new(1, 1, 1),
+                Thickness = 1.5,
+                Transparency = 1,
+                ApplyStrokeMode = "Border"
+            }, sel)
+            local gra = New("UIGradient", {
+                Transparency = NumberSequence.new({
+                    NumberSequenceKeypoint.new(0, 1),
+                    NumberSequenceKeypoint.new(0.45, 0),
+                    NumberSequenceKeypoint.new(0.55, 0),
+                    NumberSequenceKeypoint.new(1, 1)
+                })
+            }, str)
 
             task.spawn(function()
                 while task.wait() do
@@ -155,20 +356,65 @@ function Widgets.Init(window, G2L)
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             
-            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 55), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {
+                Size = UDim2.new(1, 0, 0, 55),
+                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                LayoutOrder = lOrder
+            }, overrideParent or self.currentParent[col])
+
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
-            local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
-            local valueLabel = New("TextBox", {Size = UDim2.new(0, 40, 0, 18), Position = UDim2.new(1, -10, 0, 4), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = UI.CurrentAccent, BackgroundColor3 = Color3.fromRGB(20, 20, 20), BackgroundTransparency = 0, TextXAlignment = Enum.TextXAlignment.Center, FontFace = fonts.bold, TextSize = 12, ClearTextOnFocus = false, ZIndex = 10}, f)
+            local titleLabel = New("TextLabel", {
+                Size = UDim2.new(1, -60, 0, 25),
+                Position = UDim2.new(0, 10, 0, 0),
+                Text = cfg.Title,
+                TextColor3 = Color3.new(1, 1, 1),
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                FontFace = fonts.med,
+                TextSize = 13
+            }, f)
+
+            local valueLabel = New("TextBox", {
+                Size = UDim2.new(0, 40, 0, 18),
+                Position = UDim2.new(1, -10, 0, 4),
+                AnchorPoint = Vector2.new(1, 0),
+                Text = tostring(cfg.Default),
+                TextColor3 = UI.CurrentAccent,
+                BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+                BackgroundTransparency = 0,
+                TextXAlignment = Enum.TextXAlignment.Center,
+                FontFace = fonts.bold,
+                TextSize = 12,
+                ClearTextOnFocus = false,
+                ZIndex = 10
+            }, f)
+
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, valueLabel)
             
-            local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 8), Position = UDim2.new(0.5, 0, 0.5, 14), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
+            local sliderBg = New("Frame", {
+                Size = UDim2.new(1, -20, 0, 8),
+                Position = UDim2.new(0.5, 0, 0.5, 14),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+            }, f)
+
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderBg)
             
-            local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = UI.CurrentAccent}, sliderBg)
-            New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
+            local sliderFill = New("Frame", {
+                Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0),
+                BackgroundColor3 = UI.CurrentAccent
+            }, sliderBg)
 
-            local sliderTrigger = New("TextButton", {Size = UDim2.new(1, -20, 0, 45), Position = UDim2.new(0.5, 0, 0.5, 14), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundTransparency = 1, Text = "", AutoButtonColor = false}, f)
+            New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
+            local sliderTrigger = New("TextButton", {
+                Size = UDim2.new(1, -20, 0, 45),
+                Position = UDim2.new(0.5, 0, 0.5, 14),
+                AnchorPoint = Vector2.new(0.5, 0.5),
+                BackgroundTransparency = 1,
+                Text = "",
+                AutoButtonColor = false
+            }, f)
 
             valueLabel.FocusLost:Connect(function()
                 local val = tonumber(valueLabel.Text)
@@ -217,12 +463,43 @@ function Widgets.Init(window, G2L)
             local lOrder = layoutOrder or cfg.LayoutOrder
             
             local hasSub = cfg.SubTitle ~= nil
-            local bWidget = New("TextButton", {Size = UDim2.new(1, 0, 0, hasSub and 45 or 32), BackgroundColor3 = Color3.fromRGB(41, 41, 41), Text = hasSub and "" or cfg.Title, TextColor3 = Color3.new(1,1,1), FontFace = fonts.bold, TextSize = 13, TextTruncate = Enum.TextTruncate.AtEnd, LayoutOrder = lOrder, AutoButtonColor = false}, overrideParent or self.currentParent[col])
+            local bWidget = New("TextButton", {
+                Size = UDim2.new(1, 0, 0, hasSub and 45 or 32),
+                BackgroundColor3 = Color3.fromRGB(41, 41, 41),
+                Text = hasSub and "" or cfg.Title,
+                TextColor3 = Color3.new(1, 1, 1),
+                FontFace = fonts.bold,
+                TextSize = 13,
+                TextTruncate = Enum.TextTruncate.AtEnd,
+                LayoutOrder = lOrder,
+                AutoButtonColor = false
+            }, overrideParent or self.currentParent[col])
+
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, bWidget)
             
             if hasSub then
-                New("TextLabel", {Size = UDim2.new(1, 0, 0, 16), Position = UDim2.new(0, 0, 0, 8), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Center, FontFace = fonts.bold, TextSize = 12, TextTruncate = Enum.TextTruncate.AtEnd}, bWidget)
-                New("TextLabel", {Size = UDim2.new(1, 0, 0, 14), Position = UDim2.new(0, 0, 0, 24), Text = cfg.SubTitle, TextColor3 = Color3.fromRGB(180, 180, 180), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Center, FontFace = fonts.reg, TextSize = 10, TextTruncate = Enum.TextTruncate.AtEnd}, bWidget)
+                New("TextLabel", {
+                    Size = UDim2.new(1, 0, 0, 16),
+                    Position = UDim2.new(0, 0, 0, 8),
+                    Text = cfg.Title,
+                    TextColor3 = Color3.new(1, 1, 1),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Center,
+                    FontFace = fonts.bold,
+                    TextSize = 12,
+                    TextTruncate = Enum.TextTruncate.AtEnd
+                }, bWidget)
+                New("TextLabel", {
+                    Size = UDim2.new(1, 0, 0, 14),
+                    Position = UDim2.new(0, 0, 0, 24),
+                    Text = cfg.SubTitle,
+                    TextColor3 = Color3.fromRGB(180, 180, 180),
+                    BackgroundTransparency = 1,
+                    TextXAlignment = Enum.TextXAlignment.Center,
+                    FontFace = fonts.reg,
+                    TextSize = 10,
+                    TextTruncate = Enum.TextTruncate.AtEnd
+                }, bWidget)
             end
             
             bWidget.MouseButton1Click:Connect(cfg.Callback)
@@ -232,7 +509,18 @@ function Widgets.Init(window, G2L)
             local cfg = type(text) == "table" and text or {Text = text, Column = column}
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
-            return New("TextLabel", {Size = UDim2.new(1, -10, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, Text = cfg.Text, TextColor3 = Color3.fromRGB(180, 180, 180), FontFace = fonts.reg, TextSize = 13, BackgroundTransparency = 1, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            return New("TextLabel", {
+                Size = UDim2.new(1, -10, 0, 0),
+                AutomaticSize = Enum.AutomaticSize.Y,
+                Text = cfg.Text,
+                TextColor3 = Color3.fromRGB(180, 180, 180),
+                FontFace = fonts.reg,
+                TextSize = 13,
+                BackgroundTransparency = 1,
+                TextWrapped = true,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                LayoutOrder = lOrder
+            }, overrideParent or self.currentParent[col])
         end
 
         function tObj:CreateDropdown(title, options, callback, column, overrideParent, layoutOrder)
@@ -242,19 +530,75 @@ function Widgets.Init(window, G2L)
             local dropped = false
             local selected = cfg.Default or cfg.Options[1] or "None"
             
-            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder, ClipsDescendants = true}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {
+                Size = UDim2.new(1, 0, 0, 45),
+                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                LayoutOrder = lOrder,
+                ClipsDescendants = true
+            }, overrideParent or self.currentParent[col])
+
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
-            New("TextLabel", {Size = UDim2.new(1, -20, 0, 18), Position = UDim2.new(0, 10, 0, 1), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
+
+            New("TextLabel", {
+                Size = UDim2.new(1, -20, 0, 18),
+                Position = UDim2.new(0, 10, 0, 1),
+                Text = cfg.Title,
+                TextColor3 = Color3.new(1, 1, 1),
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                FontFace = fonts.med,
+                TextSize = 13
+            }, f)
             
-            local btn = New("TextButton", {Size = UDim2.new(1, -20, 0, 22), Position = UDim2.new(0, 10, 0, 20), BackgroundColor3 = Color3.fromRGB(40, 40, 40), Text = "  " .. selected, TextColor3 = UI.CurrentAccent, FontFace = fonts.bold, TextSize = 12, TextXAlignment = Enum.TextXAlignment.Left, AutoButtonColor = false}, f)
+            local btn = New("TextButton", {
+                Size = UDim2.new(1, -20, 0, 22),
+                Position = UDim2.new(0, 10, 0, 20),
+                BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                Text = "  " .. selected,
+                TextColor3 = UI.CurrentAccent,
+                FontFace = fonts.bold,
+                TextSize = 12,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                AutoButtonColor = false
+            }, f)
+
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
-            local arrow = New("TextLabel", {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -25, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Text = "▼", BackgroundTransparency = 1, TextColor3 = UI.CurrentAccent, TextSize = 12}, btn)
+
+            local arrow = New("TextLabel", {
+                Size = UDim2.new(0, 20, 0, 20),
+                Position = UDim2.new(1, -25, 0.5, 0),
+                AnchorPoint = Vector2.new(0, 0.5),
+                Text = "▼",
+                BackgroundTransparency = 1,
+                TextColor3 = UI.CurrentAccent,
+                TextSize = 12
+            }, btn)
             
-            local list = New("ScrollingFrame", {Name = "list", Position = UDim2.new(0, 10, 0, 45), Size = UDim2.new(1, -20, 1, -50), BackgroundTransparency = 1, Visible = false, ScrollBarThickness = 2, ScrollBarImageColor3 = UI.CurrentAccent, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(0,0,0,0)}, f)
+            local list = New("ScrollingFrame", {
+                Name = "list",
+                Position = UDim2.new(0, 10, 0, 45),
+                Size = UDim2.new(1, -20, 1, -50),
+                BackgroundTransparency = 1,
+                Visible = false,
+                ScrollBarThickness = 2,
+                ScrollBarImageColor3 = UI.CurrentAccent,
+                AutomaticCanvasSize = Enum.AutomaticSize.Y,
+                CanvasSize = UDim2.new(0, 0, 0, 0)
+            }, f)
+
             local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
             for _, opt in pairs(cfg.Options) do
-                local optBtn = New("TextButton", {Size = UDim2.new(1, 0, 0, 25), BackgroundColor3 = Color3.fromRGB(35, 35, 35), Text = opt, TextColor3 = Color3.new(0.8, 0.8, 0.8), FontFace = fonts.reg, TextSize = 12, AutoButtonColor = false}, list)
+                local optBtn = New("TextButton", {
+                    Size = UDim2.new(1, 0, 0, 25),
+                    BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+                    Text = opt,
+                    TextColor3 = Color3.new(0.8, 0.8, 0.8),
+                    FontFace = fonts.reg,
+                    TextSize = 12,
+                    AutoButtonColor = false
+                }, list)
+
                 New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
                 optBtn.MouseButton1Click:Connect(function()
                     selected = opt 
@@ -297,7 +641,7 @@ function Widgets.Init(window, G2L)
         local themeSection = settingsTab:CreateSection("Themes", "Left")
         themeSection:CreateDropdown({
             Title = "Theme",
-            Options = {"Dark", "Light", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest", "Coffee", "Nord", "Dracula", "Gold", "Sky", "Synthwave"},
+            Options = {"Dark", "Blue", "Halloween", "Red", "Purple", "Midnight", "Ocean", "Rose", "Emerald", "Amber", "Sakura", "Cyberpunk", "Forest", "Coffee", "Nord", "Dracula", "Gold", "Sky", "Synthwave"},
             Default = savedTheme,
             Callback = function(value)
                 UI.SetTheme(G2L, value)
