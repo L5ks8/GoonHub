@@ -52,10 +52,8 @@ function UILayout.Create()
         Callback = function(state)
             AutoIndexClaim.Toggle(state)
         end
-    })
+    })   
     -- Farm Tab
-    local Section = FarmTab:CreateSection("Others", "Left")
-
 
     -- Config Tab
     local config = ConfigTab:CreateSection("Management", "Left")

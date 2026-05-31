@@ -15,8 +15,9 @@ function AutoIndexClaim.Toggle(state)
     if state then
         claimConnection = task.spawn(function()
             local categories = { "basic", "big", "huge", "shiny", "inverted" }
-            while task.wait(5) do 
+            while task.wait(5) do -- Kurzer Delay, um den Server nicht zu überlasten
                 local services = getgenv().SlimeServices
+                
                 if services and services.Index then
                     for _, category in ipairs(categories) do
                         pcall(function()

@@ -14,26 +14,24 @@ function AutoRoll.Toggle(state)
 
     if state then
         rollConnection = task.spawn(function()
-            while true do
-                local config = getgenv().SlimeConfig
+            while task.wait() do
+                local currentConfig = getgenv().SlimeConfig
                 local services = getgenv().SlimeServices
+                local delay = (currentConfig and currentConfig.RollDelay) or 0.1
 
-                if services and services.Roll and config then
-                    local delay = config.RollDelay or 0.1
-                    
+                if services and services.Roll then
                     local success, result = pcall(function() 
                         return services.Roll:InvokeServer("requestRoll") 
                     end)
 
-                    if success and result and getgenv().handleNewRoll then
-                        getgenv().handleNewRoll(result)
+                    if success and result then
+                        if getgenv().handleNewRoll then
+                            getgenv().handleNewRoll(result)
+                        end
                     end
-                    
-                    task.wait(delay)
-                else
-                    -- Falls Services noch nicht bereit sind, kurz warten
-                    task.wait(1)
                 end
+                
+                task.wait(delay)
             end
         end)
     end
