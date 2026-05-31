@@ -45,8 +45,6 @@ function UILayout.Create()
             AutoRoll.Toggle(state)
         end
     })
-    -- Farm Tab
-    local Section = FarmTab:CreateSection("Others", "Left")
     Section:CreateToggle({
         Title = "Auto Claim Index",
         Column = "Left",
@@ -55,6 +53,9 @@ function UILayout.Create()
             AutoIndexClaim.Toggle(state)
         end
     })
+    -- Farm Tab
+    local Section = FarmTab:CreateSection("Others", "Left")
+
 
     -- Config Tab
     local config = ConfigTab:CreateSection("Management", "Left")
