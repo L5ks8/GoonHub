@@ -148,13 +148,13 @@ function UIFunctions.Init(G2L, window)
             G2L["a1"].Visible = false
             G2L["b"].Visible = false
             
-            -- Erstelle Kopie der Buttons links neben der Drag-Leiste (Mitte)
+            -- Erstelle Kopie der Buttons auf der rechten Seite
             miniButtons = G2L["70"]:Clone()
             miniButtons.Name = "MiniButtons"
             miniButtons.Parent = G2L["5"]
             miniButtons.Size = UDim2.new(0, 85, 0, 27)
             miniButtons.AnchorPoint = Vector2.new(1, 0.5) 
-            miniButtons.Position = UDim2.new(0.5, -40, 0, 17.5) -- Direkt links neben dem Drag-Handle
+            miniButtons.Position = UDim2.new(1, -15, 0, 17.5)
             miniButtons.ZIndex = 2000
             miniButtons.Visible = true
             
@@ -171,12 +171,12 @@ function UIFunctions.Init(G2L, window)
                 end
             end
 
-            -- Erstelle Kopie des Logos rechts neben der Drag-Leiste
+            -- Erstelle Kopie des Logos auf der linken Seite
             miniLogo = G2L["6c"]:Clone()
             miniLogo.Name = "MiniLogo"
             miniLogo.Parent = G2L["5"]
             miniLogo.AnchorPoint = Vector2.new(0, 0.5)
-            miniLogo.Position = UDim2.new(0.5, 40, 0, 17.5) -- 40px rechts von der Mitte
+            miniLogo.Position = UDim2.new(0, 15, 0, 17.5)
             miniLogo.ZIndex = 2000
             miniLogo.Visible = true
 
