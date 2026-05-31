@@ -5,6 +5,13 @@ local UserInputService = game:GetService("UserInputService")
 
 function Widgets.Init(window, G2L)
     local New, fonts = UI.New, UI.GetFonts()
+    getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
+
+    window.Stats = {
+        FPS = G2L["fps_label"],
+        Ping = G2L["ping_label"],
+        Memory = G2L["mem_label"]
+    }
 
     function window:CreateTab(name, isFixed)
         self.TabCount = self.TabCount + 1
@@ -279,8 +286,6 @@ function Widgets.Init(window, G2L)
         local Theme = GoonHub.Import("Assets/Config/themes")
         local savedTheme = Theme.Load()
         
-        UI.SetTheme(G2L, savedTheme)
-
         local settingsTab = window:CreateTab("Settings", true)
         local themeSection = settingsTab:CreateSection("Themes", "Left")
         themeSection:CreateDropdown({
@@ -304,6 +309,9 @@ function Widgets.Init(window, G2L)
             Text = "Developed by L5ks8",
             Column = "Left"
         })
+
+        -- Apply theme at the end so it affects newly created tabs/sections
+        UI.SetTheme(G2L, savedTheme)
     end)
 end
 

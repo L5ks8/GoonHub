@@ -234,11 +234,16 @@ function UIFunctions.Init(G2L, window)
     task.spawn(function()
         while task.wait(1) and G2L["1"].Parent do
             local fps = math.floor(1/RunService.RenderStepped:Wait())
-            window.Stats.FPS.Text = "FPS: " .. fps .. "/s"
-            G2L["time_text"].Text = os.date("%I:%M %p")
             pcall(function()
-                window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms"
-                window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb())
+                if window.Stats then
+                    if window.Stats.FPS then window.Stats.FPS.Text = "FPS: " .. fps .. "/s" end
+                    if window.Stats.Ping then window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms" end
+                    if window.Stats.Memory then window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb()) end
+                end
+                
+                if G2L["time_text"] then
+                    G2L["time_text"].Text = os.date("%I:%M %p")
+                end
             end)
         end
     end)
