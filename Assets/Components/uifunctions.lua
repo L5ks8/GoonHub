@@ -94,16 +94,33 @@ function UIFunctions.Init(G2L, window)
 
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(i, processed)
-        if not processed then
-            if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["65"] then
-                local pos = i.Position
-                local absPos = G2L["65"].AbsolutePosition
-                local absSize = G2L["65"].AbsoluteSize
-                
-                if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
+        if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
+            local pos = i.Position
+            local dragArea = G2L["65"]
+            local absPos = dragArea.AbsolutePosition
+            local absSize = dragArea.AbsoluteSize
+            
+            if isMinimized then
+                absPos = G2L["2"].AbsolutePosition
+                absSize = G2L["2"].AbsoluteSize
+            end
+
+            if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
+                local isButton = false
+                local objects = (gethui and gethui() or game:GetService("CoreGui")):GetGuiObjectsAtPosition(pos.X, pos.Y)
+                for _, obj in pairs(objects) do
+                    if obj:IsA("ImageButton") or obj:IsA("TextButton") then
+                        isButton = true
+                        break
+                    end
+                end
+                if not isButton then
                     drag, dragStart, startPos = true, pos, G2L["2"].Position
                 end
-            elseif i.KeyCode == Enum.KeyCode.RightControl then
+            end
+        end
+        if not processed then
+            if i.KeyCode == Enum.KeyCode.RightControl then
                 G2L["2"].Visible = not G2L["2"].Visible
             end
         end
@@ -184,6 +201,7 @@ function UIFunctions.Init(G2L, window)
                 if child:IsA("GuiObject") then
                     child.ZIndex = miniLogo.ZIndex + 5
                     if child:IsA("TextLabel") then 
+                        child.RichText = true
                         child.TextTransparency = 0
                         child.Text = '<font color="rgb(248, 191, 212)">Goon</font>Hub'
                     end
