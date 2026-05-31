@@ -14,7 +14,7 @@ function UIFunctions.Init(G2L, window)
     local resizing, resizeStartPos, resizeStartSize, resizeConn
 
     -- Dragging Logic
-    local drag, dragStart, startPos, windowDragged
+    local drag, dragStart, startPos, windowDragged, windowTargetPos
     local btnDrag, btnDragStart, btnStartPos
     local btnTargetPos = UDim2.new(0, 20, 0.5, -25)
     local dragThreshold = 5
@@ -74,7 +74,7 @@ function UIFunctions.Init(G2L, window)
                 end
 
                 if windowDragged then
-                    G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+                    windowTargetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
                 end
             elseif btnDrag then
                 local d = i.Position - btnDragStart
@@ -97,6 +97,9 @@ function UIFunctions.Init(G2L, window)
     end)
 
     RunService.RenderStepped:Connect(function()
+        if drag and windowTargetPos then
+            G2L["2"].Position = G2L["2"].Position:Lerp(windowTargetPos, 0.08)
+        end
         toggleBtn.Position = toggleBtn.Position:Lerp(btnTargetPos, 0.08)
     end)
 
@@ -126,7 +129,7 @@ function UIFunctions.Init(G2L, window)
             local absSize = G2L["2"].AbsoluteSize
 
             if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                drag, dragStart, startPos, windowDragged = true, pos, G2L["2"].Position, false
+                drag, dragStart, startPos, windowDragged, windowTargetPos = true, pos, G2L["2"].Position, false, G2L["2"].Position
             end
         end
     end)
