@@ -52,6 +52,17 @@ local function getMurderer()
     return nil
 end
 
+-- Sherrif finder
+local function getSheriff()
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer and plr.Character then
+            if plr.Character:FindFirstChild("Gun") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Gun")) then
+                return plr.Character:FindFirstChild("HumanoidRootPart")
+            end
+        end
+    end
+    return nil
+end
 -- Fling Funktion
 function Misc.Fling(target)
     local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -85,7 +96,7 @@ function Misc.ToggleAutoFling(state)
         end)
     end
 end
-
+-- Performance Mode
 function Misc.EnablePerformanceMode()
     Lighting.FogEnd = 1000000
     Lighting.Brightness = 0

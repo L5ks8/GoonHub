@@ -32,7 +32,7 @@ function UIFunctions.Init(G2L, window)
 
     Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 10)
     
-    -- Spinning Border (wie Tabs)
+    -- Spinning Border
     local btnStroke = Instance.new("UIStroke")
     btnStroke.Name = "SelectionStroke"
     btnStroke.Color = Color3.new(1, 1, 1)
@@ -210,6 +210,8 @@ function UIFunctions.Init(G2L, window)
     -- Resizing
     local resizing, resizeStartPos, resizeStartSize, resizeConn
     if G2L["b"] then
+
+        G2L["b"].Size = UDim2.new(0, 30, 0, 30)
         G2L["b"].InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 resizing, resizeStartPos, resizeStartSize = true, input.Position, G2L["2"].AbsoluteSize

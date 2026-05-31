@@ -8,9 +8,6 @@ local UILayout = {}
 
 function UILayout.Create()
 
-    getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
-
-
     local G2L = UI.CreateBase("GoonHub", "1.0.0")
     local window = {
         TabCount = 0, 
@@ -39,7 +36,6 @@ function UILayout.Create()
         Column = "Left",
         Default = false,
         Callback = function(state)
-            Coins.Toggle(state)
         end
     })
     main:CreateSlider({
@@ -48,8 +44,7 @@ function UILayout.Create()
         Max = 25,
         Default = 20,
         Column = "Left",
-        Callback = function(val)
-            Coins.SetSpeed(val)
+        Callback = function(value)
         end
     })
     main:CreateToggle({
@@ -58,7 +53,6 @@ function UILayout.Create()
         Column = "Left",
         Default = false,
         Callback = function(state)
-            Coins.SetAutoReset(state)
         end
     })
     
@@ -68,7 +62,7 @@ function UILayout.Create()
         Max = 5,
         Default = 5,
         Column = "Left",
-        Callback = function()
+        Callback = function(value)
         end
     })
     main:CreateDropdown({
@@ -79,11 +73,11 @@ function UILayout.Create()
             "Tween",
             },
         Column = "Left",
-        Callback = function(method)
-            Coins.SetMethod(method)
+        Callback = function(value)
         end
     })
     -- Farm Tab
+    local farm = FarmTab:CreateSection("Auto Farm", "Left")
 
     -- Misc Tab
 
@@ -125,7 +119,8 @@ function UILayout.Create()
         Title = "Auto Open Boxes",
         Column = "Left",
         Default = false,
-        Callback = function()
+        Callback = function(state)
+            -- Logic for auto opening
         end
     })
     shop:CreateSlider({
@@ -134,7 +129,8 @@ function UILayout.Create()
         Max = 5,
         Default = 1,
         Column = "Left",
-        Callback = function()
+        Callback = function(value)
+            -- Logic for delay
         end
     })
     shop:CreateDropdown({
@@ -154,16 +150,14 @@ function UILayout.Create()
         },
         Column = "Left",
         Default = "MysteryBox1",
-        Callback = function()
+        Callback = function(value)
+            -- Logic for selection
         end
     })
 
     -- Esp Tab
+    local esp = EspTab:CreateSection("Visuals", "Left")
 
     return window
 end
-
 return UILayout
-
-
-    

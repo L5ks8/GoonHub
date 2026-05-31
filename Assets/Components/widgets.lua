@@ -314,7 +314,6 @@ function Widgets.Init(window, G2L)
             Column = "Left"
         })
 
-        -- Apply theme at the end so it affects newly created tabs/sections
         UI.SetTheme(G2L, savedTheme)
     end)
 end
