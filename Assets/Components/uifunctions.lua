@@ -3,6 +3,7 @@ local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
+local GuiService = game:GetService("GuiService")
 
 function UIFunctions.Init(G2L, window)
     local isMinimized = false
@@ -94,6 +95,11 @@ function UIFunctions.Init(G2L, window)
 
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(input, gpe)
+        if not gpe and input.KeyCode == Enum.KeyCode.RightControl then
+            G2L["2"].Visible = not G2L["2"].Visible
+            return
+        end
+
         if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
             local pos = input.Position
             local absPos = G2L["2"].AbsolutePosition
@@ -102,22 +108,23 @@ function UIFunctions.Init(G2L, window)
             if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
                 -- Prüfen, ob ein interaktives Element angeklickt wurde
                 local interactable = false
-                local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
-                for _, obj in pairs(objects) do
-                    if obj:IsA("ImageButton") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-                        interactable = true
-                        break
+                local success, objects = pcall(function()
+                    return GuiService:GetGuiObjectsAtPosition(pos.X, pos.Y)
+                end)
+
+                if success and type(objects) == "table" then
+                    for _, obj in pairs(objects) do
+                        if obj:IsDescendantOf(G2L["2"]) and (obj:IsA("ImageButton") or obj:IsA("TextButton") or obj:IsA("TextBox")) then
+                            interactable = true
+                            break
+                        end
                     end
                 end
-
+                
                 if not interactable then
                     drag, dragStart, startPos = true, pos, G2L["2"].Position
                 end
             end
-        end
-
-        if not gpe and input.KeyCode == Enum.KeyCode.RightControl then
-            G2L["2"].Visible = not G2L["2"].Visible
         end
     end)
 
