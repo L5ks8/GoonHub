@@ -2,12 +2,13 @@ local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
 local AutoRoll = GoonHub.Import("Scripts/8f3b2c7d1a9e4f60bc2d5a7e18c4d9f1/Components/Functions/MainTab/autoroll")
+local AutoIndexClaim = GoonHub.Import("Scripts/8f3b2c7d1a9e4f60bc2d5a7e18c4d9f1/Components/Functions/MainTab/autoindexclaim")
 
 local UILayout = {}
 
 function UILayout.Create()
 
-    getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
+    getgenv().GoonHubToggleStates = getgenv().GoonHubToggleStates or {}
 
     local MarketplaceService = game:GetService("MarketplaceService")
     local success, info = pcall(function() return MarketplaceService:GetProductInfo(game.PlaceId) end)
@@ -34,14 +35,24 @@ function UILayout.Create()
     local EspTab = window:CreateTab("Esp", false)
     local ConfigTab = window:CreateTab("Config", false)
 
-    --Farm Tab
-    local FarmSection = MainTab:CreateSection("Farm", "Left")
-    FarmSection:CreateToggle({
+    -- Main Tab
+    local Section = MainTab:CreateSection("Farm", "Left")
+    Section:CreateToggle({
         Title = "Auto Roll",
         Column = "Left",
         Default = false,
         Callback = function(state)
             AutoRoll.Toggle(state)
+        end
+    })
+    -- Farm Tab
+    local Section = FarmTab:CreateSection("Others", "Left")
+    Section:CreateToggle({
+        Title = "Auto Claim Index",
+        Column = "Left",
+        Default = false,
+        Callback = function(state)
+            AutoIndexClaim.Toggle(state)
         end
     })
 

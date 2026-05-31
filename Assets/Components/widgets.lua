@@ -2,10 +2,10 @@ local Widgets = {}
 local UI = GoonHub.Import("Assets/ui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-
+ 
 function Widgets.Init(window, G2L)
     local New, fonts = UI.New, UI.GetFonts()
-    getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
+    getgenv().GoonHubToggleStates = getgenv().GoonHubToggleStates or {}
 
     window.Stats = {
         FPS = G2L["fps_label"] or nil,
@@ -141,7 +141,7 @@ function Widgets.Init(window, G2L)
                 state = not state
                 TweenService:Create(btnTog, TweenInfo.new(0.3), {BackgroundColor3 = state and UI.CurrentAccent or Color3.fromRGB(45, 45, 45)}):Play()
                 TweenService:Create(circle, TweenInfo.new(0.3), {Position = state and UDim2.new(1, -16, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)}):Play()
-                getgenv().NyroxToggleStates[cfg.Title] = state 
+                getgenv().GoonHubToggleStates[cfg.Title] = state 
                 if cfg.Callback then cfg.Callback(state) end
             end)
             
