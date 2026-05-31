@@ -94,21 +94,31 @@ function UIFunctions.Init(G2L, window)
 
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(i, processed)
-        if not processed then
-            if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
-                local pos = i.Position
-                local dragArea = G2L["65"] 
+        if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
+            local pos = i.Position
+            local dragArea = G2L["2"] 
+
+            local absPos = dragArea.AbsolutePosition
+            local absSize = dragArea.AbsoluteSize
+
+            if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
+                local isButton = false
+                local objects = (gethui and gethui() or game:GetService("CoreGui")):GetGuiObjectsAtPosition(pos.X, pos.Y)
                 
-                if isMinimized then
-                    dragArea = G2L["2"]
+                for _, obj in pairs(objects) do
+                    if obj:IsA("ImageButton") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+                        isButton = true
+                        break
+                    end
                 end
-
-                local absPos = dragArea.AbsolutePosition
-                local absSize = dragArea.AbsoluteSize
-
-                if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
+                
+                if not isButton then
                     drag, dragStart, startPos = true, pos, G2L["2"].Position
                 end
+            end
+        end
+
+        if not processed then
             if i.KeyCode == Enum.KeyCode.RightControl then
                 G2L["2"].Visible = not G2L["2"].Visible
             end
