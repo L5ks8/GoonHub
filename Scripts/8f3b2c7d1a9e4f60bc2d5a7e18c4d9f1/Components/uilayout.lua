@@ -44,6 +44,8 @@ function UILayout.Create()
     rolls:CreateSlider("Luck Boost", 1, 100, 1, function(val)
         -- Luck Logic
     end)
+    rolls:CreateToggle("Auto Rebirth", false, function(state) end)
+    rolls:CreateDropdown("Aura Filter", {"None", "Common", "Rare", "Epic"}, function(val) end)
 
     local potions = mainTab:CreateSection("Potions", "Right")
     potions:CreateToggle("Auto Use Luck Potions", false, function(state) end)
@@ -85,6 +87,11 @@ function UILayout.Create()
         game.Lighting.ClockTime = 14
         game.Lighting.OutdoorAmbient = Color3.new(1, 1, 1)
     end)
+
+    -- Config Tab
+    local config = ConfigTab:CreateSection("Management", "Left")
+    config:CreateButton("Save Current Config", function() end)
+    config:CreateButton("Load Config", function() end)
     
     return window
 end

@@ -102,38 +102,16 @@ function UIFunctions.Init(G2L, window)
         end
 
         if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
+            -- Wenn gpe wahr ist, wurde auf einen Button, Slider oder TextBox geklickt.
+            -- In diesem Fall darf kein Fenster-Drag starten.
+            if gpe or resizing then return end
+
             local pos = input.Position
             local absPos = G2L["2"].AbsolutePosition
             local absSize = G2L["2"].AbsoluteSize
 
             if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                -- Prüfen, ob ein interaktives Element angeklickt wurde
-                local interactable = false
-                local success, objects = pcall(function()
-                    return GuiService:GetGuiObjectsAtPosition(pos.X, pos.Y)
-                end)
-
-                if success and type(objects) == "table" then
-                    for _, obj in pairs(objects) do
-                        if obj:IsDescendantOf(G2L["2"]) and (obj:IsA("ImageButton") or obj:IsA("TextButton") or obj:IsA("TextBox")) then
-                            interactable = true
-                            break
-                        end
-                    end
-                end
-                
-                -- Zusätzlicher Check für den Resize-Button, um gleichzeitiges Draggen zu verhindern
-                local overResize = false
-                if G2L["b"] then
-                    local bPos, bSize = G2L["b"].AbsolutePosition, G2L["b"].AbsoluteSize
-                    if pos.X >= bPos.X and pos.X <= bPos.X + bSize.X and pos.Y >= bPos.Y and pos.Y <= bPos.Y + bSize.Y then
-                        overResize = true
-                    end
-                end
-
-                if not interactable and not overResize then
-                    drag, dragStart, startPos = true, pos, G2L["2"].Position
-                end
+                drag, dragStart, startPos = true, pos, G2L["2"].Position
             end
         end
     end)
