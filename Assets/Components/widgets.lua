@@ -318,6 +318,11 @@ function Widgets.Init(window, G2L)
         })
 
         UI.SetTheme(G2L, savedTheme)
+        
+        -- Force das UI auf den ersten Tab (Main) beim Start
+        if G2L["14"] and G2L["14"]:IsA("UIPageLayout") then
+            G2L["14"]:JumpToIndex(0)
+        end
     end)
 end
 
