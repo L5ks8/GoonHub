@@ -2,6 +2,35 @@ local UI = {}
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
+UI.CurrentAccent = Color3.fromRGB(248, 191, 212)
+UI.Themes = {
+    Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212) },
+    Light = { Main = Color3.fromRGB(230, 230, 230), Accent = Color3.fromRGB(40, 40, 40) },
+    Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255) },
+    Halloween = { Main = Color3.fromRGB(20, 20, 20), Accent = Color3.fromRGB(255, 120, 0) },
+    Red = { Main = Color3.fromRGB(30, 10, 10), Accent = Color3.fromRGB(255, 50, 50) },
+    Purple = { Main = Color3.fromRGB(25, 15, 35), Accent = Color3.fromRGB(180, 100, 255) },
+    Midnight = { Main = Color3.fromRGB(12, 12, 18), Accent = Color3.fromRGB(90, 90, 255) },
+    Ocean = { Main = Color3.fromRGB(10, 35, 40), Accent = Color3.fromRGB(0, 220, 220) },
+    Rose = { Main = Color3.fromRGB(40, 30, 35), Accent = Color3.fromRGB(255, 140, 180) }
+}
+
+function UI.SetTheme(G2L, themeName)
+    local theme = UI.Themes[themeName] or UI.Themes.Dark
+    local newAccent = theme.Accent
+    
+    if G2L["2"] then G2L["2"].BackgroundColor3 = theme.Main end
+    
+    for _, v in pairs(G2L["1"]:GetDescendants()) do
+        if (v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox")) and v.TextColor3 == UI.CurrentAccent then
+            v.TextColor3 = newAccent
+        elseif (v:IsA("Frame") or v:IsA("ScrollingFrame")) and v.BackgroundColor3 == UI.CurrentAccent then
+            v.BackgroundColor3 = newAccent
+        end
+    end
+    UI.CurrentAccent = newAccent
+end
+
 function UI.New(class, props, parent)
     local i = Instance.new(class)
     for k, v in pairs(props) do i[k] = v end
