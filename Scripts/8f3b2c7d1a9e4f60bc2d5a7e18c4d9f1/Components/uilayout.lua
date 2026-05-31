@@ -3,6 +3,7 @@ local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
 local AutoRoll = GoonHub.Import("Scripts/8f3b2c7d1a9e4f60bc2d5a7e18c4d9f1/Components/Functions/MainTab/autoroll")
 local AutoIndexClaim = GoonHub.Import("Scripts/8f3b2c7d1a9e4f60bc2d5a7e18c4d9f1/Components/Functions/MainTab/autoindexclaim")
+local AutoUpgrade = GoonHub.Import("Scripts/8f3b2c7d1a9e4f60bc2d5a7e18c4d9f1/Components/Functions/MainTab/autoupgrade")
 
 local UILayout = {}
 
@@ -30,10 +31,7 @@ function UILayout.Create()
 
     -- Game Tabs
     local MainTab = window:CreateTab("Main", false)
-    local FarmTab = window:CreateTab("Farm", false)
     local MiscTab = window:CreateTab("Misc", false)
-    local EspTab = window:CreateTab("Esp", false)
-    local ConfigTab = window:CreateTab("Config", false)
 
     -- Main Tab
     local Section = MainTab:CreateSection("Farm", "Left")
@@ -45,14 +43,23 @@ function UILayout.Create()
             AutoRoll.Toggle(state)
         end
     })
+    local Section = MainTab:CreateSection("Misc", "Right")
     Section:CreateToggle({
         Title = "Auto Claim Index",
-        Column = "Left",
+        Column = "Right",
         Default = false,
         Callback = function(state)
             AutoIndexClaim.Toggle(state)
         end
-    })   
+    })
+    Section:CreateToggle({
+        Title = "Auto Upgrade",
+        Column = "Right",
+        Default = false,
+        Callback = function(state)
+            AutoUpgrade.Toggle(state)
+        end
+    }) 
     -- Farm Tab
 
     -- Config Tab
