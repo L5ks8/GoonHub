@@ -108,7 +108,7 @@ function UIFunctions.Init(G2L, window)
             local onInteractive = false
             local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
             for _, obj in pairs(objects) do
-                if obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsA("TextBox") then
+                if obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsA("TextBox") or obj:IsA("ScrollingFrame") or obj.Name == "Section" or obj.Name == "container" then
                     onInteractive = true
                     break
                 end
