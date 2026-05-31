@@ -72,7 +72,7 @@ function UI.CreateBase(title, versionText)
     if targetParent:FindFirstChild("GoonHub") then targetParent.GoonHub:Destroy() end
 
     G2L["1"] = New("ScreenGui", {IgnoreGuiInset = true, Name = "GoonHub", ResetOnSpawn = false, ZIndexBehavior = Enum.ZIndexBehavior.Sibling}, targetParent)
-    G2L["2"] = New("CanvasGroup", {BackgroundColor3 = Color3.fromRGB(36, 36, 36), AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.new(0, 700, 0, 465), Position = UDim2.new(0.5, 0, 0.5, 0), Name = "Main", ClipsDescendants = true}, G2L["1"])
+    G2L["2"] = New("Frame", {BackgroundColor3 = Color3.fromRGB(36, 36, 36), AnchorPoint = Vector2.new(0.5, 0.5), Size = UDim2.new(0, 700, 0, 465), Position = UDim2.new(0.5, 0, 0.5, 0), Name = "Main", ClipsDescendants = true}, G2L["1"])
     New("UICorner", {CornerRadius = UDim.new(0, 18)}, G2L["2"])
     New("UIStroke", {Transparency = 0.75, Thickness = 2}, G2L["2"])
 

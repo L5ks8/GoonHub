@@ -112,12 +112,16 @@ function UIFunctions.Init(G2L, window)
         end)
     end
 
-    -- Hilfsfunktion für Schließen
     local function closeUI()
+        local fadeOut = TweenService:Create(G2L["2"], TweenInfo.new(0.3, Enum.EasingStyle.Quart), {
+            BackgroundTransparency = 1
+        })
+        
         local closeTween = TweenService:Create(G2L["2"], TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-            GroupTransparency = 1,
             Size = UDim2.new(0, G2L["2"].Size.X.Offset - 100, 0, G2L["2"].Size.Y.Offset - 100),
         })
+        
+        fadeOut:Play()
         closeTween:Play()
         closeTween.Completed:Connect(function()
             G2L["1"]:Destroy() 

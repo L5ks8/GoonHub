@@ -71,7 +71,7 @@ function Widgets.Init(window, G2L)
         function tObj:CreateSection(title, column)
             local col = column or self.lastColumn
             self.SectionCount = self.SectionCount + 1
-            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = true, LayoutOrder = self.SectionCount}, self[col])
+            local secFrame = New("Frame", {Size = UDim2.new(1, -10, 0, 32), AutomaticSize = Enum.AutomaticSize.Y, BackgroundColor3 = Color3.fromRGB(30, 30, 30), ClipsDescendants = false, LayoutOrder = self.SectionCount}, self[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, secFrame)
             New("TextLabel", {Size = UDim2.new(1, 0, 0, 32), Text = "  "..title, TextColor3 = UI.CurrentAccent, FontFace = fonts.bold, TextSize = 13, TextXAlignment = Enum.TextXAlignment.Left, BackgroundTransparency = 1}, secFrame)
             local container = New("Frame", {Name = "container", Position = UDim2.new(0, 10, 0, 35), Size = UDim2.new(1, -20, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1}, secFrame)
