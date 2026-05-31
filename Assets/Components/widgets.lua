@@ -247,7 +247,7 @@ function Widgets.Init(window, G2L)
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, btn)
             local arrow = New("TextLabel", {Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(1, -25, 0.5, 0), AnchorPoint = Vector2.new(0, 0.5), Text = "▼", BackgroundTransparency = 1, TextColor3 = UI.CurrentAccent, TextSize = 12}, btn)
             
-            local list = New("Frame", {Name = "list", Position = UDim2.new(0, 10, 0, 45), Size = UDim2.new(1, -20, 0, 0), BackgroundTransparency = 1, Visible = false}, f)
+            local list = New("ScrollingFrame", {Name = "list", Position = UDim2.new(0, 10, 0, 45), Size = UDim2.new(1, -20, 1, -50), BackgroundTransparency = 1, Visible = false, ScrollBarThickness = 2, ScrollBarImageColor3 = UI.CurrentAccent, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(0,0,0,0)}, f)
             local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
             for _, opt in pairs(cfg.Options) do
@@ -258,6 +258,7 @@ function Widgets.Init(window, G2L)
                     btn.Text = "  " .. opt 
                     dropped = false 
                     list.Visible = false
+                    if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
                     
                     TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 45)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
@@ -268,7 +269,10 @@ function Widgets.Init(window, G2L)
             btn.MouseButton1Click:Connect(function()
                 dropped = not dropped
                 list.Visible = dropped
-                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = dropped and UDim2.new(1, 0, 0, listLayout.AbsoluteContentSize.Y + 53) or UDim2.new(1, 0, 0, 45)}):Play()
+                if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = not dropped end
+                
+                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 53, 200) or 45
+                TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
         end
