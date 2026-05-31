@@ -106,21 +106,11 @@ function UIFunctions.Init(G2L, window)
 
             local pos = input.Position
             local onInteractive = false
-
-            if G2L["11"] and G2L["11"].Visible then
-                local cp, cs = G2L["11"].AbsolutePosition, G2L["11"].AbsoluteSize
-                if pos.X >= cp.X and pos.X <= cp.X + cs.X and pos.Y >= cp.Y and pos.Y <= cp.Y + cs.Y then
+            local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
+            for _, obj in pairs(objects) do
+                if obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsA("TextBox") then
                     onInteractive = true
-                end
-            end
-
-            if not onInteractive then
-                local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
-                for _, obj in pairs(objects) do
-                    if obj:IsA("TextButton") or obj:IsA("ImageButton") or obj:IsA("TextBox") then
-                        onInteractive = true
-                        break
-                    end
+                    break
                 end
             end
 
