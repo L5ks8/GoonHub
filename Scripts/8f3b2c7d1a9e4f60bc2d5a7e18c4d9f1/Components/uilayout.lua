@@ -6,6 +6,8 @@ local UILayout = {}
 
 function UILayout.Create()
 
+    getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
+
     local MarketplaceService = game:GetService("MarketplaceService")
     local success, info = pcall(function() return MarketplaceService:GetProductInfo(game.PlaceId) end)
     local gameName = success and info.Name or "Unknown Game"
@@ -23,3 +25,15 @@ function UILayout.Create()
     Widgets.Init(window, G2L)
 
     UIFunctions.Init(G2L, window)
+
+    -- Game Tabs
+    local mainTab = window:CreateTab("Main", false)
+    local FarmTab = window:CreateTab("Farm", false)
+    local MiscTab = window:CreateTab("Misc", false)
+    local EspTab = window:CreateTab("Esp", false)
+    local ConfigTab = window:CreateTab("Config", false)
+    
+    return window
+end
+
+return UILayout
