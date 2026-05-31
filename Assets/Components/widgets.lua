@@ -155,20 +155,20 @@ function Widgets.Init(window, G2L)
             local col = cfg.Column or self.lastColumn
             local lOrder = layoutOrder or cfg.LayoutOrder
             
-            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
+            local f = New("Frame", {Size = UDim2.new(1, 0, 0, 55), BackgroundColor3 = Color3.fromRGB(30, 30, 30), LayoutOrder = lOrder}, overrideParent or self.currentParent[col])
             New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
             
             local titleLabel = New("TextLabel", {Size = UDim2.new(1, -60, 0, 25), Position = UDim2.new(0, 10, 0, 0), Text = cfg.Title, TextColor3 = Color3.new(1,1,1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, FontFace = fonts.med, TextSize = 13}, f)
             local valueLabel = New("TextBox", {Size = UDim2.new(0, 40, 0, 18), Position = UDim2.new(1, -10, 0, 4), AnchorPoint = Vector2.new(1, 0), Text = tostring(cfg.Default), TextColor3 = UI.CurrentAccent, BackgroundColor3 = Color3.fromRGB(20, 20, 20), BackgroundTransparency = 0, TextXAlignment = Enum.TextXAlignment.Center, FontFace = fonts.bold, TextSize = 12, ClearTextOnFocus = false, ZIndex = 10}, f)
             New("UICorner", {CornerRadius = UDim.new(0, 4)}, valueLabel)
             
-            local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 4), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
+            local sliderBg = New("Frame", {Size = UDim2.new(1, -20, 0, 8), Position = UDim2.new(0.5, 0, 0.5, 14), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundColor3 = Color3.fromRGB(60, 60, 60)}, f)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderBg)
             
             local sliderFill = New("Frame", {Size = UDim2.new(math.clamp((cfg.Default - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0), BackgroundColor3 = UI.CurrentAccent}, sliderBg)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
 
-            local sliderTrigger = New("TextButton", {Size = UDim2.new(1, -20, 0, 35), Position = UDim2.new(0.5, 0, 0.5, 10), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundTransparency = 1, Text = "", AutoButtonColor = false}, f)
+            local sliderTrigger = New("TextButton", {Size = UDim2.new(1, -20, 0, 45), Position = UDim2.new(0.5, 0, 0.5, 14), AnchorPoint = Vector2.new(0.5, 0.5), BackgroundTransparency = 1, Text = "", AutoButtonColor = false}, f)
 
             valueLabel.FocusLost:Connect(function()
                 local val = tonumber(valueLabel.Text)
