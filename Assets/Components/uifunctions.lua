@@ -14,7 +14,7 @@ function UIFunctions.Init(G2L, window)
     local resizing, resizeStartPos, resizeStartSize, resizeConn
 
     -- Dragging Logic
-    local drag, dragStart, startPos 
+    local drag, dragStart, startPos, windowDragged
     local btnDrag, btnDragStart, btnStartPos
     local btnTargetPos = UDim2.new(0, 20, 0.5, -25)
     local dragThreshold = 5
@@ -69,7 +69,13 @@ function UIFunctions.Init(G2L, window)
         if i.UserInputType == Enum.UserInputType.MouseMovement then
             if drag and not resizing then
                 local d = i.Position - dragStart
-                G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+                if not windowDragged and d.Magnitude > dragThreshold then
+                    windowDragged = true
+                end
+
+                if windowDragged then
+                    G2L["2"].Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+                end
             elseif btnDrag then
                 local d = i.Position - btnDragStart
                 if d.Magnitude > dragThreshold then
@@ -85,7 +91,7 @@ function UIFunctions.Init(G2L, window)
             if btnDrag and not movedDuringDrag then
                 G2L["2"].Visible = not G2L["2"].Visible
             end
-            drag = false
+            drag, windowDragged = false, false
             btnDrag = false
         end
     end)
@@ -120,7 +126,7 @@ function UIFunctions.Init(G2L, window)
             local absSize = G2L["2"].AbsoluteSize
 
             if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                drag, dragStart, startPos = true, pos, G2L["2"].Position
+                drag, dragStart, startPos, windowDragged = true, pos, G2L["2"].Position, false
             end
         end
     end)
