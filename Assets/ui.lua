@@ -5,7 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 UI.CurrentAccent = Color3.fromRGB(248, 191, 212)
 UI.Themes = {
     Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212) },
-    Light = { Main = Color3.fromRGB(230, 230, 230), Accent = Color3.fromRGB(40, 40, 40) },
+    Light = { Main = Color3.fromRGB(245, 245, 245), Accent = Color3.fromRGB(0, 120, 255) },
     Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255) },
     Halloween = { Main = Color3.fromRGB(20, 20, 20), Accent = Color3.fromRGB(255, 120, 0) },
     Red = { Main = Color3.fromRGB(30, 10, 10), Accent = Color3.fromRGB(255, 50, 50) },
@@ -23,14 +23,25 @@ UI.Themes = {
 function UI.SetTheme(G2L, themeName)
     local theme = UI.Themes[themeName] or UI.Themes.Dark
     local newAccent = theme.Accent
+    local isLight = themeName == "Light"
     
     if G2L["2"] then G2L["2"].BackgroundColor3 = theme.Main end
     
     for _, v in pairs(G2L["1"]:GetDescendants()) do
+        -- Dynamische Akzentfarben anpassen
         if (v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox")) and v.TextColor3 == UI.CurrentAccent then
             v.TextColor3 = newAccent
         elseif (v:IsA("Frame") or v:IsA("ScrollingFrame")) and v.BackgroundColor3 == UI.CurrentAccent then
             v.BackgroundColor3 = newAccent
+        end
+
+        -- Text-Lesbarkeit für Light-Mode fixen (Weißer Text -> Dunkel)
+        if (v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox")) then
+            if isLight and (v.TextColor3 == Color3.new(1, 1, 1) or v.TextColor3 == Color3.fromRGB(200, 200, 200)) then
+                v.TextColor3 = Color3.fromRGB(40, 40, 40)
+            elseif not isLight and v.TextColor3 == Color3.fromRGB(40, 40, 40) then
+                v.TextColor3 = Color3.new(1, 1, 1)
+            end
         end
     end
     UI.CurrentAccent = newAccent
