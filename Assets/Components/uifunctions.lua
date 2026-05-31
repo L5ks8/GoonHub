@@ -94,32 +94,21 @@ function UIFunctions.Init(G2L, window)
 
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(i, processed)
-        if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
-            local pos = i.Position
-            local dragArea = G2L["65"]
-            local absPos = dragArea.AbsolutePosition
-            local absSize = dragArea.AbsoluteSize
-            
-            if isMinimized then
-                absPos = G2L["2"].AbsolutePosition
-                absSize = G2L["2"].AbsoluteSize
-            end
-
-            if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                local isButton = false
-                local objects = (gethui and gethui() or game:GetService("CoreGui")):GetGuiObjectsAtPosition(pos.X, pos.Y)
-                for _, obj in pairs(objects) do
-                    if obj:IsA("ImageButton") or obj:IsA("TextButton") then
-                        isButton = true
-                        break
-                    end
+        if not processed then
+            if i.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
+                local pos = i.Position
+                local dragArea = G2L["65"] 
+                
+                if isMinimized then
+                    dragArea = G2L["2"]
                 end
-                if not isButton then
+
+                local absPos = dragArea.AbsolutePosition
+                local absSize = dragArea.AbsoluteSize
+
+                if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
                     drag, dragStart, startPos = true, pos, G2L["2"].Position
                 end
-            end
-        end
-        if not processed then
             if i.KeyCode == Enum.KeyCode.RightControl then
                 G2L["2"].Visible = not G2L["2"].Visible
             end
@@ -197,16 +186,12 @@ function UIFunctions.Init(G2L, window)
             miniLogo.ZIndex = 2000
             miniLogo.Visible = true
 
-            for _, child in pairs(miniLogo:GetDescendants()) do
-                if child:IsA("GuiObject") then
-                    child.ZIndex = miniLogo.ZIndex + 5
-                    if child:IsA("TextLabel") then 
-                        child.RichText = true
-                        child.TextTransparency = 0
-                        child.Text = '<font color="rgb(248, 191, 212)">Goon</font>Hub'
-                    end
-                    child.Visible = true
-                end
+            local clonedLogoText = miniLogo:FindFirstChild("logo_text")
+            if clonedLogoText then
+                clonedLogoText.RichText = true
+                clonedLogoText.TextTransparency = 0
+                clonedLogoText.Text = '<font color="rgb(248, 191, 212)">Goon</font>Hub'
+                clonedLogoText.Visible = true
             end
 
             -- Kopie-Buttons funktionsfähig machen (mit Tweens für Konsistenz)
