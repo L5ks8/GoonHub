@@ -266,7 +266,8 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.reg,
-                    TextSize = 10,
+                    TextSize = 12,
+                    RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
             else
@@ -497,7 +498,8 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Center,
                     FontFace = fonts.reg,
-                    TextSize = 10,
+                    TextSize = 12,
+                    RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, bWidget)
             end

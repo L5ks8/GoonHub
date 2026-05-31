@@ -65,11 +65,11 @@ function UI.CreateBase(title, versionText)
     local G2L = {}
 
     local targetParent = (gethui and gethui()) or game:GetService("CoreGui") or LocalPlayer:WaitForChild("PlayerGui")
-    if targetParent:FindFirstChild("GoonHub") then targetParent.GoonHub:Destroy() end
+    if targetParent:FindFirstChild("GoonHub Universal") then targetParent["GoonHub Universal"]:Destroy() end
 
     G2L["1"] = New("ScreenGui", {
         IgnoreGuiInset = true,
-        Name = "GoonHub",
+        Name = "GoonHub Universal",
         ResetOnSpawn = false,
         ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     }, targetParent)
@@ -77,7 +77,7 @@ function UI.CreateBase(title, versionText)
     G2L["2"] = New("Frame", {
         BackgroundColor3 = Color3.fromRGB(36, 36, 36),
         AnchorPoint = Vector2.new(0.5, 0.5),
-        Size = UDim2.new(0, 700, 0, 465),
+        Size = UDim2.new(0, 850, 0, 580),
         Position = UDim2.new(0.5, 0, 0.5, 0),
         Name = "Main",
         ClipsDescendants = true
@@ -183,7 +183,7 @@ function UI.CreateBase(title, versionText)
         Name = "logo_text",
         AutomaticSize = Enum.AutomaticSize.X,
         Size = UDim2.new(0, 0, 1, 0),
-        Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub <font color=\"rgb(150,150,150)\">| %s</font> <font color=\"rgb(100,100,100)\" size=\"12\">%s</font>", title, versionText),
+        Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub Universal <font color=\"rgb(150,150,150)\">| %s</font> <font color=\"rgb(100,100,100)\" size=\"12\">%s</font>", title, versionText),
         RichText = true,
         FontFace = fonts.logo,
         TextSize = 21,
