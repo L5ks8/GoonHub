@@ -94,24 +94,13 @@ function UIFunctions.Init(G2L, window)
 
     -- Keybind Toggle (RightControl)
     UserInputService.InputBegan:Connect(function(input, gpe)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
+        if input.UserInputType == Enum.MouseButton1 and G2L["2"].Visible and not gpe then
             local pos = input.Position
             local absPos = G2L["2"].AbsolutePosition
             local absSize = G2L["2"].AbsoluteSize
 
             if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                local isInteractable = false
-                local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
-                for _, obj in pairs(objects) do
-                    if obj:IsA("ImageButton") or obj:IsA("TextButton") or obj:IsA("TextBox") then
-                        isInteractable = true
-                        break
-                    end
-                end
-                
-                if not isInteractable then
-                    drag, dragStart, startPos = true, pos, G2L["2"].Position
-                end
+                drag, dragStart, startPos = true, pos, G2L["2"].Position
             end
         elseif not gpe and input.KeyCode == Enum.KeyCode.RightControl then
             G2L["2"].Visible = not G2L["2"].Visible
@@ -171,7 +160,12 @@ function UIFunctions.Init(G2L, window)
             -- Icons und Kreise erzwingen (Sichtbarkeit & ZIndex Fix)
             for _, child in pairs(miniButtons:GetDescendants()) do
                 if child:IsA("GuiObject") then
-                    child.ZIndex = child.ZIndex + 2000
+                    child.ZIndex = miniButtons.ZIndex + 5
+                    if child:IsA("ImageLabel") then
+                        child.ImageTransparency = 0
+                    elseif child:IsA("Frame") and child.Name ~= "MiniButtons" then
+                        child.BackgroundTransparency = child.BackgroundTransparency -- behalte original
+                    end
                     child.Visible = true
                 end
             end
