@@ -5,7 +5,7 @@ local LocalPlayer = Players.LocalPlayer
 UI.CurrentAccent = Color3.fromRGB(248, 191, 212)
 UI.Themes = {
     Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212) },
-    Light = { Main = Color3.fromRGB(245, 245, 245), Accent = Color3.fromRGB(0, 120, 255) },
+    Light = { Main = Color3.fromRGB(240, 242, 245), Accent = Color3.fromRGB(0, 102, 255) },
     Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255) },
     Halloween = { Main = Color3.fromRGB(20, 20, 20), Accent = Color3.fromRGB(255, 120, 0) },
     Red = { Main = Color3.fromRGB(30, 10, 10), Accent = Color3.fromRGB(255, 50, 50) },
@@ -43,12 +43,33 @@ function UI.SetTheme(G2L, themeName)
             v.ScrollBarImageColor3 = newAccent
         end
 
-        -- Text-Lesbarkeit für Light-Mode fixen (Weißer Text -> Dunkel)
-        if (v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox")) then
-            if isLight and (v.TextColor3 == Color3.new(1, 1, 1) or v.TextColor3 == Color3.fromRGB(200, 200, 200)) then
-                v.TextColor3 = Color3.fromRGB(40, 40, 40)
-            elseif not isLight and v.TextColor3 == Color3.fromRGB(40, 40, 40) then
-                v.TextColor3 = Color3.new(1, 1, 1)
+        -- Farben für Light-Mode anpassen (Mapping von Dunkel zu Hell)
+        if isLight then
+            -- Hintergründe (Sektionen, Buttons, Sidebar)
+            if v:IsA("Frame") or v:IsA("ScrollingFrame") or v:IsA("TextButton") then
+                if v.BackgroundColor3 == Color3.fromRGB(30, 30, 30) then v.BackgroundColor3 = Color3.fromRGB(225, 225, 230)
+                elseif v.BackgroundColor3 == Color3.fromRGB(41, 41, 41) then v.BackgroundColor3 = Color3.fromRGB(210, 212, 215)
+                elseif v.BackgroundColor3 == Color3.fromRGB(21, 21, 21) then v.BackgroundColor3 = Color3.fromRGB(235, 237, 240)
+                elseif v.BackgroundColor3 == Color3.fromRGB(9, 9, 9) then v.BackgroundColor3 = Color3.fromRGB(220, 222, 225) end
+            end
+            -- Texte
+            if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox") then
+                if v.TextColor3 == Color3.new(1, 1, 1) then v.TextColor3 = Color3.fromRGB(40, 40, 40)
+                elseif v.TextColor3 == Color3.fromRGB(200, 200, 200) then v.TextColor3 = Color3.fromRGB(80, 80, 80)
+                elseif v.TextColor3 == Color3.fromRGB(180, 180, 180) then v.TextColor3 = Color3.fromRGB(100, 100, 100) end
+            end
+        else
+            -- Zurücksetzen auf Dark-Mode Farben (Mapping von Hell zu Dunkel)
+            if v:IsA("Frame") or v:IsA("ScrollingFrame") or v:IsA("TextButton") then
+                if v.BackgroundColor3 == Color3.fromRGB(225, 225, 230) then v.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+                elseif v.BackgroundColor3 == Color3.fromRGB(210, 212, 215) then v.BackgroundColor3 = Color3.fromRGB(41, 41, 41)
+                elseif v.BackgroundColor3 == Color3.fromRGB(235, 237, 240) then v.BackgroundColor3 = Color3.fromRGB(21, 21, 21)
+                elseif v.BackgroundColor3 == Color3.fromRGB(220, 222, 225) then v.BackgroundColor3 = Color3.fromRGB(9, 9, 9) end
+            end
+            if v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox") then
+                if v.TextColor3 == Color3.fromRGB(40, 40, 40) then v.TextColor3 = Color3.new(1, 1, 1)
+                elseif v.TextColor3 == Color3.fromRGB(80, 80, 80) then v.TextColor3 = Color3.fromRGB(200, 200, 200)
+                elseif v.TextColor3 == Color3.fromRGB(100, 100, 100) then v.TextColor3 = Color3.fromRGB(180, 180, 180) end
             end
         end
     end
