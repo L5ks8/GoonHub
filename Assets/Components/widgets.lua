@@ -106,7 +106,7 @@ function Widgets.Init(window, G2L)
             Name = "label",
             Text = name,
             FontFace = fonts.med,
-            TextSize = 14,
+            TextSize = 16,
             TextColor3 = Color3.new(1, 1, 1),
             TextTransparency = 0.5,
             BackgroundTransparency = 1,
@@ -196,7 +196,7 @@ function Widgets.Init(window, G2L)
                 Text = "  " .. title,
                 TextColor3 = UI.CurrentAccent,
                 FontFace = fonts.bold,
-                TextSize = 13,
+                TextSize = 15,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 BackgroundTransparency = 1
             }, secFrame)
@@ -255,7 +255,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.med,
-                    TextSize = 12,
+                    TextSize = 14,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
                 New("TextLabel", {
@@ -279,7 +279,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.med,
-                    TextSize = 13,
+                    TextSize = 15,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
             end
@@ -373,7 +373,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 13
+                TextSize = 15
             }, f)
 
             local valueLabel = New("TextBox", {
@@ -386,7 +386,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 0,
                 TextXAlignment = Enum.TextXAlignment.Center,
                 FontFace = fonts.bold,
-                TextSize = 12,
+                TextSize = 14,
                 ClearTextOnFocus = false,
                 ZIndex = 10
             }, f)
@@ -470,7 +470,7 @@ function Widgets.Init(window, G2L)
                 Text = hasSub and "" or cfg.Title,
                 TextColor3 = Color3.new(1, 1, 1),
                 FontFace = fonts.bold,
-                TextSize = 13,
+                TextSize = 15,
                 TextTruncate = Enum.TextTruncate.AtEnd,
                 LayoutOrder = lOrder,
                 AutoButtonColor = false
@@ -487,7 +487,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Center,
                     FontFace = fonts.bold,
-                    TextSize = 12,
+                    TextSize = 14,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, bWidget)
                 New("TextLabel", {
@@ -517,7 +517,7 @@ function Widgets.Init(window, G2L)
                 Text = cfg.Text,
                 TextColor3 = Color3.fromRGB(180, 180, 180),
                 FontFace = fonts.reg,
-                TextSize = 13,
+                TextSize = 14,
                 BackgroundTransparency = 1,
                 TextWrapped = true,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -549,7 +549,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 1,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 13
+                TextSize = 15
             }, f)
             
             local btn = New("TextButton", {
@@ -559,7 +559,7 @@ function Widgets.Init(window, G2L)
                 Text = "  " .. selected,
                 TextColor3 = UI.CurrentAccent,
                 FontFace = fonts.bold,
-                TextSize = 12,
+                TextSize = 14,
                 TextXAlignment = Enum.TextXAlignment.Left,
                 AutoButtonColor = false
             }, f)
@@ -573,7 +573,7 @@ function Widgets.Init(window, G2L)
                 Text = "▼",
                 BackgroundTransparency = 1,
                 TextColor3 = UI.CurrentAccent,
-                TextSize = 12
+                TextSize = 14
             }, btn)
             
             local list = New("ScrollingFrame", {
@@ -597,7 +597,7 @@ function Widgets.Init(window, G2L)
                     Text = opt,
                     TextColor3 = Color3.new(0.8, 0.8, 0.8),
                     FontFace = fonts.reg,
-                    TextSize = 12,
+                    TextSize = 13,
                     AutoButtonColor = false
                 }, list)
 
