@@ -93,16 +93,27 @@ function UIFunctions.Init(G2L, window)
     end)
 
     -- Keybind Toggle (RightControl)
-    UserInputService.InputBegan:Connect(function(input, processed)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible and not processed then
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and G2L["2"].Visible then
             local pos = input.Position
             local absPos = G2L["2"].AbsolutePosition
             local absSize = G2L["2"].AbsoluteSize
 
             if pos.X >= absPos.X and pos.X <= absPos.X + absSize.X and pos.Y >= absPos.Y and pos.Y <= absPos.Y + absSize.Y then
-                drag, dragStart, startPos = true, pos, G2L["2"].Position
+                local isInteractable = false
+                local objects = G2L["1"]:GetGuiObjectsAtPosition(pos.X, pos.Y)
+                for _, obj in pairs(objects) do
+                    if obj:IsA("ImageButton") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+                        isInteractable = true
+                        break
+                    end
+                end
+                
+                if not isInteractable then
+                    drag, dragStart, startPos = true, pos, G2L["2"].Position
+                end
             end
-        elseif not processed and input.KeyCode == Enum.KeyCode.RightControl then
+        elseif not gpe and input.KeyCode == Enum.KeyCode.RightControl then
             G2L["2"].Visible = not G2L["2"].Visible
         end
     end)

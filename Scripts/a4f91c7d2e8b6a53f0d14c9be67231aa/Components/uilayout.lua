@@ -8,8 +8,11 @@ function UILayout.Create()
 
     getgenv().NyroxToggleStates = getgenv().NyroxToggleStates or {}
 
+    local MarketplaceService = game:GetService("MarketplaceService")
+    local success, info = pcall(function() return MarketplaceService:GetProductInfo(game.PlaceId) end)
+    local gameName = success and info.Name or "Unknown Game"
 
-    local G2L = UI.CreateBase("Blox Fruits", "1.0.0")
+    local G2L = UI.CreateBase(gameName, "1.0.0")
     local window = {
         TabCount = 0, 
         Stats = {

@@ -8,7 +8,11 @@ local UILayout = {}
 
 function UILayout.Create()
 
-    local G2L = UI.CreateBase("Murder Mystery 2", "1.0.0")
+    local MarketplaceService = game:GetService("MarketplaceService")
+    local success, info = pcall(function() return MarketplaceService:GetProductInfo(game.PlaceId) end)
+    local gameName = success and info.Name or "Unknown Game"
+
+    local G2L = UI.CreateBase(gameName, "1.0.0")
     local window = {
         TabCount = 0, 
         Stats = {
