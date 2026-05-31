@@ -1,8 +1,8 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
-local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Coins")
-local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/Misc")
+local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/coins")
+local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 
 local UILayout = {}
 
