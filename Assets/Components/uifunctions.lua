@@ -300,18 +300,15 @@ function UIFunctions.Init(G2L, window)
     task.spawn(function()
         while task.wait(1) and G2L["1"].Parent do
             pcall(function()
-                local dt = RunService.RenderStepped:Wait()
-                local fps = math.floor(1 / math.max(dt, 0.001))
+                local fps = math.floor(1/RunService.RenderStepped:Wait())
                 
                 -- Sicherstellen, dass window und Stats existieren, bevor wir darauf zugreifen
                 if window and window.Stats then
                     if window.Stats.FPS and window.Stats.FPS:IsA("TextLabel") then 
                         window.Stats.FPS.Text = "FPS: " .. fps .. "/s" 
                     end
-                    if window.Stats.Ping and window.Stats.Ping:IsA("TextLabel") then
-                        local perfStats = Stats:FindFirstChild("PerformanceStats")
-                        local pingObj = perfStats and perfStats:FindFirstChild("Ping")
-                        window.Stats.Ping.Text = math.floor(pingObj and pingObj:GetValue() or 0) .. " ms"
+                    if window.Stats.Ping then 
+                        window.Stats.Ping.Text = math.floor(Stats:FindFirstChild("PerformanceStats") and Stats.PerformanceStats.Ping:GetValue() or 0) .. " ms" 
                     end
                     if window.Stats.Memory then 
                         window.Stats.Memory.Text = string.format("%.1f MB", Stats:GetTotalMemoryUsageMb()) 
