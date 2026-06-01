@@ -20,7 +20,6 @@ end
 
 local UpgradeRemote = getRemote("UpgradeService")
 
--- Sichereres Laden der Spiel-Module
 local USC, UpgradeTree
 pcall(function()
     USC = require(RS:WaitForChild("Source"):WaitForChild("Features"):WaitForChild("Upgrades"):WaitForChild("UpgradeServiceClient"))
@@ -28,6 +27,13 @@ pcall(function()
 end)
 
 local KNOWN_TREES = {"main", "lootTree", "playerTree"}
+
+local function doUnlock(id)
+    local ok, result = pcall(function()
+        return UpgradeRemote:InvokeServer("requestUnlock", id)
+    end)
+    return ok and result == true
+end
 
 local function getTreeUpgrades(treeName)
     local tree = UpgradeTree and UpgradeTree[treeName]
@@ -64,6 +70,17 @@ local function getTreeUpgrades(treeName)
     return available
 end
 
+local function getUpgradesToBuy()
+    local all = {}
+    for _, treeName in pairs(KNOWN_TREES) do
+        for _, entry in pairs(getTreeUpgrades(treeName)) do
+            table.insert(all, entry)
+        end
+    end
+    table.sort(all, function(a, b) return a.cost < b.cost end)
+    return all
+end
+
 function AutoUpgrade.Toggle(state)
     if upgradeLoop then
         task.cancel(upgradeLoop)
@@ -73,12 +90,20 @@ function AutoUpgrade.Toggle(state)
     if state then
         upgradeLoop = task.spawn(function()
             while true do
-                if UpgradeRemote and UpgradeTree then
-                    for _, treeName in ipairs(KNOWN_TREES) do
-                    local available = getTreeUpgrades(treeName)
-                    table.sort(available, function(a, b) return a.cost < b.cost end)
-                    for _, entry in ipairs(available) do
-                        pcall(function() UpgradeRemote:InvokeServer("requestUnlock", entry.id) end)
+                if UpgradeRemote and UpgradeTree and USC then
+                    for _ = 1, 10 do
+                        local available = getUpgradesToBuy()
+                        if #available == 0 then break end
+                        local bought = 0
+                        for _, entry in pairs(available) do
+                            if doUnlock(entry.id) then
+                                bought = bought + 1
+                                task.wait(0.15)
+                            else
+                                task.wait(0.05)
+                            end
+                        end
+                        if bought == 0 then break end
                     end
                 end
                 task.wait(5) 
