@@ -84,7 +84,7 @@ function UILayout.Create()
     local main = mainTab:CreateSection("Status", "Right")
     local murderLabel = main:CreateLabel("Murderer:", "Wait...")
     local sheriffLabel = main:CreateLabel("Sheriff:", "Wait...")
-    local heroLabel = main:CreateLabel("Hero:", "None")
+    local heroLabel = main:CreateLabel("Hero:", "nil")
 
     -- Status Update Loop
     task.spawn(function()

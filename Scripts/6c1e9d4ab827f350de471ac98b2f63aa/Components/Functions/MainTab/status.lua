@@ -38,72 +38,54 @@ if Fade then
     end)
 end
 
-local function checkRoundReset()
-    if tick() - lastFadeTime < 8 then return end
-
-    local weaponsExist = false
-    
-    for _, plr in pairs(Players:GetPlayers()) do
-        local char = plr.Character
-        local bp = plr:FindFirstChild("Backpack")
-        if (char and (char:FindFirstChild("Knife") or char:FindFirstChild("Gun"))) or 
-           (bp and (bp:FindFirstChild("Knife") or bp:FindFirstChild("Gun"))) then
-            weaponsExist = true
-            break
-        end
-    end
-    
-    if not weaponsExist then
-        if workspace:FindFirstChild("Gun") or workspace:FindFirstChild("Knife") then
-            weaponsExist = true
-        end
-    end
-
-    if not weaponsExist then
-        cachedMurderer = "Loading..."
-        cachedSheriff = "Loading..."
-    end
-end
-
--- Murder finder
-function Status.getMurderer()
-    checkRoundReset()
-    if cachedMurderer == "Loading..." then
+-- Zentralisierte Rollen-Aktualisierung im Hintergrund, um Flickern zu vermeiden
+task.spawn(function()
+    while true do
+        local timeSinceFade = tick() - lastFadeTime
+        local weaponsExist = false
+        
         for _, plr in pairs(Players:GetPlayers()) do
-            if plr.Character and (plr.Character:FindFirstChild("Knife") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Knife"))) then
+            local char = plr.Character
+            local bp = plr:FindFirstChild("Backpack")
+            
+            local hasKnife = (char and char:FindFirstChild("Knife")) or (bp and bp:FindFirstChild("Knife"))
+            local hasGun = (char and char:FindFirstChild("Gun")) or (bp and bp:FindFirstChild("Gun"))
+
+            if hasKnife then
                 cachedMurderer = plr.DisplayName
-                break
+                weaponsExist = true
+            end
+            if hasGun then
+                weaponsExist = true
+                -- Nur als Sheriff setzen, wenn noch keiner durch das Remote-Event erkannt wurde
+                if cachedSheriff == "Loading..." or cachedSheriff == "None" then
+                    cachedSheriff = plr.DisplayName
+                end
             end
         end
-    end
-    return cachedMurderer
-end
 
--- Sherrif finder
-function Status.getSheriff()
-    checkRoundReset()
-    if cachedSheriff == "Loading..." then
-        for _, plr in pairs(Players:GetPlayers()) do
-            if plr.Character and (plr.Character:FindFirstChild("Gun") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Gun"))) then
-                cachedSheriff = plr.DisplayName
-                break
-            end
+        if not weaponsExist and (workspace:FindFirstChild("Gun") or workspace:FindFirstChild("Knife")) then
+            weaponsExist = true
         end
-    end
-    return cachedSheriff
-end
 
--- Hero finder
+        -- Reset nur, wenn keine Waffen existieren und die Runde sicher vorbei ist
+        if not weaponsExist and timeSinceFade > 10 then
+            cachedMurderer = "Loading..."
+            cachedSheriff = "Loading..."
+        end
+        
+        task.wait(1)
+    end
+end)
+
+function Status.getMurderer() return cachedMurderer end
+function Status.getSheriff() return cachedSheriff end
+
 function Status.getHero()
-    checkRoundReset()
-    
     if cachedSheriff == "Loading..." then return "None" end
-    
     for _, plr in pairs(Players:GetPlayers()) do
         if plr.Character and (plr.Character:FindFirstChild("Gun") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Gun"))) then
-            if plr.DisplayName ~= cachedSheriff then
-                return plr.DisplayName
-            end
+            if plr.DisplayName ~= cachedSheriff then return plr.DisplayName end
         end
     end
     return "None"
