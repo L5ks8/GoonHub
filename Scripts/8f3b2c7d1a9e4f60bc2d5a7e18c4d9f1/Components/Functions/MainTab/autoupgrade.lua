@@ -19,13 +19,18 @@ local function getRemote(serviceName)
 end
 
 local UpgradeRemote = getRemote("UpgradeService")
-local USC = require(RS.Source.Features.Upgrades.UpgradeServiceClient)
-local UpgradeTree = require(RS.Source.Features.Upgrades.UpgradeTree)
+
+-- Sichereres Laden der Spiel-Module
+local USC, UpgradeTree
+pcall(function()
+    USC = require(RS:WaitForChild("Source"):WaitForChild("Features"):WaitForChild("Upgrades"):WaitForChild("UpgradeServiceClient"))
+    UpgradeTree = require(RS:WaitForChild("Source"):WaitForChild("Features"):WaitForChild("Upgrades"):WaitForChild("UpgradeTree"))
+end)
 
 local KNOWN_TREES = {"main", "lootTree", "playerTree"}
 
 local function getTreeUpgrades(treeName)
-    local tree = UpgradeTree[treeName]
+    local tree = UpgradeTree and UpgradeTree[treeName]
     if type(tree) ~= "table" then return {} end
     local available = {}
     for id, data in pairs(tree) do
@@ -45,6 +50,11 @@ local function getTreeUpgrades(treeName)
                         numCost = data.cost
                     elseif type(data.cost) == "table" then
                         numCost = data.cost.amount or 0
+                        if numCost == 0 then
+                            for _, v in pairs(data.cost) do
+                                if type(v) == "number" then numCost = v break end
+                            end
+                        end
                     end
                     table.insert(available, {id = id, cost = numCost})
                 end
@@ -63,7 +73,8 @@ function AutoUpgrade.Toggle(state)
     if state then
         upgradeLoop = task.spawn(function()
             while true do
-                for _, treeName in ipairs(KNOWN_TREES) do
+                if UpgradeRemote and UpgradeTree then
+                    for _, treeName in ipairs(KNOWN_TREES) do
                     local available = getTreeUpgrades(treeName)
                     table.sort(available, function(a, b) return a.cost < b.cost end)
                     for _, entry in ipairs(available) do
