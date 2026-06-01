@@ -1,7 +1,7 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
-local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/coins")
+local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/Coins")
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 local Visuals = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/EspTab/visuals")
@@ -39,14 +39,20 @@ function UILayout.Create()
     main:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
-        Default = false
+        Default = false,
+        Callback = function(state)
+            Coins.Toggle(state)
+        end
     })
     main:CreateSlider({
         Title = "Farm Speed",
         Min = 15,
         Max = 25,
         Default = 20,
-        Column = "Left"
+        Column = "Left",
+        Callback = function(value)
+            Coins.SetSpeed(value)
+        end
     })
     main:CreateToggle({
         Title = "Auto Reset (Full Bag)",
@@ -60,8 +66,11 @@ function UILayout.Create()
         Options = {
             "Instant Teleport",
             "Tween",
-            },
-        Column = "Left"
+        },
+        Column = "Left",
+        Callback = function(value)
+            Coins.SetMethod(value)
+        end
     })
     local main = mainTab:CreateSection("Status", "Right")
     local murderLabel = main:CreateLabel("Murderer:", "Wait...")
