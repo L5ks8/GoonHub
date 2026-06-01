@@ -8,6 +8,26 @@ local farmLoop = nil
 local tpPos = Vector3.new(31.723007, 504.818054, -27.340113)
 local currentMethod = "Instant Teleport"
 local currentSpeed = 20
+local isEnabled = false
+
+local function isPlayerInRound()
+	local murderer = Status.getMurderer()
+	
+	if murderer == "Loading..." or murderer == "None" then
+		return false
+	end
+	
+	if not player.Character then
+		return false
+	end
+	
+	local humanoid = player.Character:FindFirstChild("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then
+		return false
+	end
+	
+	return true
+end
 
 local function tp(cf)
 	if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -39,13 +59,21 @@ end
 
 function Coins.Toggle(state)
     if farmLoop then task.cancel(farmLoop) farmLoop = nil end
-    if not state then return end
+    if not state then isEnabled = false return end
     
+    isEnabled = true
     farmLoop = task.spawn(function()
-        while true do
+        while isEnabled do
+            if not isPlayerInRound() then
+                task.wait(0.5)
+                continue
+            end
+            
             local murderer = Status.getMurderer()
             if murderer ~= "Loading..." and murderer ~= "None" then
                 for _, coin in pairs(workspace:GetDescendants()) do
+                    if not isPlayerInRound() then break end
+                    
                     if coin.Name == "Coin_Server" and coin:IsA("BasePart") then
                         if currentMethod == "Instant Teleport" then
                             tp(coin.CFrame)
