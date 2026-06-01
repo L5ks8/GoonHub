@@ -109,6 +109,14 @@ function UILayout.Create()
             Visuals.ToggleEsp(state)
         end
     })
+    esp:CreateToggle({
+        Title = "Self Esp",
+        Column = "Left",
+        Default = false,
+        Callback = function(state)
+            Visuals.SetSelfEsp(state)
+        end
+    })
     -- Misc Tab
 
     local misc = MiscTab:CreateSection("Misc", "Left")
