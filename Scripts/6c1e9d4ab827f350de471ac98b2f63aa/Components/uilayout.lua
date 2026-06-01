@@ -4,6 +4,7 @@ local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
 local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/coins")
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
+local Visuals = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/EspTab/visuals")
 
 local UILayout = {}
 
@@ -29,10 +30,9 @@ function UILayout.Create()
 
     -- Game Tabs
     local mainTab = window:CreateTab("Main", false)
-    local FarmTab = window:CreateTab("Farm", false)
+    local EspTab = window:CreateTab("Esp", false)
     local MiscTab = window:CreateTab("Misc", false)
     local ShopTab = window:CreateTab("Shop", false)
-    local EspTab = window:CreateTab("Esp", false)
     
     -- Main Tab
     local main = mainTab:CreateSection("Coins", "Left")
@@ -99,9 +99,16 @@ function UILayout.Create()
         end
     end)
 
-    -- Farm Tab
-    local farm = FarmTab:CreateSection("Auto Farm", "Left")
-
+    -- Esp Tab
+    local esp = EspTab:CreateSection("Visuals", "Left")
+    esp:CreateToggle({
+        Title = "Esp",
+        Column = "Left",
+        Default = false,
+        Callback = function(state)
+            Visuals.ToggleEsp(state)
+        end
+    })
     -- Misc Tab
 
     local misc = MiscTab:CreateSection("Misc", "Left")
@@ -177,8 +184,6 @@ function UILayout.Create()
         end
     })
 
-    -- Esp Tab
-    local esp = EspTab:CreateSection("Visuals", "Left")
 
     return window
 end
