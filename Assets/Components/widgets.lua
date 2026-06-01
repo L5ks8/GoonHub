@@ -106,7 +106,7 @@ function Widgets.Init(window, G2L)
             Name = "label",
             Text = name,
             FontFace = fonts.reg,
-            TextSize = 14,
+            TextSize = 17,
             TextColor3 = Color3.new(1, 1, 1),
             TextTransparency = 0.5,
             BackgroundTransparency = 1,
@@ -255,7 +255,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1, 
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.med,
-                    TextSize = 12,
+                    TextSize = 14,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
                 New("TextLabel", {
@@ -266,7 +266,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.reg,
-                    TextSize = 12,
+                    TextSize = 14,
                     RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
@@ -279,7 +279,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left, 
                     FontFace = fonts.med,
-                    TextSize = 13,
+                    TextSize = 14,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
             end
@@ -373,7 +373,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 13
+                TextSize = 14
             }, f)
 
             local valueLabel = New("TextBox", {
@@ -517,7 +517,7 @@ function Widgets.Init(window, G2L)
                 Text = cfg.Text,
                 TextColor3 = Color3.fromRGB(180, 180, 180),
                 FontFace = fonts.light, -- Assuming a 'light' font exists or using 'reg'
-                TextSize = 12,
+                TextSize = 14,
                 BackgroundTransparency = 1,
                 TextWrapped = true,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -549,7 +549,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 13
+                TextSize = 14
             }, f)
             
             local btn = New("TextButton", {
