@@ -80,7 +80,6 @@ task.spawn(function()
         task.wait(1)
     end
 end)
-
 function Status.getMurderer() return cachedMurderer end
 function Status.getSheriff() return cachedSheriff end
 

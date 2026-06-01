@@ -79,7 +79,6 @@ function Visuals.ToggleEsp(state)
                             label.TextColor3 = color
                         end
                     else
-                        -- Entferne ESP von mir selbst, wenn Self-ESP deaktiviert wird
                         local highlight = char:FindFirstChild("GoonHub_Highlight")
                         if highlight then highlight:Destroy() end
                         local billboard = char:FindFirstChild("GoonHub_NameESP")

@@ -35,7 +35,7 @@ function UILayout.Create()
 
     -- Main Tab
     local Section = MainTab:CreateSection("Farm", "Left")
---[[Section:CreateToggle({
+    Section:CreateToggle({
         Title = "Auto Roll",
         Column = "Left",
         Default = false,
@@ -59,7 +59,7 @@ function UILayout.Create()
         Callback = function(state)
             AutoUpgrade.Toggle(state)
         end
-    }) ]]
+    }) 
     -- Farm Tab
 
     -- Config Tab
