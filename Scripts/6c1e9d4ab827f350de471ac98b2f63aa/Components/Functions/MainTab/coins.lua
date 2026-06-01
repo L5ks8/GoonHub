@@ -43,7 +43,7 @@ function Coins.Toggle(state)
     
     farmLoop = task.spawn(function()
         while true do
-            local murderer = Status and Status.getMurderer() or "Loading..."
+            local murderer = Status.getMurderer()
             if murderer ~= "Loading..." and murderer ~= "None" then
                 for _, coin in pairs(workspace:GetDescendants()) do
                     if coin.Name == "Coin_Server" and coin:IsA("BasePart") then

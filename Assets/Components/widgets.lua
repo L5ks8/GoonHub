@@ -203,8 +203,8 @@ function Widgets.Init(window, G2L)
 
             local container = New("Frame", {
                 Name = "container",
-                Position = UDim2.new(0, 0, 0, 35),
-                Size = UDim2.new(1, 0, 0, 0),
+                Position = UDim2.new(0, 10, 0, 35),
+                Size = UDim2.new(1, -20, 0, 0),
                 AutomaticSize = Enum.AutomaticSize.Y,
                 BackgroundTransparency = 1
             }, secFrame)
@@ -215,10 +215,8 @@ function Widgets.Init(window, G2L)
             }, container)
 
             New("UIPadding", {
-                PaddingBottom = UDim.new(0, 15),
-                PaddingTop = UDim.new(0, 5),
-                PaddingLeft = UDim.new(0, 12),
-                PaddingRight = UDim.new(0, 12)
+                PaddingBottom = UDim.new(0, 10),
+                PaddingTop = UDim.new(0, 5)
             }, container)
 
             local secObj = {WidgetCount = 0}

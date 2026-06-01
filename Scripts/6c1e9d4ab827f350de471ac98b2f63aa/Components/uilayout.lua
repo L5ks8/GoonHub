@@ -79,7 +79,7 @@ function UILayout.Create()
 
     -- Status Update Loop
     task.spawn(function()
-        while task.wait(1) and Status do
+        while task.wait(1) do
             local murd = Status.getMurderer()
             local sher = Status.getSheriff()
             local hero = Status.getHero()
