@@ -32,6 +32,7 @@ function UILayout.Create()
     -- Game Tabs
     local MainTab = window:CreateTab("Main", false)
     local MiscTab = window:CreateTab("Misc", false)
+    local ConfigTab = window:CreateTab("Config", true)
 
     -- Main Tab
     local main = MainTab:CreateSection("Farm", "Left")
