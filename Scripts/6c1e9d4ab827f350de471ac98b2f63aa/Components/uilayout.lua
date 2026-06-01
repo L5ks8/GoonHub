@@ -41,7 +41,6 @@ function UILayout.Create()
         Column = "Left",
         Default = false,
         Callback = function(state)
-            Coins.Toggle(state)
         end
     })
     main:CreateSlider({
@@ -51,7 +50,6 @@ function UILayout.Create()
         Default = 20,
         Column = "Left",
         Callback = function(value)
-            Coins.SetFarmSpeed(value)
         end
     })
     main:CreateToggle({
@@ -71,7 +69,6 @@ function UILayout.Create()
             },
         Column = "Left",
         Callback = function(value)
-            Coins.SetTeleportMethod(value)
         end
     })
     local main = mainTab:CreateSection("Status", "Right")
