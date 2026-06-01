@@ -533,7 +533,7 @@ function Widgets.Init(window, G2L)
             local selected = cfg.Default or cfg.Options[1] or "None"
             
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, 40),
+                Size = UDim2.new(1, 0, 0, 50),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder,
                 ClipsDescendants = true
@@ -553,7 +553,7 @@ function Widgets.Init(window, G2L)
             }, f)
             
             local btn = New("TextButton", {
-                Size = UDim2.new(1, -20, 0, 22),
+                Size = UDim2.new(1, -20, 0, 26),
                 Position = UDim2.new(0, 10, 0, 20),
                 BackgroundColor3 = Color3.fromRGB(35, 35, 35),
                 Text = "  " .. selected,
@@ -578,7 +578,7 @@ function Widgets.Init(window, G2L)
             
             local list = New("ScrollingFrame", {
                 Name = "list",
-                Position = UDim2.new(0, 10, 0, 45),
+                Position = UDim2.new(0, 10, 0, 52),
                 Size = UDim2.new(1, -20, 1, -50),
                 BackgroundTransparency = 1,
                 Visible = false,
@@ -592,7 +592,7 @@ function Widgets.Init(window, G2L)
             
             for _, opt in pairs(cfg.Options) do
                 local optBtn = New("TextButton", {
-                    Size = UDim2.new(1, 0, 0, 25),
+                    Size = UDim2.new(1, 0, 0, 30),
                     BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                     Text = opt,
                     TextColor3 = Color3.new(0.8, 0.8, 0.8),
@@ -609,7 +609,7 @@ function Widgets.Init(window, G2L)
                     list.Visible = false
                     if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
                     -- Adjusted targetHeight for closed state
-                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 45)}):Play()
+                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 50)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
                     if cfg.Callback then cfg.Callback(opt) end
                 end)
@@ -620,7 +620,7 @@ function Widgets.Init(window, G2L)
                 list.Visible = dropped
                 if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = not dropped end
                 
-                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 48, 200) or 40 -- Adjusted for new base height
+                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 58, 200) or 50 -- Adjusted for new base height
                 TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
