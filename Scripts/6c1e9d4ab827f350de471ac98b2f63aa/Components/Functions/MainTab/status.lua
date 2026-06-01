@@ -27,18 +27,18 @@ local function checkRoundReset()
     end
 
     if not weaponsExist then
-        cachedMurderer = "Wait..."
-        cachedSheriff = "Wait..."
+        cachedMurderer = "Loading..."
+        cachedSheriff = "Loading..."
     end
 end
 
 -- Murder finder
 function Status.getMurderer()
     checkRoundReset()
-    if cachedMurderer == "Wait..." then
+    if cachedMurderer == "Loading..." then
         for _, plr in pairs(Players:GetPlayers()) do
             if plr.Character and (plr.Character:FindFirstChild("Knife") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Knife"))) then
-                cachedMurderer = plr.DisplayName or plr.Name
+                cachedMurderer = plr.DisplayName
                 break
             end
         end
@@ -49,10 +49,10 @@ end
 -- Sherrif finder
 function Status.getSheriff()
     checkRoundReset()
-    if cachedSheriff == "Wait..." then
+    if cachedSheriff == "Loading..." then
         for _, plr in pairs(Players:GetPlayers()) do
             if plr.Character and (plr.Character:FindFirstChild("Gun") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Gun"))) then
-                cachedSheriff = plr.DisplayName or plr.Name
+                cachedSheriff = plr.DisplayName
                 break
             end
         end
