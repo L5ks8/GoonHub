@@ -52,7 +52,7 @@ function Visuals.ToggleEsp(state)
                         highlight.OutlineTransparency = 0
                         highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 
-                        -- Name ESP (BillboardGui)
+                        -- Name ESP 
                         local billboard = char:FindFirstChild("GoonHub_NameESP")
                         if not billboard and head then
                             billboard = Instance.new("BillboardGui")

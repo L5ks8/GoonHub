@@ -41,6 +41,7 @@ function UILayout.Create()
         Column = "Left",
         Default = false,
         Callback = function(state)
+            Coins.Toggle(state)
         end
     })
     main:CreateSlider({
@@ -50,24 +51,15 @@ function UILayout.Create()
         Default = 20,
         Column = "Left",
         Callback = function(value)
+            Coins.SetFarmSpeed(value)
         end
     })
     main:CreateToggle({
         Title = "Auto Reset (Full Bag)",
-        SubTitle = "Resets character when bag is full",
+        SubTitle = "Resets if bag full",
         Column = "Left",
         Default = false,
         Callback = function(state)
-        end
-    })
-    
-    main:CreateSlider({
-        Title = "Distance",
-        Min = 1,
-        Max = 5,
-        Default = 5,
-        Column = "Left",
-        Callback = function(value)
         end
     })
     main:CreateDropdown({
@@ -79,6 +71,7 @@ function UILayout.Create()
             },
         Column = "Left",
         Callback = function(value)
+            Coins.SetTeleportMethod(value)
         end
     })
     local main = mainTab:CreateSection("Status", "Right")
