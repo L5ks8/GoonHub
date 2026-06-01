@@ -254,7 +254,7 @@ function Widgets.Init(window, G2L)
                     TextColor3 = Color3.new(1, 1, 1),
                     BackgroundTransparency = 1, 
                     TextXAlignment = Enum.TextXAlignment.Left,
-                    FontFace = fonts.med,
+                    FontFace = fonts.bold,
                     TextSize = 14,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
@@ -265,7 +265,7 @@ function Widgets.Init(window, G2L)
                     TextColor3 = Color3.fromRGB(150, 150, 150),
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
-                    FontFace = fonts.reg,
+                    FontFace = fonts.bold,
                     TextSize = 14,
                     RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
@@ -279,7 +279,7 @@ function Widgets.Init(window, G2L)
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left, 
                     FontFace = fonts.med,
-                    TextSize = 14,
+                    TextSize = 14, -- Already 14, keeping as is
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
             end
@@ -373,7 +373,7 @@ function Widgets.Init(window, G2L)
                 BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 14
+                TextSize = 14 -- Already 14, keeping as is
             }, f)
 
             local valueLabel = New("TextBox", {
@@ -469,7 +469,7 @@ function Widgets.Init(window, G2L)
                 BackgroundColor3 = Color3.fromRGB(41, 41, 41),
                 Text = hasSub and "" or cfg.Title,
                 TextColor3 = Color3.new(1, 1, 1),
-                FontFace = fonts.med,
+                FontFace = fonts.bold,
                 TextSize = 15,
                 TextTruncate = Enum.TextTruncate.AtEnd,
                 LayoutOrder = lOrder,
@@ -485,8 +485,8 @@ function Widgets.Init(window, G2L)
                     Text = cfg.Title,
                     TextColor3 = Color3.new(1, 1, 1),
                     BackgroundTransparency = 1, 
-                    TextXAlignment = Enum.TextXAlignment.Center,
-                    FontFace = fonts.med,
+                    TextXAlignment = Enum.TextXAlignment.Center, 
+                    FontFace = fonts.bold,
                     TextSize = 12,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, bWidget)
@@ -496,8 +496,8 @@ function Widgets.Init(window, G2L)
                     Text = cfg.SubTitle,
                     TextColor3 = Color3.fromRGB(150, 150, 150),
                     BackgroundTransparency = 1,
-                    TextXAlignment = Enum.TextXAlignment.Center,
-                    FontFace = fonts.reg,
+                    TextXAlignment = Enum.TextXAlignment.Center, 
+                    FontFace = fonts.bold,
                     TextSize = 12,
                     RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
@@ -516,8 +516,8 @@ function Widgets.Init(window, G2L)
                 AutomaticSize = Enum.AutomaticSize.Y,
                 Text = cfg.Text,
                 TextColor3 = Color3.fromRGB(180, 180, 180),
-                FontFace = fonts.light, -- Assuming a 'light' font exists or using 'reg'
-                TextSize = 14,
+                FontFace = fonts.bold,
+                TextSize = 12,
                 BackgroundTransparency = 1,
                 TextWrapped = true,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -548,7 +548,7 @@ function Widgets.Init(window, G2L)
                 TextColor3 = Color3.new(1, 1, 1),
                 BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
-                FontFace = fonts.med,
+                FontFace = fonts.bold,
                 TextSize = 14
             }, f)
             
@@ -595,9 +595,9 @@ function Widgets.Init(window, G2L)
                     Size = UDim2.new(1, 0, 0, 30),
                     BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                     Text = opt,
-                    TextColor3 = Color3.new(0.8, 0.8, 0.8),
-                    FontFace = fonts.reg,
-                    TextSize = 11,
+                    TextColor3 = Color3.new(0.8, 0.8, 0.8), 
+                    FontFace = fonts.bold,
+                    TextSize = 14,
                     AutoButtonColor = false
                 }, list)
                 
