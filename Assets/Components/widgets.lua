@@ -138,7 +138,7 @@ function Widgets.Init(window, G2L)
             }, page)
 
             New("UIListLayout", {
-                Padding = UDim.new(0, 6),
+                Padding = UDim.new(0, 4),
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, c)
             return c
@@ -215,6 +215,7 @@ function Widgets.Init(window, G2L)
             }, container)
 
             New("UIPadding", {PaddingBottom = UDim.new(0, 8)}, container)
+            New("UIPadding", {PaddingBottom = UDim.new(0, 6)}, container)
 
             local secObj = {WidgetCount = 0}
             function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end
@@ -222,6 +223,7 @@ function Widgets.Init(window, G2L)
             function secObj:CreateButton(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateButton(title, callback, col, container, self.WidgetCount) end
             function secObj:CreateKeybind(title, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateKeybind(title, callback, col, container, self.WidgetCount) end
             function secObj:CreateParagraph(text) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateParagraph(text, col, container, self.WidgetCount) end
+            function secObj:CreateLabel(title, default) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateLabel(title, default, col, container, self.WidgetCount) end
             function secObj:CreateDropdown(title, options, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateDropdown(title, options, callback, col, container, self.WidgetCount) end
             return secObj
         end
@@ -523,6 +525,48 @@ function Widgets.Init(window, G2L)
                 TextXAlignment = Enum.TextXAlignment.Left,
                 LayoutOrder = lOrder
             }, overrideParent or self.currentParent[col])
+        end
+
+        function tObj:CreateLabel(title, default, column, overrideParent, layoutOrder)
+            local cfg = type(title) == "table" and title or {Title = title, Default = default, Column = column}
+            local col = cfg.Column or self.lastColumn
+            local lOrder = layoutOrder or cfg.LayoutOrder
+            
+            local f = New("Frame", {
+                Size = UDim2.new(1, 0, 0, 30),
+                BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                LayoutOrder = lOrder
+            }, overrideParent or self.currentParent[col])
+
+            New("UICorner", {CornerRadius = UDim.new(0, 6)}, f)
+            
+            New("TextLabel", {
+                Size = UDim2.new(1, -10, 1, 0),
+                Position = UDim2.new(0, 10, 0, 0),
+                Text = cfg.Title,
+                TextColor3 = Color3.new(1, 1, 1),
+                BackgroundTransparency = 1, 
+                TextXAlignment = Enum.TextXAlignment.Left,
+                FontFace = fonts.bold,
+                TextSize = 14
+            }, f)
+
+            local valueLabel = New("TextLabel", {
+                Size = UDim2.new(1, -20, 1, 0),
+                Position = UDim2.new(0, 10, 0, 0),
+                Text = cfg.Default or "",
+                TextColor3 = UI.CurrentAccent,
+                BackgroundTransparency = 1,
+                TextXAlignment = Enum.TextXAlignment.Right,
+                FontFace = fonts.med,
+                TextSize = 14
+            }, f)
+
+            return {
+                Set = function(_, text)
+                    valueLabel.Text = tostring(text)
+                end
+            }
         end
 
         function tObj:CreateDropdown(title, options, callback, column, overrideParent, layoutOrder)

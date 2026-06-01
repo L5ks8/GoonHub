@@ -3,6 +3,7 @@ local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
 local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/coins")
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
+local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 
 local UILayout = {}
 
@@ -80,6 +81,21 @@ function UILayout.Create()
         Callback = function(value)
         end
     })
+    local main = mainTab:CreateSection("Status", "Right")
+    local murderLabel = main:CreateLabel("Murderer:", "Wait...")
+    local sheriffLabel = main:CreateLabel("Sheriff:", "Wait...")
+
+    -- Status Update Loop
+    task.spawn(function()
+        while task.wait(1) do
+            local murd = Status.getMurderer()
+            local sher = Status.getSheriff()
+            
+            murderLabel:Set(murd)
+            sheriffLabel:Set(sher)
+        end
+    end)
+
     -- Farm Tab
     local farm = FarmTab:CreateSection("Auto Farm", "Left")
 
@@ -124,7 +140,6 @@ function UILayout.Create()
         Column = "Left",
         Default = false,
         Callback = function(state)
-            -- Logic for auto opening
         end
     })
     shop:CreateSlider({
