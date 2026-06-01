@@ -265,7 +265,7 @@ function Widgets.Init(window, G2L)
                     TextColor3 = Color3.fromRGB(150, 150, 150),
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
-                    FontFace = fonts.bold,
+                    FontFace = fonts.reg,
                     TextSize = 14,
                     RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
@@ -278,8 +278,8 @@ function Widgets.Init(window, G2L)
                     TextColor3 = Color3.new(1, 1, 1),
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left, 
-                    FontFace = fonts.med,
-                    TextSize = 14, -- Already 14, keeping as is
+                    FontFace = fonts.bold,
+                    TextSize = 14, 
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
             end
@@ -372,7 +372,7 @@ function Widgets.Init(window, G2L)
                 TextColor3 = Color3.new(1, 1, 1),
                 BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
-                FontFace = fonts.med,
+                FontFace = fonts.bold,
                 TextSize = 14 -- Already 14, keeping as is
             }, f)
 
@@ -496,8 +496,8 @@ function Widgets.Init(window, G2L)
                     Text = cfg.SubTitle,
                     TextColor3 = Color3.fromRGB(150, 150, 150),
                     BackgroundTransparency = 1,
-                    TextXAlignment = Enum.TextXAlignment.Center, 
-                    FontFace = fonts.bold,
+                    TextXAlignment = Enum.TextXAlignment.Center,
+                    FontFace = fonts.reg,
                     TextSize = 12,
                     RichText = true,
                     TextTruncate = Enum.TextTruncate.AtEnd
@@ -593,7 +593,7 @@ function Widgets.Init(window, G2L)
             for _, opt in pairs(cfg.Options) do
                 local optBtn = New("TextButton", {
                     Size = UDim2.new(1, 0, 0, 30),
-                    BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                    BackgroundColor3 = Color3.fromRGB(45, 45, 45),
                     Text = opt,
                     TextColor3 = Color3.new(0.8, 0.8, 0.8), 
                     FontFace = fonts.bold,
