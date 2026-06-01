@@ -9,7 +9,6 @@ local cachedMurderer = "Loading..."
 local cachedSheriff = "Loading..."
 local lastFadeTime = 0
 
--- Remote Event Listener für sofortige Rollen-Erkennung
 local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)
 local Gameplay = Remotes and Remotes:WaitForChild("Gameplay", 5)
 local Fade = Gameplay and Gameplay:WaitForChild("Fade", 5)
@@ -45,7 +44,6 @@ if Fade then
     end)
 end
 
--- Zentralisierte Rollen-Aktualisierung im Hintergrund, um Flickern zu vermeiden
 task.spawn(function()
     while true do
         local timeSinceFade = tick() - lastFadeTime

@@ -39,26 +39,20 @@ function UILayout.Create()
     main:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
-        Default = false,
-        Callback = function(state)
-        end
+        Default = false
     })
     main:CreateSlider({
         Title = "Farm Speed",
         Min = 15,
         Max = 25,
         Default = 20,
-        Column = "Left",
-        Callback = function(value)
-        end
+        Column = "Left"
     })
     main:CreateToggle({
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets if bag full",
         Column = "Left",
-        Default = false,
-        Callback = function(state)
-        end
+        Default = false
     })
     main:CreateDropdown({
         Title = "Teleport Methods",
@@ -67,9 +61,7 @@ function UILayout.Create()
             "Instant Teleport",
             "Tween",
             },
-        Column = "Left",
-        Callback = function(value)
-        end
+        Column = "Left"
     })
     local main = mainTab:CreateSection("Status", "Right")
     local murderLabel = main:CreateLabel("Murderer:", "Wait...")

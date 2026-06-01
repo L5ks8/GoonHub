@@ -424,7 +424,9 @@ function Widgets.Init(window, G2L)
                     val = math.clamp(val, cfg.Min, cfg.Max)
                     valueLabel.Text = tostring(val)
                     sliderFill.Size = UDim2.new(math.clamp((val - cfg.Min) / (cfg.Max - cfg.Min), 0, 1), 0, 1, 0)
-                    cfg.Callback(val)
+                    if cfg.Callback then
+                        cfg.Callback(val)
+                    end
                 else
                     valueLabel.Text = tostring(math.floor(cfg.Min + (sliderFill.Size.X.Scale * (cfg.Max - cfg.Min))))
                 end
@@ -435,7 +437,9 @@ function Widgets.Init(window, G2L)
                 sliderFill.Size = UDim2.new(pos, 0, 1, 0)
                 local value = math.floor(cfg.Min + (pos * (cfg.Max - cfg.Min)))
                 valueLabel.Text = tostring(value)
-                cfg.Callback(value)
+                if cfg.Callback then
+                    cfg.Callback(value)
+                end
             end
             
             local dragging = false
@@ -456,7 +460,9 @@ function Widgets.Init(window, G2L)
                 if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
             end)
 
-            task.spawn(function() cfg.Callback(cfg.Default) end)
+            if cfg.Callback then
+                task.spawn(function() cfg.Callback(cfg.Default) end)
+            end
         end
 
         function tObj:CreateButton(title, callback, column, overrideParent, layoutOrder)
@@ -505,7 +511,11 @@ function Widgets.Init(window, G2L)
                 }, bWidget)
             end
             
-            bWidget.MouseButton1Click:Connect(cfg.Callback)
+            bWidget.MouseButton1Click:Connect(function()
+                if cfg.Callback then
+                    cfg.Callback()
+                end
+            end)
         end
 
         function tObj:CreateParagraph(text, column, overrideParent, layoutOrder)
