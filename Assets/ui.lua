@@ -183,7 +183,7 @@ function UI.CreateBase(title, versionText)
         Name = "logo_text",
         AutomaticSize = Enum.AutomaticSize.X,
         Size = UDim2.new(0, 0, 1, 0),
-        Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub ^^<font color=\"rgb(150,150,150)\">| %s</font> <font color=\"rgb(100,100,100)\" size=\"14\">%s</font>", title, versionText),
+        Text = string.format("<font color=\"rgb(248, 191, 212)\">Goon</font>Hub<font color=\"rgb(150,150,150)\">| %s</font> <font color=\"rgb(100,100,100)\" size=\"14\">%s</font>", title, versionText),
         RichText = true,
         FontFace = fonts.logo,
         TextSize = 24,
