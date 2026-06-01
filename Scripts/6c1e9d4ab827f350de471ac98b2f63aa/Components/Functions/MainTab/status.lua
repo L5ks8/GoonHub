@@ -21,19 +21,26 @@ if Fade then
         local playerData = (data.Function and data.Function.Arguments) or data
         if type(playerData) ~= "table" then return end
 
-        lastFadeTime = tick()
-        cachedMurderer = "Loading..."
-        cachedSheriff = "Loading..."
+        local foundRoles = false
+        local tempMurderer = "Loading..."
+        local tempSheriff = "Loading..."
 
         for playerName, info in pairs(playerData) do
             if type(info) == "table" and info.Role then
+                foundRoles = true
                 local plr = Players:FindFirstChild(playerName)
                 if info.Role == "Murderer" then
-                    cachedMurderer = plr and plr.DisplayName or playerName
+                    tempMurderer = plr and plr.DisplayName or playerName
                 elseif info.Role == "Sheriff" then
-                    cachedSheriff = plr and plr.DisplayName or playerName
+                    tempSheriff = plr and plr.DisplayName or playerName
                 end
             end
+        end
+
+        if foundRoles then
+            lastFadeTime = tick()
+            cachedMurderer = tempMurderer
+            cachedSheriff = tempSheriff
         end
     end)
 end
@@ -57,7 +64,6 @@ task.spawn(function()
             end
             if hasGun then
                 weaponsExist = true
-                -- Nur als Sheriff setzen, wenn noch keiner durch das Remote-Event erkannt wurde
                 if cachedSheriff == "Loading..." or cachedSheriff == "None" then
                     cachedSheriff = plr.DisplayName
                 end
@@ -68,8 +74,7 @@ task.spawn(function()
             weaponsExist = true
         end
 
-        -- Reset nur, wenn keine Waffen existieren und die Runde sicher vorbei ist
-        if not weaponsExist and timeSinceFade > 10 then
+        if not weaponsExist and timeSinceFade > 20 then
             cachedMurderer = "Loading..."
             cachedSheriff = "Loading..."
         end
