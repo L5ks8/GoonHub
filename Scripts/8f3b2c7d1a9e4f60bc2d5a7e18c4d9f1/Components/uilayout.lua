@@ -34,8 +34,8 @@ function UILayout.Create()
     local MiscTab = window:CreateTab("Misc", false)
 
     -- Main Tab
-    local Section = MainTab:CreateSection("Farm", "Left")
-    Section:CreateToggle({
+    local main = MainTab:CreateSection("Farm", "Left")
+    main:CreateToggle({
         Title = "Auto Roll",
         Column = "Left",
         Default = false,
@@ -43,8 +43,8 @@ function UILayout.Create()
             AutoRoll.Toggle(state)
         end
     })
-    local Section = MainTab:CreateSection("Misc", "Right")
-    Section:CreateToggle({
+    local main = MainTab:CreateSection("Misc", "Right")
+    main:CreateToggle({
         Title = "Auto Claim Index",
         Column = "Right",
         Default = false,
@@ -52,7 +52,7 @@ function UILayout.Create()
             AutoIndexClaim.Toggle(state)
         end
     })
-    Section:CreateToggle({
+    main:CreateToggle({
         Title = "Auto Upgrade",
         Column = "Right",
         Default = false,
