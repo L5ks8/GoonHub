@@ -105,8 +105,8 @@ function Widgets.Init(window, G2L)
         local lb = New("TextLabel", {
             Name = "label",
             Text = name,
-            FontFace = fonts.reg,
-            TextSize = 17,
+            FontFace = fonts.bold,
+            TextSize = 15,
             TextColor3 = Color3.new(1, 1, 1),
             TextTransparency = 0.5,
             BackgroundTransparency = 1,
