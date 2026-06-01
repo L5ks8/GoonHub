@@ -30,9 +30,9 @@ if Fade then
                 foundRoles = true
                 local plr = Players:FindFirstChild(playerName)
                 if info.Role == "Murderer" then
-                    tempMurderer = plr and plr.DisplayName or playerName
+                    tempMurderer = plr and plr.Name or playerName
                 elseif info.Role == "Sheriff" then
-                    tempSheriff = plr and plr.DisplayName or playerName
+                    tempSheriff = plr and plr.Name or playerName
                 end
             end
         end
@@ -59,13 +59,13 @@ task.spawn(function()
             local hasGun = (char and char:FindFirstChild("Gun")) or (bp and bp:FindFirstChild("Gun"))
 
             if hasKnife then
-                cachedMurderer = plr.DisplayName
+                    cachedMurderer = plr.Name
                 weaponsExist = true
             end
             if hasGun then
                 weaponsExist = true
                 if cachedSheriff == "Loading..." or cachedSheriff == "None" then
-                    cachedSheriff = plr.DisplayName
+                        cachedSheriff = plr.Name
                 end
             end
         end
@@ -90,7 +90,7 @@ function Status.getHero()
     if cachedSheriff == "Loading..." then return "None" end
     for _, plr in pairs(Players:GetPlayers()) do
         if plr.Character and (plr.Character:FindFirstChild("Gun") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Gun"))) then
-            if plr.DisplayName ~= cachedSheriff then return plr.DisplayName end
+            if plr.Name ~= cachedSheriff then return plr.Name end
         end
     end
     return "None"

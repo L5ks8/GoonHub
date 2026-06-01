@@ -13,7 +13,7 @@ function Visuals.SetSelfEsp(state)
 end
 
 local function getRoleColor(plr)
-    local name = plr.DisplayName
+    local name = plr.Name
     
     if name == Status.getMurderer() then
         return Color3.fromRGB(255, 0, 0) -- Rot
@@ -75,7 +75,7 @@ function Visuals.ToggleEsp(state)
                         
                         local label = billboard and billboard:FindFirstChild("NameLabel")
                         if label then
-                            label.Text = player.DisplayName
+                            label.Text = player.Name
                             label.TextColor3 = color
                         end
                     else
