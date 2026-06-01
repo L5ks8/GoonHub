@@ -49,14 +49,14 @@ function Coins.Toggle(state)
                     if coin.Name == "Coin_Server" and coin:IsA("BasePart") then
                         if currentMethod == "Instant Teleport" then
                             tp(coin.CFrame)
-                            task.wait(0.1)
+                            task.wait(0.5)
                             tp(CFrame.new(tpPos))
+                            task.wait(2)
                         elseif currentMethod == "Tween" then
                             tween(coin.CFrame)
                             task.wait(0.1)
                             tween(CFrame.new(tpPos))
                         end
-                        task.wait(0.1)
                     end
                     if not farmLoop then break end
                 end
