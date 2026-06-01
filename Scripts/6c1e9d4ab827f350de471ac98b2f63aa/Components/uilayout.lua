@@ -35,8 +35,8 @@ function UILayout.Create()
     local ShopTab = window:CreateTab("Shop", false)
     
     -- Main Tab
-    local main = mainTab:CreateSection("Coins", "Left")
-    main:CreateToggle({
+    local coinsSection = mainTab:CreateSection("Coins", "Left")
+    coinsSection:CreateToggle({
         Title = "Coin farm",
         Column = "Left",
         Default = false,
@@ -44,7 +44,7 @@ function UILayout.Create()
             Coins.Toggle(state)
         end
     })
-    main:CreateSlider({
+    coinsSection:CreateSlider({
         Title = "Farm Speed",
         Min = 15,
         Max = 25,
@@ -54,13 +54,13 @@ function UILayout.Create()
             Coins.SetSpeed(value)
         end
     })
-    main:CreateToggle({
+    coinsSection:CreateToggle({
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets if bag full",
         Column = "Left",
         Default = false
     })
-    main:CreateDropdown({
+    coinsSection:CreateDropdown({
         Title = "Teleport Methods",
         Default = "Tween",
         Options = {
@@ -72,10 +72,10 @@ function UILayout.Create()
             Coins.SetMethod(value)
         end
     })
-    local main = mainTab:CreateSection("Status", "Right")
-    local murderLabel = main:CreateLabel("Murderer:", "Wait...")
-    local sheriffLabel = main:CreateLabel("Sheriff:", "Wait...")
-    local heroLabel = main:CreateLabel("Hero:", "nil")
+    local statusSection = mainTab:CreateSection("Status", "Right")
+    local murderLabel = statusSection:CreateLabel("Murderer:", "Wait...")
+    local sheriffLabel = statusSection:CreateLabel("Sheriff:", "Wait...")
+    local heroLabel = statusSection:CreateLabel("Hero:", "nil")
 
     -- Status Update Loop
     task.spawn(function()
@@ -182,7 +182,6 @@ function UILayout.Create()
             -- Logic for selection
         end
     })
-
 
     return window
 end

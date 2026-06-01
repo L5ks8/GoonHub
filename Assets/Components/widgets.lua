@@ -138,7 +138,7 @@ function Widgets.Init(window, G2L)
             }, page)
 
             New("UIListLayout", {
-                Padding = UDim.new(0, 2),
+                Padding = UDim.new(0, 10),
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, c)
             return c
@@ -214,7 +214,10 @@ function Widgets.Init(window, G2L)
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, container)
 
-            New("UIPadding", {PaddingBottom = UDim.new(0, 4)}, container)
+            New("UIPadding", {
+                PaddingBottom = UDim.new(0, 10),
+                PaddingTop = UDim.new(0, 5)
+            }, container)
 
             local secObj = {WidgetCount = 0}
             function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end

@@ -32,7 +32,6 @@ function UILayout.Create()
     -- Game Tabs
     local MainTab = window:CreateTab("Main", false)
     local MiscTab = window:CreateTab("Misc", false)
-    local ConfigTab = window:CreateTab("Config", true)
 
     -- Main Tab
     local farmSection = MainTab:CreateSection("Farm", "Left")
@@ -64,11 +63,6 @@ function UILayout.Create()
         end
     }) 
     -- Farm Tab
-
-    -- Config Tab
-    local config = ConfigTab:CreateSection("Management", "Left")
-    config:CreateButton("Save Current Config", function() end)
-    config:CreateButton("Load Config", function() end)
     
     return window
 end
