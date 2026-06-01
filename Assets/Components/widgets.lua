@@ -105,8 +105,8 @@ function Widgets.Init(window, G2L)
         local lb = New("TextLabel", {
             Name = "label",
             Text = name,
-            FontFace = fonts.med,
-            TextSize = 16,
+            FontFace = fonts.reg,
+            TextSize = 14,
             TextColor3 = Color3.new(1, 1, 1),
             TextTransparency = 0.5,
             BackgroundTransparency = 1,
@@ -138,7 +138,7 @@ function Widgets.Init(window, G2L)
             }, page)
 
             New("UIListLayout", {
-                Padding = UDim.new(0, 8),
+                Padding = UDim.new(0, 6),
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, c)
             return c
@@ -193,7 +193,7 @@ function Widgets.Init(window, G2L)
 
             New("TextLabel", {
                 Size = UDim2.new(1, 0, 0, 32),
-                Text = "  " .. title,
+                Text = " " .. title,
                 TextColor3 = UI.CurrentAccent,
                 FontFace = fonts.bold,
                 TextSize = 15,
@@ -210,11 +210,11 @@ function Widgets.Init(window, G2L)
             }, secFrame)
 
             local layout = New("UIListLayout", {
-                Padding = UDim.new(0, 8),
+                Padding = UDim.new(0, 6),
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, container)
 
-            New("UIPadding", {PaddingBottom = UDim.new(0, 10)}, container)
+            New("UIPadding", {PaddingBottom = UDim.new(0, 8)}, container)
 
             local secObj = {WidgetCount = 0}
             function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end
@@ -240,7 +240,7 @@ function Widgets.Init(window, G2L)
             
             local hasSub = cfg.SubTitle ~= nil
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, hasSub and 45 or 35),
+                Size = UDim2.new(1, 0, 0, hasSub and 40 or 30),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder
             }, overrideParent or self.currentParent[col])
@@ -252,17 +252,17 @@ function Widgets.Init(window, G2L)
                     Position = UDim2.new(0, 10, 0, 6),
                     Text = cfg.Title,
                     TextColor3 = Color3.new(1, 1, 1),
-                    BackgroundTransparency = 1,
+                    BackgroundTransparency = 1, 
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.med,
-                    TextSize = 14,
+                    TextSize = 12,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
                 New("TextLabel", {
                     Size = UDim2.new(1, -50, 0, 14),
                     Position = UDim2.new(0, 10, 0, 22),
                     Text = cfg.SubTitle,
-                    TextColor3 = Color3.fromRGB(180, 180, 180),
+                    TextColor3 = Color3.fromRGB(150, 150, 150),
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Left,
                     FontFace = fonts.reg,
@@ -277,9 +277,9 @@ function Widgets.Init(window, G2L)
                     Text = cfg.Title,
                     TextColor3 = Color3.new(1, 1, 1),
                     BackgroundTransparency = 1,
-                    TextXAlignment = Enum.TextXAlignment.Left,
+                    TextXAlignment = Enum.TextXAlignment.Left, 
                     FontFace = fonts.med,
-                    TextSize = 15,
+                    TextSize = 13,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, f)
             end
@@ -358,7 +358,7 @@ function Widgets.Init(window, G2L)
             local lOrder = layoutOrder or cfg.LayoutOrder
             
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, 55),
+                Size = UDim2.new(1, 0, 0, 50),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder
             }, overrideParent or self.currentParent[col])
@@ -370,17 +370,17 @@ function Widgets.Init(window, G2L)
                 Position = UDim2.new(0, 10, 0, 0),
                 Text = cfg.Title,
                 TextColor3 = Color3.new(1, 1, 1),
-                BackgroundTransparency = 1,
+                BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 15
+                TextSize = 13
             }, f)
 
             local valueLabel = New("TextBox", {
                 Size = UDim2.new(0, 40, 0, 18),
                 Position = UDim2.new(1, -10, 0, 4),
                 AnchorPoint = Vector2.new(1, 0),
-                Text = tostring(cfg.Default),
+                Text = tostring(math.floor(cfg.Default)),
                 TextColor3 = UI.CurrentAccent,
                 BackgroundColor3 = Color3.fromRGB(20, 20, 20),
                 BackgroundTransparency = 0,
@@ -395,7 +395,7 @@ function Widgets.Init(window, G2L)
             
             local sliderBg = New("Frame", {
                 Size = UDim2.new(1, -20, 0, 8),
-                Position = UDim2.new(0.5, 0, 0.5, 14),
+                Position = UDim2.new(0.5, 0, 0.5, 12),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             }, f)
@@ -410,7 +410,7 @@ function Widgets.Init(window, G2L)
             New("UICorner", {CornerRadius = UDim.new(1, 0)}, sliderFill)
             local sliderTrigger = New("TextButton", {
                 Size = UDim2.new(1, -20, 0, 45),
-                Position = UDim2.new(0.5, 0, 0.5, 14),
+                Position = UDim2.new(0.5, 0, 0.5, 12),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundTransparency = 1,
                 Text = "",
@@ -465,11 +465,11 @@ function Widgets.Init(window, G2L)
             
             local hasSub = cfg.SubTitle ~= nil
             local bWidget = New("TextButton", {
-                Size = UDim2.new(1, 0, 0, hasSub and 45 or 32),
+                Size = UDim2.new(1, 0, 0, hasSub and 40 or 28),
                 BackgroundColor3 = Color3.fromRGB(41, 41, 41),
                 Text = hasSub and "" or cfg.Title,
                 TextColor3 = Color3.new(1, 1, 1),
-                FontFace = fonts.bold,
+                FontFace = fonts.med,
                 TextSize = 15,
                 TextTruncate = Enum.TextTruncate.AtEnd,
                 LayoutOrder = lOrder,
@@ -484,17 +484,17 @@ function Widgets.Init(window, G2L)
                     Position = UDim2.new(0, 0, 0, 8),
                     Text = cfg.Title,
                     TextColor3 = Color3.new(1, 1, 1),
-                    BackgroundTransparency = 1,
+                    BackgroundTransparency = 1, 
                     TextXAlignment = Enum.TextXAlignment.Center,
-                    FontFace = fonts.bold,
-                    TextSize = 14,
+                    FontFace = fonts.med,
+                    TextSize = 12,
                     TextTruncate = Enum.TextTruncate.AtEnd
                 }, bWidget)
                 New("TextLabel", {
                     Size = UDim2.new(1, 0, 0, 14),
                     Position = UDim2.new(0, 0, 0, 24),
                     Text = cfg.SubTitle,
-                    TextColor3 = Color3.fromRGB(180, 180, 180),
+                    TextColor3 = Color3.fromRGB(150, 150, 150),
                     BackgroundTransparency = 1,
                     TextXAlignment = Enum.TextXAlignment.Center,
                     FontFace = fonts.reg,
@@ -516,8 +516,8 @@ function Widgets.Init(window, G2L)
                 AutomaticSize = Enum.AutomaticSize.Y,
                 Text = cfg.Text,
                 TextColor3 = Color3.fromRGB(180, 180, 180),
-                FontFace = fonts.reg,
-                TextSize = 14,
+                FontFace = fonts.light, -- Assuming a 'light' font exists or using 'reg'
+                TextSize = 12,
                 BackgroundTransparency = 1,
                 TextWrapped = true,
                 TextXAlignment = Enum.TextXAlignment.Left,
@@ -533,7 +533,7 @@ function Widgets.Init(window, G2L)
             local selected = cfg.Default or cfg.Options[1] or "None"
             
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, 45),
+                Size = UDim2.new(1, 0, 0, 40),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder,
                 ClipsDescendants = true
@@ -546,16 +546,16 @@ function Widgets.Init(window, G2L)
                 Position = UDim2.new(0, 10, 0, 1),
                 Text = cfg.Title,
                 TextColor3 = Color3.new(1, 1, 1),
-                BackgroundTransparency = 1,
+                BackgroundTransparency = 1, 
                 TextXAlignment = Enum.TextXAlignment.Left,
                 FontFace = fonts.med,
-                TextSize = 15
+                TextSize = 13
             }, f)
             
             local btn = New("TextButton", {
                 Size = UDim2.new(1, -20, 0, 22),
                 Position = UDim2.new(0, 10, 0, 20),
-                BackgroundColor3 = Color3.fromRGB(40, 40, 40),
+                BackgroundColor3 = Color3.fromRGB(35, 35, 35),
                 Text = "  " .. selected,
                 TextColor3 = UI.CurrentAccent,
                 FontFace = fonts.bold,
@@ -572,7 +572,7 @@ function Widgets.Init(window, G2L)
                 AnchorPoint = Vector2.new(0, 0.5),
                 Text = "▼",
                 BackgroundTransparency = 1,
-                TextColor3 = UI.CurrentAccent,
+                TextColor3 = Color3.new(1, 1, 1),
                 TextSize = 14
             }, btn)
             
@@ -593,14 +593,14 @@ function Widgets.Init(window, G2L)
             for _, opt in pairs(cfg.Options) do
                 local optBtn = New("TextButton", {
                     Size = UDim2.new(1, 0, 0, 25),
-                    BackgroundColor3 = Color3.fromRGB(35, 35, 35),
+                    BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                     Text = opt,
                     TextColor3 = Color3.new(0.8, 0.8, 0.8),
                     FontFace = fonts.reg,
-                    TextSize = 13,
+                    TextSize = 11,
                     AutoButtonColor = false
                 }, list)
-
+                
                 New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
                 optBtn.MouseButton1Click:Connect(function()
                     selected = opt 
@@ -608,7 +608,7 @@ function Widgets.Init(window, G2L)
                     dropped = false 
                     list.Visible = false
                     if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
-                    
+                    -- Adjusted targetHeight for closed state
                     TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 45)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
                     if cfg.Callback then cfg.Callback(opt) end
@@ -620,7 +620,7 @@ function Widgets.Init(window, G2L)
                 list.Visible = dropped
                 if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = not dropped end
                 
-                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 53, 200) or 45
+                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 48, 200) or 40 -- Adjusted for new base height
                 TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
