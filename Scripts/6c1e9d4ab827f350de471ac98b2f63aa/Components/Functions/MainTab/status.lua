@@ -1,11 +1,33 @@
 local cloneref = cloneref or function(o) return o end
 local Players = cloneref(game:GetService("Players"))
+local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local LocalPlayer = Players.LocalPlayer
 
 local Status = {}
 
 local cachedMurderer = "Loading..."
 local cachedSheriff = "Loading..."
+
+-- Remote Event Listener für sofortige Rollen-Erkennung
+local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)
+local Gameplay = Remotes and Remotes:WaitForChild("Gameplay", 5)
+local PlayerDataChanged = Gameplay and Gameplay:WaitForChild("PlayerDataChanged", 5)
+
+if PlayerDataChanged then
+    PlayerDataChanged.OnClientEvent:Connect(function(data)
+        if type(data) ~= "table" then return end
+        
+        for playerName, info in pairs(data) do
+            if info.Role == "Murderer" then
+                local plr = Players:FindFirstChild(playerName)
+                cachedMurderer = plr and plr.DisplayName or playerName
+            elseif info.Role == "Sheriff" then
+                local plr = Players:FindFirstChild(playerName)
+                cachedSheriff = plr and plr.DisplayName or playerName
+            end
+        end
+    end)
+end
 
 local function checkRoundReset()
     local weaponsExist = false
