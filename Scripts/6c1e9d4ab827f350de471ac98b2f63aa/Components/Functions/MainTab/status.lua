@@ -11,19 +11,20 @@ local cachedSheriff = "Loading..."
 -- Remote Event Listener für sofortige Rollen-Erkennung
 local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)
 local Gameplay = Remotes and Remotes:WaitForChild("Gameplay", 5)
-local PlayerDataChanged = Gameplay and Gameplay:WaitForChild("PlayerDataChanged", 5)
+local Fade = Gameplay and Gameplay:WaitForChild("Fade", 5)
 
-if PlayerDataChanged then
-    PlayerDataChanged.OnClientEvent:Connect(function(data)
+if Fade then
+    Fade.OnClientEvent:Connect(function(data)
         if type(data) ~= "table" then return end
         
         for playerName, info in pairs(data) do
-            if info.Role == "Murderer" then
+            if type(info) == "table" and info.Role then
                 local plr = Players:FindFirstChild(playerName)
-                cachedMurderer = plr and plr.DisplayName or playerName
-            elseif info.Role == "Sheriff" then
-                local plr = Players:FindFirstChild(playerName)
-                cachedSheriff = plr and plr.DisplayName or playerName
+                if info.Role == "Murderer" then
+                    cachedMurderer = plr and plr.DisplayName or playerName
+                elseif info.Role == "Sheriff" then
+                    cachedSheriff = plr and plr.DisplayName or playerName
+                end
             end
         end
     end)
