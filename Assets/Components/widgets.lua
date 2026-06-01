@@ -138,7 +138,7 @@ function Widgets.Init(window, G2L)
             }, page)
 
             New("UIListLayout", {
-                Padding = UDim.new(0, 4),
+                Padding = UDim.new(0, 2),
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, c)
             return c
@@ -210,12 +210,11 @@ function Widgets.Init(window, G2L)
             }, secFrame)
 
             local layout = New("UIListLayout", {
-                Padding = UDim.new(0, 6),
+                Padding = UDim.new(0, 3),
                 SortOrder = Enum.SortOrder.LayoutOrder
             }, container)
 
-            New("UIPadding", {PaddingBottom = UDim.new(0, 8)}, container)
-            New("UIPadding", {PaddingBottom = UDim.new(0, 6)}, container)
+            New("UIPadding", {PaddingBottom = UDim.new(0, 4)}, container)
 
             local secObj = {WidgetCount = 0}
             function secObj:CreateToggle(title, default, callback) self.WidgetCount = self.WidgetCount + 1 return tObj:CreateToggle(title, default, callback, col, container, self.WidgetCount) end
@@ -242,7 +241,7 @@ function Widgets.Init(window, G2L)
             
             local hasSub = cfg.SubTitle ~= nil
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, hasSub and 40 or 30),
+                Size = UDim2.new(1, 0, 0, hasSub and 36 or 26),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder
             }, overrideParent or self.currentParent[col])
@@ -360,7 +359,7 @@ function Widgets.Init(window, G2L)
             local lOrder = layoutOrder or cfg.LayoutOrder
             
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, 50),
+                Size = UDim2.new(1, 0, 0, 44),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder
             }, overrideParent or self.currentParent[col])
@@ -397,7 +396,7 @@ function Widgets.Init(window, G2L)
             
             local sliderBg = New("Frame", {
                 Size = UDim2.new(1, -20, 0, 8),
-                Position = UDim2.new(0.5, 0, 0.5, 12),
+                Position = UDim2.new(0.5, 0, 0.5, 10),
                 AnchorPoint = Vector2.new(0.5, 0.5),
                 BackgroundColor3 = Color3.fromRGB(60, 60, 60)
             }, f)
@@ -467,7 +466,7 @@ function Widgets.Init(window, G2L)
             
             local hasSub = cfg.SubTitle ~= nil
             local bWidget = New("TextButton", {
-                Size = UDim2.new(1, 0, 0, hasSub and 40 or 28),
+                Size = UDim2.new(1, 0, 0, hasSub and 36 or 24),
                 BackgroundColor3 = Color3.fromRGB(41, 41, 41),
                 Text = hasSub and "" or cfg.Title,
                 TextColor3 = Color3.new(1, 1, 1),
@@ -533,7 +532,7 @@ function Widgets.Init(window, G2L)
             local lOrder = layoutOrder or cfg.LayoutOrder
             
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, 30),
+                Size = UDim2.new(1, 0, 0, 26),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder
             }, overrideParent or self.currentParent[col])
@@ -577,7 +576,7 @@ function Widgets.Init(window, G2L)
             local selected = cfg.Default or cfg.Options[1] or "None"
             
             local f = New("Frame", {
-                Size = UDim2.new(1, 0, 0, 50),
+                Size = UDim2.new(1, 0, 0, 44),
                 BackgroundColor3 = Color3.fromRGB(30, 30, 30),
                 LayoutOrder = lOrder,
                 ClipsDescendants = true
@@ -653,7 +652,7 @@ function Widgets.Init(window, G2L)
                     list.Visible = false
                     if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
                     -- Adjusted targetHeight for closed state
-                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 50)}):Play()
+                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
                     TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
                     if cfg.Callback then cfg.Callback(opt) end
                 end)
@@ -664,7 +663,7 @@ function Widgets.Init(window, G2L)
                 list.Visible = dropped
                 if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = not dropped end
                 
-                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 58, 200) or 50 -- Adjusted for new base height
+                local targetHeight = dropped and math.min(listLayout.AbsoluteContentSize.Y + 52, 200) or 44 -- Adjusted for new base height
                 TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
