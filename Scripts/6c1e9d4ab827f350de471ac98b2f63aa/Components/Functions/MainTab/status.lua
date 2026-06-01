@@ -4,8 +4,8 @@ local LocalPlayer = Players.LocalPlayer
 
 local Status = {}
 
-local cachedMurderer = "Wait..."
-local cachedSheriff = "Wait..."
+local cachedMurderer = "Loading..."
+local cachedSheriff = "Loading..."
 
 local function checkRoundReset()
     local weaponsExist = false
@@ -58,6 +58,22 @@ function Status.getSheriff()
         end
     end
     return cachedSheriff
+end
+
+-- Hero finder
+function Status.getHero()
+    checkRoundReset()
+    
+    if cachedSheriff == "Loading..." then return "None" end
+    
+    for _, plr in pairs(Players:GetPlayers()) do
+        if plr.Character and (plr.Character:FindFirstChild("Gun") or (plr:FindFirstChild("Backpack") and plr.Backpack:FindFirstChild("Gun"))) then
+            if plr.DisplayName ~= cachedSheriff then
+                return plr.DisplayName
+            end
+        end
+    end
+    return "None"
 end
 
 return Status

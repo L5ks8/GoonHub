@@ -84,15 +84,18 @@ function UILayout.Create()
     local main = mainTab:CreateSection("Status", "Right")
     local murderLabel = main:CreateLabel("Murderer:", "Wait...")
     local sheriffLabel = main:CreateLabel("Sheriff:", "Wait...")
+    local heroLabel = main:CreateLabel("Hero:", "None")
 
     -- Status Update Loop
     task.spawn(function()
         while task.wait(1) do
             local murd = Status.getMurderer()
             local sher = Status.getSheriff()
+            local hero = Status.getHero()
             
             murderLabel:Set(murd)
             sheriffLabel:Set(sher)
+            heroLabel:Set(hero)
         end
     end)
 
