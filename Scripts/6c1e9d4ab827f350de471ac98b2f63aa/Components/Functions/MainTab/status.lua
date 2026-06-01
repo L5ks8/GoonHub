@@ -7,6 +7,7 @@ local Status = {}
 
 local cachedMurderer = "Loading..."
 local cachedSheriff = "Loading..."
+local lastFadeTime = 0
 
 -- Remote Event Listener für sofortige Rollen-Erkennung
 local Remotes = ReplicatedStorage:WaitForChild("Remotes", 5)
@@ -16,12 +17,16 @@ local Fade = Gameplay and Gameplay:WaitForChild("Fade", 5)
 if Fade then
     Fade.OnClientEvent:Connect(function(data)
         if type(data) ~= "table" then return end
-
-        local playerData = data.Function and data.Function.Arguments
+        
+        local playerData = (data.Function and data.Function.Arguments) or data
         if type(playerData) ~= "table" then return end
 
+        lastFadeTime = tick()
+        cachedMurderer = "Loading..."
+        cachedSheriff = "Loading..."
+
         for playerName, info in pairs(playerData) do
-            if type(info) == "table" and info.Role then 
+            if type(info) == "table" and info.Role then
                 local plr = Players:FindFirstChild(playerName)
                 if info.Role == "Murderer" then
                     cachedMurderer = plr and plr.DisplayName or playerName
@@ -34,6 +39,8 @@ if Fade then
 end
 
 local function checkRoundReset()
+    if tick() - lastFadeTime < 8 then return end
+
     local weaponsExist = false
     
     for _, plr in pairs(Players:GetPlayers()) do
