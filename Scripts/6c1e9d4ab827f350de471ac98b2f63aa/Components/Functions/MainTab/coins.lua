@@ -38,15 +38,21 @@ end
 local function tween(targetCF)
     local char = player.Character
     local root = char and char:FindFirstChild("HumanoidRootPart")
-    if root then
-        local distance = (root.Position - targetCF.Position).Magnitude
-        local duration = distance / currentSpeed
-        
-        local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-        local t = TweenService:Create(root, info, {CFrame = targetCF})
-        t:Play()
-        t.Completed:Wait()
-    end
+    if not root then return end
+    
+    local distance = (root.Position - targetCF.Position).Magnitude
+    local duration = math.max(0.3, distance / currentSpeed)
+    
+    local info = TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+    local t = TweenService:Create(root, info, {CFrame = targetCF})
+    
+    local connection
+    connection = t.Completed:Connect(function()
+        connection:Disconnect()
+    end)
+    
+    t:Play()
+    t.Completed:Wait()
 end
 
 function Coins.SetMethod(method)
@@ -81,9 +87,10 @@ function Coins.Toggle(state)
                             tp(CFrame.new(tpPos))
                             task.wait(2)
                         elseif currentMethod == "Tween" then
-                            tween(coin.CFrame)
-                            task.wait(0.1)
+                            tp(coin.CFrame)
+                            task.wait(0.2)
                             tween(CFrame.new(tpPos))
+                            task.wait(2)
                         end
                     end
                     if not farmLoop then break end
