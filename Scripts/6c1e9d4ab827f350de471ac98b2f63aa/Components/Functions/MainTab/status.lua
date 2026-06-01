@@ -16,9 +16,12 @@ local Fade = Gameplay and Gameplay:WaitForChild("Fade", 5)
 if Fade then
     Fade.OnClientEvent:Connect(function(data)
         if type(data) ~= "table" then return end
-        
-        for playerName, info in pairs(data) do
-            if type(info) == "table" and info.Role then
+
+        local playerData = data.Function and data.Function.Arguments
+        if type(playerData) ~= "table" then return end
+
+        for playerName, info in pairs(playerData) do
+            if type(info) == "table" and info.Role then 
                 local plr = Players:FindFirstChild(playerName)
                 if info.Role == "Murderer" then
                     cachedMurderer = plr and plr.DisplayName or playerName
