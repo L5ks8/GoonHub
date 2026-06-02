@@ -32,6 +32,20 @@ local function attackTarget(p)
 
     local start = tick()
     while running and p.Parent and p.Character and p.Character:FindFirstChild("Humanoid") and p.Character.Humanoid.Health > 0 do
+        -- only attack if we currently have a knife equipped
+        local equippedKnife = LP.Character and LP.Character:FindFirstChild("Knife")
+        if not equippedKnife then
+            -- try to equip if present in backpack
+            local bk = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
+            if bk then pcall(function() LP.Character.Humanoid:EquipTool(bk) end) end
+            -- wait a short moment for equip; skip attacking this tick if not equipped
+            RunService.Heartbeat:Wait()
+            RunService.Heartbeat:Wait()
+            if not (LP.Character and LP.Character:FindFirstChild("Knife")) then
+                -- no knife yet, break out to allow worker to wait for knife
+                break
+            end
+        end
         if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then break end
         local myH = LP.Character:FindFirstChild("HumanoidRootPart")
         pcall(function()
@@ -41,12 +55,56 @@ local function attackTarget(p)
         end)
         RunService.Heartbeat:Wait()
         if (tick() - start) > 4 then break end
+        -- stop if round ended
+        if Runtime and Runtime.Match and not Runtime.Match.Active then
+            running = false
+            break
+        end
     end
+    -- ensure we stop platform stand if set
+    pcall(function()
+        if LP.Character and LP.Character:FindFirstChild("Humanoid") then
+            LP.Character.Humanoid.PlatformStand = false
+        end
+    end)
 end
 
 local function workerFunc()
     while running do
         if Runtime.Roles and Runtime.Roles.Me == "Murderer" then
+            -- wait until we have a knife before attacking
+            local waited = 0
+            while running and not (LP.Character and LP.Character:FindFirstChild("Knife")) and waited < 20 do
+                -- try to equip if present in backpack
+                local bk = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
+                if bk and LP.Character and LP.Character:FindFirstChild("Humanoid") then
+                    pcall(function() LP.Character.Humanoid:EquipTool(bk) end)
+                end
+                task.wait(0.5); waited = waited + 0.5
+            end
+            if not (LP.Character and LP.Character:FindFirstChild("Knife")) then
+                -- no knife after waiting, skip this loop iteration
+                task.wait(1)
+                continue
+            end
+            -- stop if round not active
+            if Runtime and Runtime.Match and not Runtime.Match.Active then
+                running = false
+                break
+            end
+
+            -- check if any other alive players exist; if none, stop
+            local othersAlive = 0
+            for _, pp in pairs(Players:GetPlayers()) do
+                if pp ~= LP and pp.Character and pp.Character:FindFirstChild("Humanoid") and pp.Character.Humanoid.Health > 0 then
+                    othersAlive = othersAlive + 1
+                end
+            end
+            if othersAlive == 0 then
+                running = false
+                break
+            end
+
             for _, p in pairs(Players:GetPlayers()) do
                 if not running then break end
                 if p ~= LP and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") and p.Character.Humanoid.Health > 0 then
