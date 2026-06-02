@@ -1,253 +1,175 @@
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
+-- Coins auto-farm module moved from main script
+local module = {}
 
-local Coins = {}
+local Players = getgenv().Players or game:GetService("Players")
+local RunService = getgenv().RunService or game:GetService("RunService")
+local Remotes = getgenv().Remotes or (game:GetService("ReplicatedStorage"):WaitForChild("Remotes"))
+local LP = getgenv().LP or Players.LocalPlayer
+local GH_Sys = getgenv().GH_Sys or { State = { Farming = false, Evade = true, Rage = false, Reset = false }, Cfg = { Walk = 35 } }
+local Runtime = getgenv().Runtime or { Farm = { Node = nil, Tick = 0, Folder = nil, Cur = 0, Max = 50, Ignored = {} } }
+local BagLbl = getgenv().BagLbl
 
-local function getPlayer()
-    return Players.LocalPlayer or Players.PlayerAdded:Wait()
-end
-local farmLoop = nil
-local tpPos = Vector3.new(31.723007, 504.818054, -27.340113)
-local currentMethod = "Tween"
-local currentSpeed = 20
-local isEnabled = false
+local att = Instance.new("Attachment"); att.Name = "GH_Force"
+local rot = Instance.new("AlignOrientation"); rot.Mode = Enum.OrientationAlignmentMode.OneAttachment; rot.RigidityEnabled = true; rot.Attachment0 = att
+local mov = Instance.new("LinearVelocity"); mov.Attachment0 = att; mov.MaxForce = math.huge; mov.VectorVelocity = Vector3.zero; mov.RelativeTo = Enum.ActuatorRelativeTo.World
 
-local lastPositions = {}
-local MAX_HISTORY = 5
-local MIN_COIN_DIST = 0
-local MAX_COIN_DIST = 200
-
-local function isInSpawn(vec)
-    local reference = Vector3.new(300, 500, 0)
-    if (vec - reference).Magnitude < 500 then
-        return true
-    end
-    return false
+local function FindBag()
+	if Runtime.Farm.Folder and Runtime.Farm.Folder.Parent then return Runtime.Farm.Folder end
+	Runtime.Farm.Folder = workspace:FindFirstChild("CoinContainer", true)
+	return Runtime.Farm.Folder
 end
 
-local function isRoundLive()
-    for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("BasePart") and v.Name == "Coin_Server" then
-            return true
-        end
-    end
-    return false
+local function GetEnemy()
+	if not GH_Sys.State.Evade then return nil end
+	local n = (Runtime.Roles and Runtime.Roles.Me == "Murderer") and (Runtime.Roles.Sher or "") or (Runtime.Roles and Runtime.Roles.Murd or "")
+	local p = Players:FindFirstChild(n)
+	return (p and p.Character and p.Character:FindFirstChild("HumanoidRootPart")) and p.Character.HumanoidRootPart.Position or nil
 end
 
-local function isRecentlyVisited(pos)
-    for _, oldPos in ipairs(lastPositions) do
-        if (oldPos - pos).Magnitude < 5 then
-            return true
-        end
-    end
-    return false
+local function ScanGrid()
+	local c = FindBag()
+	if not c then return nil end
+	local best, dist = nil, math.huge
+	local pos = LP.Character.HumanoidRootPart.Position
+	local bad = GetEnemy()
+	for _, v in pairs(c:GetChildren()) do
+		if not Runtime.Farm.Ignored[v] then
+			local p = v:IsA("BasePart") and v or (v:IsA("Model") and v.PrimaryPart)
+			if p and (v.Name == "Coin" or v.Name == "SnowToken" or v:FindFirstChild("TouchInterest")) then
+				if GH_Sys.State.Evade and bad and (p.Position - bad).Magnitude < 18 then continue end
+				local d = (pos - p.Position).Magnitude
+				if d < dist then dist = d; best = p end
+			end
+		end
+	end
+	return best
 end
 
-local function addPosition(pos)
-    table.insert(lastPositions, pos)
-    if #lastPositions > MAX_HISTORY then
-        table.remove(lastPositions, 1)
-    end
+local function KillLoop()
+	if not LP.Character then return end
+	local k = LP.Backpack:FindFirstChild("Knife")
+	if k then LP.Character.Humanoid:EquipTool(k) end
+	for _, v in pairs(Players:GetPlayers()) do
+		if v ~= LP and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character.Humanoid.Health > 0 then
+			local t = v.Character.HumanoidRootPart
+			local s = tick()
+			repeat
+				if not GH_Sys.State.Farming then return end
+				k = LP.Character:FindFirstChild("Knife") or LP.Backpack:FindFirstChild("Knife")
+				if k and k.Parent ~= LP.Character then LP.Character.Humanoid:EquipTool(k) end
+				LP.Character.HumanoidRootPart.CFrame = t.CFrame * CFrame.new(0, 0, 2)
+				if k then k:Activate() end
+				RunService.Heartbeat:Wait()
+			until v.Character.Humanoid.Health <= 0 or (tick() - s) > 2 or not v.Parent
+		end
+	end
+	GH_Sys.State.Farming = false
+	att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+	if LP.Character and LP.Character:FindFirstChild("Humanoid") then LP.Character.Humanoid.PlatformStand = false end
 end
 
-local function findClosestCoin(root)
-    if not root then return nil end
-    local closestCoin = nil
-    local shortestDistance = math.huge
-    for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("BasePart") and v.Name == "Coin_Server" and v.Parent then
-            local dist = (v.Position - root.Position).Magnitude
-            if not isRecentlyVisited(v.Position) and dist >= MIN_COIN_DIST and dist <= MAX_COIN_DIST then
-                if dist < shortestDistance then
-                    shortestDistance = dist
-                    closestCoin = v
-                end
-            end
-        end
-    end
-    return closestCoin
+-- Remote event handlers
+if Remotes and Remotes:FindFirstChild("Gameplay") then
+	Remotes:WaitForChild("Gameplay"):WaitForChild("PlayerDataChanged").OnClientEvent:Connect(function(d)
+		if type(d) == "table" then
+			local me = d[LP.Name]
+			Runtime.Roles = Runtime.Roles or { Murd = "None", Sher = "None", Me = "Innocent" }
+			Runtime.Roles.Murd = "None"; Runtime.Roles.Sher = "None"
+			for n, data in pairs(d) do
+				if data.Role == "Murderer" then Runtime.Roles.Murd = n
+				elseif data.Role == "Sheriff" then Runtime.Roles.Sher = n end
+			end
+			if me then
+				Runtime.Match = Runtime.Match or { Alive = true, Active = true }
+				Runtime.Match.Active = true; Runtime.Roles.Me = me.Role or "Innocent"
+				Runtime.Match.Alive = not (me.Dead or me.Killed)
+				GH_Sys.State.Rage = false
+				if me.Coins then Runtime.Farm.Cur = me.Coins end
+			else
+				Runtime.Match.Active = false; GH_Sys.State.Rage = false
+			end
+		end
+	end)
+
+	Remotes:WaitForChild("Gameplay"):WaitForChild("CoinCollected").OnClientEvent:Connect(function(t, a, m)
+		if type(a) == "number" then Runtime.Farm.Cur = a end
+		if type(m) == "number" then Runtime.Farm.Max = m end
+		if Runtime.Farm.Node then Runtime.Farm.Ignored[Runtime.Farm.Node] = true; Runtime.Farm.Node = nil end
+		if BagLbl and type(BagLbl.SetDesc) == "function" then BagLbl:SetDesc(Runtime.Farm.Cur .. " / " .. Runtime.Farm.Max) end
+		if Runtime.Farm.Cur >= Runtime.Farm.Max then
+			if Runtime.Roles and Runtime.Roles.Me == "Murderer" and GH_Sys.State.Rage then
+				GH_Sys.State.Rage = true
+			elseif GH_Sys.State.Reset then
+				GH_Sys.State.Farming = false
+				if LP.Character and LP.Character:FindFirstChild("Humanoid") then LP.Character.Humanoid.Health = 0 end
+				task.wait(4)
+				Runtime.Farm.Cur = 0; Runtime.Farm.Ignored = {}; GH_Sys.State.Farming = true
+			else
+				GH_Sys.State.Farming = false
+			end
+		end
+	end)
 end
 
-local function setupCharacter()
-    local player = getPlayer()
-    local char = player and player.Character
-    if not char then return end
-    local root = char:FindFirstChild("HumanoidRootPart")
-    local humanoid = char:FindFirstChildOfClass("Humanoid")
-    if not root or not humanoid then return end
-    humanoid.AutoRotate = false
-    humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-    if not root:FindFirstChild("AntiGravityForce") then
-        local attachment = Instance.new("Attachment")
-        attachment.Name = "AntiGravityAttachment"
-        attachment.Parent = root
-        local force = Instance.new("VectorForce")
-        force.Name = "AntiGravityForce"
-        force.Attachment0 = attachment
-        force.Force = Vector3.new(0, root.AssemblyMass * workspace.Gravity, 0)
-        force.RelativeTo = Enum.ActuatorRelativeTo.World
-        force.ApplyAtCenterOfMass = true
-        force.Parent = root
-    end
+-- Heartbeat loop for movement/collection
+RunService:BindToRenderStep("GH_CoinsFarm", Enum.RenderPriority.Character.Value + 1, function()
+	local c = LP.Character
+	if not c then return end
+	local hrp, hum = c:FindFirstChild("HumanoidRootPart"), c:FindFirstChild("Humanoid")
+	if not hrp or not hum then return end
+
+	if GH_Sys.State.Farming and Runtime.Match and Runtime.Match.Alive and hum.Health > 0 then
+		if GH_Sys.State.Rage then
+			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+			hum.PlatformStand = false
+			KillLoop()
+			return
+		end
+
+		if not FindBag() then
+			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+			hum.PlatformStand = false
+			return
+		end
+
+		att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
+		hum.PlatformStand = true
+		for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
+		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end
+
+		if GH_Sys.State.Evade then
+			local d = GetEnemy()
+			if d and (hrp.Position - d).Magnitude < 22 then
+				local esc = (hrp.Position - d).Unit
+				mov.VectorVelocity = esc * (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * 1.5
+				rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
+				return
+			end
+		end
+
+		if Runtime.Farm.Node and not Runtime.Farm.Node.Parent then Runtime.Farm.Node = nil end
+		if Runtime.Farm.Node and (tick() - Runtime.Farm.Tick) > 1.3 then
+			Runtime.Farm.Ignored[Runtime.Farm.Node] = true; Runtime.Farm.Node = nil
+		end
+		if not Runtime.Farm.Node then Runtime.Farm.Node = ScanGrid(); Runtime.Farm.Tick = tick() end
+
+		if Runtime.Farm.Node then
+			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
+			mov.VectorVelocity = (tp - hrp.Position).Unit * (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
+			if (tp - hrp.Position).Magnitude > 2 then rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0) end
+		else
+			mov.VectorVelocity = Vector3.zero
+		end
+	else
+		att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+		if hum.PlatformStand then hum.PlatformStand = false end
+	end
+end)
+
+function module.SetFarming(v)
+	GH_Sys.State.Farming = v
 end
 
-local function isPlayerInRound()
-    local player = getPlayer()
-    local char = player and player.Character
-    local humanoid = char and char:FindFirstChild("Humanoid")
-    if not humanoid or humanoid.Health <= 0 then
-        return false
-    end
+getgenv().CoinsModule = module
 
-    return true
-end
-
-local function tp(cf)
-    local player = getPlayer()
-    local root = player and player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if root then
-        root.CFrame = cf
-    end
-end
-
-local function tween(targetCF)
-    local player = getPlayer()
-    local char = player and player.Character
-    local root = char and char:FindFirstChild("HumanoidRootPart")
-    if not root then return end
-
-    local targetPos = targetCF.Position
-    local distance = (root.Position - targetPos).Magnitude
-    local duration = math.max(0.2, distance / currentSpeed)
-
-    local lv = root.CFrame.LookVector
-    local yaw = math.atan2(lv.X, lv.Z)
-    local targetCFrame = CFrame.new(targetPos) * CFrame.Angles(0, yaw, 0)
-    local noclipActive = root.CanCollide == false
-
-    local prevCollides = nil
-    if not noclipActive and char then
-        prevCollides = {}
-        for _, p in ipairs(char:GetDescendants()) do
-            if p:IsA("BasePart") then
-                prevCollides[p] = p.CanCollide
-                p.CanCollide = false
-            end
-        end
-    end
-
-    local info = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-    local ok, err = pcall(function()
-        local t = TweenService:Create(root, info, {CFrame = targetCFrame})
-        t:Play()
-        t.Completed:Wait()
-    end)
-
-    if prevCollides then
-        for p, prev in pairs(prevCollides) do
-            if p and p.Parent then
-                p.CanCollide = prev
-            end
-        end
-    end
-
-    if not ok then
-        warn("Tween failed:", err)
-    end
-end
-
-function Coins.SetMethod(method)
-    currentMethod = method
-end
-
-function Coins.SetSpeed(speed)
-    currentSpeed = speed
-end
-
-function Coins.Toggle(state)
-    if farmLoop then 
-        task.cancel(farmLoop)
-        farmLoop = nil
-    end
-    
-    isEnabled = state
-    
-    if not state then
-        task.wait(0.1)
-        tp(CFrame.new(tpPos))
-        return
-    end
-    
-    farmLoop = task.spawn(function()
-        while isEnabled do
-            local player = getPlayer()
-            local char = player and player.Character
-            local humanoid = char and char:FindFirstChild("Humanoid")
-            if not humanoid or humanoid.Health <= 0 then
-                task.wait(0.5)
-                continue
-            end
-
-            local root = char and char:FindFirstChild("HumanoidRootPart")
-            if not root or not isRoundLive() or isInSpawn(root.Position) then
-                task.wait(1)
-                continue
-            end
-
-                local closestCoin = findClosestCoin(root)
-            if not closestCoin then
-                task.wait(0.2)
-                continue
-            end
-
-            if currentMethod == "Instant Teleport" then
-                tp(closestCoin.CFrame)
-                task.wait(0.7)
-                tp(CFrame.new(tpPos))
-                task.wait(2)
-            elseif currentMethod == "Tween" then
-                tween(closestCoin.CFrame)
-                task.wait(0.2)
-            elseif currentMethod == "Teleport 2" then
-                humanoid.AutoRotate = false
-                local poshi = closestCoin.Position
-                local pos = poshi - Vector3.new(0, 8, 0)
-                root.CFrame = CFrame.lookAt(poshi, poshi + Vector3.new(0, 0, 1))
-                root.AssemblyAngularVelocity = Vector3.new(0, 2, 0)
-                root.AssemblyLinearVelocity = Vector3.new(0, 2, 0)
-                task.wait(0.5)
-                root.AssemblyLinearVelocity = Vector3.zero
-                root.AssemblyAngularVelocity = Vector3.zero
-                root.CFrame = CFrame.lookAt(pos, pos + Vector3.new(0, 0.1, 1)) * CFrame.Angles(math.rad(90), 0, 0)
-
-                addPosition(closestCoin.Position)
-                task.wait(2.2)
-            else
-                local poshi = closestCoin.Position
-                local pos = poshi - Vector3.new(0, 8, 0)
-                root.CFrame = CFrame.lookAt(poshi, poshi + Vector3.new(0, 0, 1))
-                root.AssemblyAngularVelocity = Vector3.new(0, 2, 0)
-                root.AssemblyLinearVelocity = Vector3.new(0, 2, 0)
-                task.wait(0.5)
-                root.AssemblyLinearVelocity = Vector3.zero
-                root.AssemblyAngularVelocity = Vector3.zero
-                root.CFrame = CFrame.lookAt(pos, pos + Vector3.new(0, 0.1, 1)) * CFrame.Angles(math.rad(90), 0, 0)
-
-                addPosition(closestCoin.Position)
-                task.wait(2.2)
-            end
-        end
-    end)
-
-    -- ensure character setup
-    if state then
-        setupCharacter()
-        player.CharacterAdded:Connect(function()
-            task.wait(1)
-            setupCharacter()
-        end)
-    end
-end
-
-return Coins
+return module
