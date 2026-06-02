@@ -1,4 +1,3 @@
--- Auto Kill All from script.lua
 local module = {}
 
 local Players = game:GetService("Players")
@@ -25,10 +24,10 @@ local function KillLoop()
             local knife = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
             if knife and LP.Character then
                 pcall(function() LP.Character.Humanoid:EquipTool(knife) end)
-                task.wait(0.2)
+                task.wait(0.3)
             end
             
-            -- Attack loop
+            -- Attack
             while GH_Sys.State.Farming and v.Parent and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 do
                 if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then break end
                 if (tick() - startTime) > 5 then break end
@@ -39,11 +38,15 @@ local function KillLoop()
                     if knife then pcall(function() LP.Character.Humanoid:EquipTool(knife) end) end
                 end
                 
-                -- Move to target and attack
+                -- Move to target and fire KnifeStabbed event
                 if knife then
                     pcall(function()
                         LP.Character.HumanoidRootPart.CFrame = target.CFrame * CFrame.new(0, 0, 2.5)
-                        knife:Activate()
+                        local knifeEvents = knife:FindFirstChild("Events")
+                        if knifeEvents then
+                            local stabEvent = knifeEvents:FindFirstChild("KnifeStabbed")
+                            if stabEvent then stabEvent:Fire(v) end
+                        end
                     end)
                 end
                 
