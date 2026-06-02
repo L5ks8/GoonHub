@@ -18,6 +18,12 @@ end)
 if not _ok2 then
     AutoKill = nil
 end
+local _ok3, Evade = pcall(function()
+    return GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/evade_murder")
+end)
+if not _ok3 then
+    Evade = nil
+end
 
 local UILayout = {}
 
@@ -100,7 +106,21 @@ function UILayout.Create()
     local murderLabel = statusSection:CreateLabel("Murderer:", "Wait...")
     local sheriffLabel = statusSection:CreateLabel("Sheriff:", "Wait...")
     local heroLabel = statusSection:CreateLabel("Hero:", "nil")
-
+    local otherSection = mainTab:CreateSection("Other", "Right")
+    
+    otherSection:CreateToggle({
+        Title = "Auto Evade Murderer",
+        Column = "Right",
+        Default = false
+        ,
+        Callback = function(state)
+            if not Evade then
+                warn("Evade module not loaded; cannot Toggle")
+                return
+            end
+            if Evade.Toggle then Evade.Toggle(state) end
+        end
+    })
     -- Status Update Loop
     task.spawn(function()
         while task.wait(1) do
