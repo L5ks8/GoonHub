@@ -111,7 +111,7 @@ function UILayout.Create()
     otherSection:CreateToggle({
         Title = "Auto Evade Murderer",
         Column = "Right",
-        Default = false
+        Default = true
         ,
         Callback = function(state)
             if not Evade then
