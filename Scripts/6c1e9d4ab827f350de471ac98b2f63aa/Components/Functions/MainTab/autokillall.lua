@@ -3,6 +3,7 @@ local module = {}
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local LP = Players.LocalPlayer
 if not LP then repeat task.wait() LP = Players.LocalPlayer until LP end
@@ -14,6 +15,19 @@ getgenv().Runtime = Runtime
 
 local running = false
 local worker
+
+-- Get Remotes for attacking
+local RegisterAttack, RegisterHit
+task.spawn(function()
+    pcall(function()
+        local Remotes = ReplicatedStorage:WaitForChild("Remotes", 10)
+        local Net = Remotes:WaitForChild("Combat", 10) or Remotes:WaitForChild("Network", 10)
+        if Net then
+            RegisterAttack = Net:WaitForChild("RE/RegisterAttack", 10)
+            RegisterHit = Net:WaitForChild("RE/RegisterHit", 10)
+        end
+    end)
+end)
 
 local function attackTarget(p)
     if not p or not p.Character then return end
@@ -47,20 +61,27 @@ local function attackTarget(p)
             end
         end
         if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then break end
-        local myH = LP.Character:FindFirstChild("HumanoidRootPart")
+        
         pcall(function()
             LP.Character.HumanoidRootPart.CFrame = hrp.CFrame * CFrame.new(0,0,2)
-            local k2 = LP.Character:FindFirstChild("Knife")
-            if k2 then pcall(function() k2:Activate() end) end
+            
+            -- Use Remotes instead of Tool:Activate()
+            if RegisterAttack and RegisterHit and p.Character and p.Character:FindFirstChild("Head") then
+                pcall(function() RegisterAttack:FireServer(0) end)
+                pcall(function() RegisterHit:FireServer(p.Character.Head, {p.Character}) end)
+            end
         end)
+        
         RunService.Heartbeat:Wait()
         if (tick() - start) > 4 then break end
+        
         -- stop if round ended
         if Runtime and Runtime.Match and not Runtime.Match.Active then
             running = false
             break
         end
     end
+    
     -- ensure we stop platform stand if set
     pcall(function()
         if LP.Character and LP.Character:FindFirstChild("Humanoid") then

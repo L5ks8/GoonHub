@@ -34,7 +34,7 @@ function UI.SetTheme(G2L, themeName)
     for _, v in pairs(G2L["1"]:GetDescendants()) do
         if (v:IsA("TextLabel") or v:IsA("TextButton") or v:IsA("TextBox")) and v.TextColor3 == UI.CurrentAccent then
             v.TextColor3 = newAccent
-        elseif (v:IsA("Frame") or v:IsA("ScrollingFrame")) and v.BackgroundColor3 == UI.CurrentAccent then
+        elseif (v:IsA("Frame") or v:IsA("ScrollingFrame") or v:IsA("TextButton") or v:IsA("ImageButton")) and v.BackgroundColor3 == UI.CurrentAccent then
             v.BackgroundColor3 = newAccent
         elseif v:IsA("ScrollingFrame") and v.ScrollBarImageColor3 == UI.CurrentAccent then
             v.ScrollBarImageColor3 = newAccent
