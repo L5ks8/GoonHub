@@ -64,11 +64,22 @@ function Coins.SetSpeed(speed)
 end
 
 function Coins.Toggle(state)
-    if farmLoop then task.cancel(farmLoop) farmLoop = nil end
-    if not state then isEnabled = false return end
+    if farmLoop then 
+        task.cancel(farmLoop)
+        farmLoop = nil
+    end
     
-    isEnabled = true
+    isEnabled = state
+    
+    if not state then
+        task.wait(0.1)
+        tp(CFrame.new(tpPos))
+        return
+    end
+    
     farmLoop = task.spawn(function()
+        local firstCoin = true
+        
         while isEnabled do
             if not isPlayerInRound() then
                 task.wait(0.5)
@@ -78,7 +89,7 @@ function Coins.Toggle(state)
             local murderer = Status.getMurderer()
             if murderer ~= "Loading..." and murderer ~= "None" then
                 for _, coin in pairs(workspace:GetDescendants()) do
-                    if not isPlayerInRound() then break end
+                    if not isPlayerInRound() or not isEnabled then break end
                     
                     if coin.Name == "Coin_Server" and coin:IsA("BasePart") then
                         if currentMethod == "Instant Teleport" then
@@ -87,13 +98,16 @@ function Coins.Toggle(state)
                             tp(CFrame.new(tpPos))
                             task.wait(2)
                         elseif currentMethod == "Tween" then
-                            tp(coin.CFrame)
-                            task.wait(0.2)
-                            tween(CFrame.new(tpPos))
-                            task.wait(2)
+                            if firstCoin then
+                                tp(coin.CFrame)
+                                task.wait(0.3)
+                                firstCoin = false
+                            else
+                                tween(coin.CFrame)
+                            end
                         end
                     end
-                    if not farmLoop then break end
+                    if not farmLoop or not isEnabled then break end
                 end
             end
             task.wait(1)
