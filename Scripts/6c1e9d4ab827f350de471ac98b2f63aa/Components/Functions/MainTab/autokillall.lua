@@ -14,16 +14,18 @@ getgenv().Runtime = Runtime
 
 local function KillLoop()
     if not LP.Character then return end
-    local k = LP.Backpack:FindFirstChild("Knife")
-    if k then LP.Character.Humanoid:EquipTool(k) end
+    local k = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
+    if k and LP.Character then LP.Character.Humanoid:EquipTool(k) end
     for _, v in pairs(Players:GetPlayers()) do
         if v ~= LP and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
             local t = v.Character.HumanoidRootPart
             local s = tick()
             repeat
                 if not GH_Sys.State.Farming then return end
-                k = LP.Character:FindFirstChild("Knife") or LP.Backpack:FindFirstChild("Knife")
-                if k and k.Parent ~= LP.Character then LP.Character.Humanoid:EquipTool(k) end
+                if not LP.Character then return end
+                k = LP.Character:FindFirstChild("Knife") or (LP.Backpack and LP.Backpack:FindFirstChild("Knife"))
+                if k and LP.Character and k.Parent ~= LP.Character then LP.Character.Humanoid:EquipTool(k) end
+                if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then return end
                 LP.Character.HumanoidRootPart.CFrame = t.CFrame * CFrame.new(0, 0, 2)
                 if k then k:Activate() end
                 RunService.Heartbeat:Wait()
