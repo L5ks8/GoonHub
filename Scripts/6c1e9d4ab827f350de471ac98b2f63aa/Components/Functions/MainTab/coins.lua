@@ -89,22 +89,13 @@ local function setupCharacter()
 end
 
 local function isPlayerInRound()
-	local murderer = Status.getMurderer()
+    local char = player.Character
+    local humanoid = char and char:FindFirstChild("Humanoid")
+    if not humanoid or humanoid.Health <= 0 then
+        return false
+    end
 	
-	if murderer == "Loading..." or murderer == "None" then
-		return false
-	end
-	
-	if not player.Character then
-		return false
-	end
-	
-	local humanoid = player.Character:FindFirstChild("Humanoid")
-	if not humanoid or humanoid.Health <= 0 then
-		return false
-	end
-	
-	return true
+    return true
 end
 
 local function tp(cf)
@@ -196,8 +187,9 @@ function Coins.Toggle(state)
                 if root and isRoundLive() and not isInSpawn(root.Position) then
                     local closestCoin = findClosestCoin(root)
 
-                    if closestCoin and root then
-                        if currentMethod == "Instant Teleport" then
+                    local char = player.Character
+                    local humanoid = char and char:FindFirstChild("Humanoid")
+                    if humanoid and humanoid.Health > 0 then
                             tp(closestCoin.CFrame)
                             task.wait(0.5)
                             tp(CFrame.new(tpPos))
