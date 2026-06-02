@@ -51,7 +51,9 @@ local function tween(targetCF)
     t.Completed:Wait()
 
     if root and root.Parent then
-        root.CFrame = CFrame.new(targetPos, targetPos + root.CFrame.LookVector)
+        local lv = root.CFrame.LookVector
+        local yaw = math.atan2(lv.X, lv.Z)
+        root.CFrame = CFrame.new(targetPos) * CFrame.Angles(0, yaw, 0)
     end
 end
 
