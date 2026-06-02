@@ -1,9 +1,12 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local player = Players.LocalPlayer
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 
 local Coins = {}
+
+local function getPlayer()
+    return Players.LocalPlayer or Players.PlayerAdded:Wait()
+end
 local farmLoop = nil
 local tpPos = Vector3.new(31.723007, 504.818054, -27.340113)
 local currentMethod = "Tween"
@@ -12,8 +15,8 @@ local isEnabled = false
 
 local lastPositions = {}
 local MAX_HISTORY = 5
-local MIN_COIN_DIST = 3
-local MAX_COIN_DIST = 50
+local MIN_COIN_DIST = 0
+local MAX_COIN_DIST = 200
 
 local function isInSpawn(vec)
     local reference = Vector3.new(300, 500, 0)
@@ -67,7 +70,8 @@ local function findClosestCoin(root)
 end
 
 local function setupCharacter()
-    local char = player.Character
+    local player = getPlayer()
+    local char = player and player.Character
     if not char then return end
     local root = char:FindFirstChild("HumanoidRootPart")
     local humanoid = char:FindFirstChildOfClass("Humanoid")
@@ -89,23 +93,27 @@ local function setupCharacter()
 end
 
 local function isPlayerInRound()
-    local char = player.Character
+    local player = getPlayer()
+    local char = player and player.Character
     local humanoid = char and char:FindFirstChild("Humanoid")
     if not humanoid or humanoid.Health <= 0 then
         return false
     end
-	
+
     return true
 end
 
 local function tp(cf)
-	if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-		player.Character.HumanoidRootPart.CFrame = cf
-	end
+    local player = getPlayer()
+    local root = player and player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if root then
+        root.CFrame = cf
+    end
 end
 
 local function tween(targetCF)
-    local char = player.Character
+    local player = getPlayer()
+    local char = player and player.Character
     local root = char and char:FindFirstChild("HumanoidRootPart")
     if not root then return end
 
@@ -172,9 +180,9 @@ function Coins.Toggle(state)
     end
     
     farmLoop = task.spawn(function()
-        local firstCoin = true
         while isEnabled do
-            local char = player.Character
+            local player = getPlayer()
+            local char = player and player.Character
             local humanoid = char and char:FindFirstChild("Humanoid")
             if not humanoid or humanoid.Health <= 0 then
                 task.wait(0.5)
@@ -187,7 +195,7 @@ function Coins.Toggle(state)
                 continue
             end
 
-            local closestCoin = findClosestCoin(root)
+                local closestCoin = findClosestCoin(root)
             if not closestCoin then
                 task.wait(0.2)
                 continue
@@ -195,18 +203,12 @@ function Coins.Toggle(state)
 
             if currentMethod == "Instant Teleport" then
                 tp(closestCoin.CFrame)
-                task.wait(0.5)
+                task.wait(0.7)
                 tp(CFrame.new(tpPos))
                 task.wait(2)
             elseif currentMethod == "Tween" then
-                if firstCoin then
-                    tp(closestCoin.CFrame)
-                    task.wait(0.3)
-                    firstCoin = false
-                else
-                    tween(closestCoin.CFrame)
-                    task.wait(0.1)
-                end
+                tween(closestCoin.CFrame)
+                task.wait(0.2)
             elseif currentMethod == "Teleport 2" then
                 humanoid.AutoRotate = false
                 local poshi = closestCoin.Position
