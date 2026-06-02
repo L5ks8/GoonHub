@@ -1,7 +1,13 @@
 local UI = GoonHub.Import("Assets/ui")
 local Widgets = GoonHub.Import("Assets/Components/widgets")
 local UIFunctions = GoonHub.Import("Assets/Components/uifunctions")
-local Coins = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/coins")
+local _ok, Coins = pcall(function()
+    return GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/coins")
+end)
+if not _ok then
+    warn("Failed to import Coins module:", Coins)
+    Coins = nil
+end
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 local Visuals = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/EspTab/visuals")
@@ -41,6 +47,10 @@ function UILayout.Create()
         Column = "Left",
         Default = false,
         Callback = function(state)
+            if not Coins then
+                warn("Coins module not loaded; cannot Toggle")
+                return
+            end
             Coins.Toggle(state)
         end
     })
@@ -51,6 +61,10 @@ function UILayout.Create()
         Default = 20,
         Column = "Left",
         Callback = function(value)
+            if not Coins then
+                warn("Coins module not loaded; cannot SetSpeed")
+                return
+            end
             Coins.SetSpeed(value)
         end
     })
@@ -70,6 +84,10 @@ function UILayout.Create()
         },
         Column = "Left",
         Callback = function(value)
+            if not Coins then
+                warn("Coins module not loaded; cannot SetMethod")
+                return
+            end
             Coins.SetMethod(value)
         end
     })
