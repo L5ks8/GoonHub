@@ -66,6 +66,21 @@ function UILayout.Create()
         SubTitle = "Resets if bag full",
         Column = "Left",
         Default = false
+        ,
+        Callback = function(state)
+            if not Coins then
+                warn("Coins module not loaded; cannot Toggle Reset")
+                return
+            end
+            if Coins.SetReset then
+                Coins.SetReset(state)
+            else
+                -- fallback: set global directly
+                getgenv().GH_Sys = getgenv().GH_Sys or {}
+                getgenv().GH_Sys.State = getgenv().GH_Sys.State or {}
+                getgenv().GH_Sys.State.Reset = state
+            end
+        end
     })
     coinsSection:CreateToggle({
         Title = "Auto kill all",

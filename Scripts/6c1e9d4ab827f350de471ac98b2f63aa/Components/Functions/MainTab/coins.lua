@@ -199,6 +199,11 @@ function module.SetSpeed(value)
 	GH_Sys.Cfg.Walk = v
 end
 
+function module.SetReset(state)
+	if type(state) ~= "boolean" then state = not (GH_Sys.State.Reset) end
+	GH_Sys.State.Reset = state
+end
+
 function module.SetFarming(v)
 	GH_Sys.State.Farming = v
 end
