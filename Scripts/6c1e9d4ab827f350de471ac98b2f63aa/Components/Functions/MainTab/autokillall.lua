@@ -2,6 +2,7 @@ local module = {}
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local LP = Players.LocalPlayer
 if not LP then repeat task.wait() LP = Players.LocalPlayer until LP end
@@ -10,6 +11,12 @@ local GH_Sys = getgenv().GH_Sys or { State = { Farming = false, Rage = false } }
 getgenv().GH_Sys = GH_Sys
 local Runtime = getgenv().Runtime or { Roles = { Murd = "None", Sher = "None", Me = "Innocent" }, Match = { Alive = true, Active = true } }
 getgenv().Runtime = Runtime
+
+local KillEvent = nil
+pcall(function()
+    local remotes = ReplicatedStorage:WaitForChild("Remotes", 5)
+    KillEvent = remotes:WaitForChild("Gameplay", 5):WaitForChild("KillEvent", 5)
+end)
 
 local function KillLoop()
     if not LP.Character then return end
@@ -42,11 +49,8 @@ local function KillLoop()
                 if knife then
                     pcall(function()
                         LP.Character.HumanoidRootPart.CFrame = target.CFrame * CFrame.new(0, 0, 2.5)
-                        local knifeEvents = knife:FindFirstChild("Events")
-                        if knifeEvents then
-                            local stabEvent = knifeEvents:FindFirstChild("KnifeStabbed")
-                            if stabEvent then stabEvent:Fire(v) end
-                        end
+                        
+                        if KillEvent then KillEvent:FireServer(v) end
                     end)
                 end
                 
