@@ -42,19 +42,46 @@ end
 local function ScanGrid()
 	local c = FindBag()
 	if not c then return nil end
-	local best, dist = nil, math.huge
-	local pos = LP.Character.HumanoidRootPart.Position
+	if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then return nil end
+	local hrp = LP.Character.HumanoidRootPart
+	local pos = hrp.Position
 	local bad = GetEnemy()
-	for _, v in pairs(c:GetChildren()) do
-		if not Runtime.Farm.Ignored[v] then
-			local p = v:IsA("BasePart") and v or (v:IsA("Model") and v.PrimaryPart)
-			if p and (v.Name == "Coin" or v.Name == "SnowToken" or v:FindFirstChild("TouchInterest")) then
-				if GH_Sys.State.Evade and bad and (p.Position - bad).Magnitude < 18 then continue end
-				local d = (pos - p.Position).Magnitude
-				if d < dist then dist = d; best = p end
+	local best, dist = nil, math.huge
+
+	-- iterate descendants for robust detection (parts inside models, attachments)
+	for _, obj in pairs(c:GetDescendants()) do
+		if Runtime.Farm.Ignored[obj] then continue end
+		local part = nil
+		if obj:IsA("BasePart") then
+			part = obj
+		elseif obj:IsA("Model") and obj.PrimaryPart then
+			part = obj.PrimaryPart
+		end
+		if part and (obj.Name == "Coin" or obj.Name == "SnowToken" or obj:FindFirstChild("TouchInterest") or part.Name == "Coin" or part.Name == "SnowToken") then
+			if GH_Sys.State.Evade and bad and (part.Position - bad).Magnitude < 18 then
+				-- too close to enemy, skip
+			else
+				local d = (pos - part.Position).Magnitude
+				if d < dist then dist = d; best = part end
 			end
 		end
 	end
+
+	-- fallback: also check direct children (in case GetDescendants missed something)
+	if not best then
+		for _, v in pairs(c:GetChildren()) do
+			if not Runtime.Farm.Ignored[v] then
+				local p = v:IsA("BasePart") and v or (v:IsA("Model") and v.PrimaryPart)
+				if p and (v.Name == "Coin" or v.Name == "SnowToken" or v:FindFirstChild("TouchInterest")) then
+					if not (GH_Sys.State.Evade and bad and (p.Position - bad).Magnitude < 18) then
+						local d = (pos - p.Position).Magnitude
+						if d < dist then dist = d; best = p end
+					end
+				end
+			end
+		end
+	end
+
 	return best
 end
 
