@@ -23,6 +23,9 @@ local att = Instance.new("Attachment"); att.Name = "GH_Force"
 local rot = Instance.new("AlignOrientation"); rot.Mode = Enum.OrientationAlignmentMode.OneAttachment; rot.RigidityEnabled = true; rot.Attachment0 = att
 local mov = Instance.new("LinearVelocity"); mov.Attachment0 = att; mov.MaxForce = math.huge; mov.VectorVelocity = Vector3.zero; mov.RelativeTo = Enum.ActuatorRelativeTo.World
 
+-- slow multiplier to make farm movement less twitchy (0.0 - 1.0)
+local SPEED_MULT = 0.6
+
 local function FindBag()
 	if Runtime.Farm.Folder and Runtime.Farm.Folder.Parent then return Runtime.Farm.Folder end
 	Runtime.Farm.Folder = workspace:FindFirstChild("CoinContainer", true)
@@ -151,7 +154,7 @@ conn = RunService.Heartbeat:Connect(function()
 			local d = GetEnemy()
 			if d and (hrp.Position - d).Magnitude < 22 then
 				local esc = (hrp.Position - d).Unit
-				mov.VectorVelocity = esc * (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * 1.5
+				mov.VectorVelocity = esc * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * 1.5) * SPEED_MULT
 				rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
 				return
 			end
@@ -165,7 +168,7 @@ conn = RunService.Heartbeat:Connect(function()
 
 		if Runtime.Farm.Node then
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
-			mov.VectorVelocity = (tp - hrp.Position).Unit * (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
+			mov.VectorVelocity = (tp - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
 			if (tp - hrp.Position).Magnitude > 2 then rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0) end
 		else
 			mov.VectorVelocity = Vector3.zero
