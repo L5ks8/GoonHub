@@ -34,6 +34,7 @@ local function KillLoop()
 end
 
 function module.Toggle(state)
+    if Runtime.Roles.Me ~= "Murderer" then return end
     if type(state) ~= "boolean" then state = not GH_Sys.State.Farming end
     GH_Sys.State.Farming = state
     if state then
