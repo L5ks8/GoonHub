@@ -12,6 +12,12 @@ end
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 local Visuals = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/EspTab/visuals")
+local _ok2, AutoKill = pcall(function()
+    return GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/autokillall")
+end)
+if not _ok2 then
+    AutoKill = nil
+end
 
 local UILayout = {}
 
@@ -55,25 +61,25 @@ function UILayout.Create()
             Coins.Toggle(state)
         end
     })
-    coinsSection:CreateSlider({
-        Title = "Farm Speed",
-        Min = 15,
-        Max = 25,
-        Default = 20,
-        Column = "Left",
-        Callback = function(value)
-            if not Coins then
-                warn("Coins module not loaded; cannot SetSpeed")
-                return
-            end
-            Coins.SetSpeed(value)
-        end
-    })
     coinsSection:CreateToggle({
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets if bag full",
         Column = "Left",
         Default = false
+    })
+    coinsSection:CreateToggle({
+        Title = "Auto kill all",
+        SubTitle = "Only Murderer",
+        Column = "Left",
+        Default = false
+        ,
+        Callback = function(state)
+            if not AutoKill then
+                warn("AutoKill module not loaded; cannot Toggle")
+                return
+            end
+            AutoKill.Toggle(state)
+        end
     })
     local statusSection = mainTab:CreateSection("Status", "Right")
     local murderLabel = statusSection:CreateLabel("Murderer:", "Wait...")
