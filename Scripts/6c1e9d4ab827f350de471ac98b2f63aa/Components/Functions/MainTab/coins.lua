@@ -1,12 +1,22 @@
 -- Coins auto-farm module moved from main script
 local module = {}
 
-local Players = getgenv().Players or game:GetService("Players")
-local RunService = getgenv().RunService or game:GetService("RunService")
-local Remotes = getgenv().Remotes or (game:GetService("ReplicatedStorage"):WaitForChild("Remotes"))
-local LP = getgenv().LP or Players.LocalPlayer
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Remotes = nil
+pcall(function() Remotes = ReplicatedStorage:WaitForChild("Remotes") end)
+
+-- wait for LocalPlayer in executors where it's not immediately available
+local LP = Players.LocalPlayer
+if not LP then
+	repeat task.wait() LP = Players.LocalPlayer until LP
+end
+
 local GH_Sys = getgenv().GH_Sys or { State = { Farming = false, Evade = true, Rage = false, Reset = false }, Cfg = { Walk = 35 } }
-local Runtime = getgenv().Runtime or { Farm = { Node = nil, Tick = 0, Folder = nil, Cur = 0, Max = 50, Ignored = {} } }
+getgenv().GH_Sys = GH_Sys
+local Runtime = getgenv().Runtime or { Roles = { Murd = "None", Sher = "None", Me = "Innocent" }, Match = { Alive = true, Active = true }, Farm = { Node = nil, Tick = 0, Folder = nil, Cur = 0, Max = 50, Ignored = {} } }
+getgenv().Runtime = Runtime
 local BagLbl = getgenv().BagLbl
 
 local att = Instance.new("Attachment"); att.Name = "GH_Force"
@@ -111,8 +121,8 @@ if Remotes and Remotes:FindFirstChild("Gameplay") then
 	end)
 end
 
--- Heartbeat loop for movement/collection
-RunService:BindToRenderStep("GH_CoinsFarm", Enum.RenderPriority.Character.Value + 1, function()
+local conn
+conn = RunService.Heartbeat:Connect(function()
 	local c = LP.Character
 	if not c then return end
 	local hrp, hum = c:FindFirstChild("HumanoidRootPart"), c:FindFirstChild("Humanoid")
@@ -165,6 +175,26 @@ RunService:BindToRenderStep("GH_CoinsFarm", Enum.RenderPriority.Character.Value 
 		if hum.PlatformStand then hum.PlatformStand = false end
 	end
 end)
+
+-- expose a stop function to clean up if needed
+function module.Stop()
+	if conn and type(conn.Disconnect) == "function" then
+		conn:Disconnect()
+		conn = nil
+	end
+	att:Destroy(); rot:Destroy(); mov:Destroy()
+end
+
+-- UI helpers expected by `uilayout.lua`
+function module.Toggle(state)
+	if type(state) ~= "boolean" then state = not (GH_Sys.State.Farming) end
+	module.SetFarming(state)
+end
+
+function module.SetSpeed(value)
+	local v = tonumber(value) or GH_Sys.Cfg.Walk or 35
+	GH_Sys.Cfg.Walk = v
+end
 
 function module.SetFarming(v)
 	GH_Sys.State.Farming = v

@@ -75,23 +75,6 @@ function UILayout.Create()
         Column = "Left",
         Default = false
     })
-    coinsSection:CreateDropdown({
-        Title = "Teleport Methods",
-        Default = "Tween",
-        Options = {
-            "Instant Teleport",
-            "Tween",
-            "Teleport 2"
-        },
-        Column = "Left",
-        Callback = function(value)
-            if not Coins then
-                warn("Coins module not loaded; cannot SetMethod")
-                return
-            end
-            Coins.SetMethod(value)
-        end
-    })
     local statusSection = mainTab:CreateSection("Status", "Right")
     local murderLabel = statusSection:CreateLabel("Murderer:", "Wait...")
     local sheriffLabel = statusSection:CreateLabel("Sheriff:", "Wait...")
