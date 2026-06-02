@@ -24,7 +24,7 @@ local rot = Instance.new("AlignOrientation"); rot.Mode = Enum.OrientationAlignme
 local mov = Instance.new("LinearVelocity"); mov.Attachment0 = att; mov.MaxForce = math.huge; mov.VectorVelocity = Vector3.zero; mov.RelativeTo = Enum.ActuatorRelativeTo.World
 
 -- slow multiplier to make farm movement less twitchy (0.0 - 1.0)
-local SPEED_MULT = 0.3
+local SPEED_MULT = 0.5
 
 local function FindBag()
 	if Runtime.Farm.Folder and Runtime.Farm.Folder.Parent then return Runtime.Farm.Folder end
