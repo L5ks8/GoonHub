@@ -174,79 +174,67 @@ function Coins.Toggle(state)
     farmLoop = task.spawn(function()
         local firstCoin = true
         while isEnabled do
-            if not isPlayerInRound() then
+            local char = player.Character
+            local humanoid = char and char:FindFirstChild("Humanoid")
+            if not humanoid or humanoid.Health <= 0 then
                 task.wait(0.5)
                 continue
             end
 
-            local murderer = Status.getMurderer()
-            if murderer ~= "Loading..." and murderer ~= "None" then
-                local char = player.Character
-                local root = char and char:FindFirstChild("HumanoidRootPart")
-
-                if root and isRoundLive() and not isInSpawn(root.Position) then
-                    local closestCoin = findClosestCoin(root)
-
-                    local char = player.Character
-                    local humanoid = char and char:FindFirstChild("Humanoid")
-                    if humanoid and humanoid.Health > 0 then
-                            tp(closestCoin.CFrame)
-                            task.wait(0.5)
-                            tp(CFrame.new(tpPos))
-                            task.wait(2)
-                        elseif currentMethod == "Tween" then
-                            if firstCoin then
-                                tp(closestCoin.CFrame)
-                                task.wait(0.3)
-                                firstCoin = false
-                            else
-                                tween(closestCoin.CFrame)
-                                task.wait(0.1)
-                            end
-                        elseif currentMethod == "Teleport 2" then
-                            local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-                            if humanoid then
-                                humanoid.AutoRotate = false
-                            end
-
-                            if closestCoin then
-                                local poshi = closestCoin.Position
-                                local pos = poshi - Vector3.new(0, 8, 0)
-                                root.CFrame = CFrame.lookAt(poshi, poshi + Vector3.new(0, 0, 1))
-                                root.AssemblyAngularVelocity = Vector3.new(0, 2, 0)
-                                root.AssemblyLinearVelocity = Vector3.new(0, 2, 0)
-                                task.wait(0.5)
-                                root.AssemblyLinearVelocity = Vector3.zero
-                                root.AssemblyAngularVelocity = Vector3.zero
-                                root.CFrame = CFrame.lookAt(pos, pos + Vector3.new(0, 0.1, 1)) * CFrame.Angles(math.rad(90), 0, 0)
-
-                                addPosition(closestCoin.Position)
-                                task.wait(2.2)
-                            else
-                                task.wait(0.2)
-                            end
-                        else
-                            local poshi = closestCoin.Position
-                            local pos = poshi - Vector3.new(0, 8, 0)
-                            root.CFrame = CFrame.lookAt(poshi, poshi + Vector3.new(0, 0, 1))
-                            root.AssemblyAngularVelocity = Vector3.new(0, 2, 0)
-                            root.AssemblyLinearVelocity = Vector3.new(0, 2, 0)
-                            task.wait(0.5)
-                            root.AssemblyLinearVelocity = Vector3.zero
-                            root.AssemblyAngularVelocity = Vector3.zero
-                            root.CFrame = CFrame.lookAt(pos, pos + Vector3.new(0, 0.1, 1)) * CFrame.Angles(math.rad(90), 0, 0)
-
-                            addPosition(closestCoin.Position)
-                            task.wait(2.2)
-                        end
-                    else
-                        task.wait(0.2)
-                    end
-                else
-                    task.wait(1)
-                end
+            local root = char and char:FindFirstChild("HumanoidRootPart")
+            if not root or not isRoundLive() or isInSpawn(root.Position) then
+                task.wait(1)
+                continue
             end
-            task.wait(0.1)
+
+            local closestCoin = findClosestCoin(root)
+            if not closestCoin then
+                task.wait(0.2)
+                continue
+            end
+
+            if currentMethod == "Instant Teleport" then
+                tp(closestCoin.CFrame)
+                task.wait(0.5)
+                tp(CFrame.new(tpPos))
+                task.wait(2)
+            elseif currentMethod == "Tween" then
+                if firstCoin then
+                    tp(closestCoin.CFrame)
+                    task.wait(0.3)
+                    firstCoin = false
+                else
+                    tween(closestCoin.CFrame)
+                    task.wait(0.1)
+                end
+            elseif currentMethod == "Teleport 2" then
+                humanoid.AutoRotate = false
+                local poshi = closestCoin.Position
+                local pos = poshi - Vector3.new(0, 8, 0)
+                root.CFrame = CFrame.lookAt(poshi, poshi + Vector3.new(0, 0, 1))
+                root.AssemblyAngularVelocity = Vector3.new(0, 2, 0)
+                root.AssemblyLinearVelocity = Vector3.new(0, 2, 0)
+                task.wait(0.5)
+                root.AssemblyLinearVelocity = Vector3.zero
+                root.AssemblyAngularVelocity = Vector3.zero
+                root.CFrame = CFrame.lookAt(pos, pos + Vector3.new(0, 0.1, 1)) * CFrame.Angles(math.rad(90), 0, 0)
+
+                addPosition(closestCoin.Position)
+                task.wait(2.2)
+            else
+                local poshi = closestCoin.Position
+                local pos = poshi - Vector3.new(0, 8, 0)
+                root.CFrame = CFrame.lookAt(poshi, poshi + Vector3.new(0, 0, 1))
+                root.AssemblyAngularVelocity = Vector3.new(0, 2, 0)
+                root.AssemblyLinearVelocity = Vector3.new(0, 2, 0)
+                task.wait(0.5)
+                root.AssemblyLinearVelocity = Vector3.zero
+                root.AssemblyAngularVelocity = Vector3.zero
+                root.CFrame = CFrame.lookAt(pos, pos + Vector3.new(0, 0.1, 1)) * CFrame.Angles(math.rad(90), 0, 0)
+
+                addPosition(closestCoin.Position)
+                task.wait(2.2)
+            end
         end
     end)
 

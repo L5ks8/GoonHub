@@ -8,6 +8,7 @@ if not _ok then
     warn("Failed to import Coins module:", Coins)
     Coins = nil
 end
+
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 local Visuals = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/EspTab/visuals")
