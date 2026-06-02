@@ -14,24 +14,44 @@ getgenv().Runtime = Runtime
 
 local function KillLoop()
     if not LP.Character then return end
-    local k = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
-    if k and LP.Character then LP.Character.Humanoid:EquipTool(k) end
+    
     for _, v in pairs(Players:GetPlayers()) do
+        if not GH_Sys.State.Farming then return end
         if v ~= LP and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
-            local t = v.Character.HumanoidRootPart
-            local s = tick()
-            repeat
-                if not GH_Sys.State.Farming then return end
-                if not LP.Character then return end
-                k = LP.Character:FindFirstChild("Knife") or (LP.Backpack and LP.Backpack:FindFirstChild("Knife"))
-                if k and LP.Character and k.Parent ~= LP.Character then LP.Character.Humanoid:EquipTool(k) end
-                if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then return end
-                LP.Character.HumanoidRootPart.CFrame = t.CFrame * CFrame.new(0, 0, 2)
-                if k then k:Activate() end
+            local target = v.Character.HumanoidRootPart
+            local startTime = tick()
+            
+            -- Equip knife
+            local knife = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
+            if knife and LP.Character then
+                pcall(function() LP.Character.Humanoid:EquipTool(knife) end)
+                task.wait(0.2)
+            end
+            
+            -- Attack loop
+            while GH_Sys.State.Farming and v.Parent and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 do
+                if not LP.Character or not LP.Character:FindFirstChild("HumanoidRootPart") then break end
+                if (tick() - startTime) > 5 then break end
+                
+                knife = LP.Character:FindFirstChild("Knife")
+                if not knife then
+                    knife = LP.Backpack and LP.Backpack:FindFirstChild("Knife")
+                    if knife then pcall(function() LP.Character.Humanoid:EquipTool(knife) end) end
+                end
+                
+                -- Move to target and attack
+                if knife then
+                    pcall(function()
+                        LP.Character.HumanoidRootPart.CFrame = target.CFrame * CFrame.new(0, 0, 2.5)
+                        knife:Activate()
+                    end)
+                end
+                
                 RunService.Heartbeat:Wait()
-            until v.Character.Humanoid.Health <= 0 or (tick() - s) > 2 or not v.Parent
+            end
         end
     end
+    
     GH_Sys.State.Farming = false
 end
 
