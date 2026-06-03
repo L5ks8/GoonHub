@@ -13,11 +13,12 @@ if not LP then
 	repeat task.wait() LP = Players.LocalPlayer until LP
 end
 
-local GH_Sys = getgenv().GH_Sys or { State = { Farming = false, Evade = true, Rage = false, Reset = false }, Cfg = { Walk = 35 } }
+local GH_Sys = getgenv().GH_Sys or { State = { Farming = false, Evade = true, Rage = false, Reset = false, SurviveRound = true }, Cfg = { Walk = 35, FarmMode = "Tween" } }
 getgenv().GH_Sys = GH_Sys
 local Runtime = getgenv().Runtime or { Roles = { Murd = "None", Sher = "None", Me = "Innocent" }, Match = { Alive = true, Active = true }, Farm = { Node = nil, Tick = 0, Folder = nil, Cur = 0, Max = 50, Ignored = {} } }
 getgenv().Runtime = Runtime
 local BagLbl = getgenv().BagLbl
+local teleportProcessing = false
 
 local att = Instance.new("Attachment"); att.Name = "GH_Force"
 local rot = Instance.new("AlignOrientation"); rot.Mode = Enum.OrientationAlignmentMode.OneAttachment; rot.RigidityEnabled = true; rot.Attachment0 = att
@@ -144,6 +145,8 @@ if Remotes and Remotes:FindFirstChild("Gameplay") then
 				if LP.Character and LP.Character:FindFirstChild("Humanoid") then LP.Character.Humanoid.Health = 0 end
 				task.wait(4)
 				Runtime.Farm.Cur = 0; Runtime.Farm.Ignored = {}; GH_Sys.State.Farming = true
+			elseif GH_Sys.State.SurviveRound then
+				-- Keep farming state active to move to safe spot
 			else
 				GH_Sys.State.Farming = false
 			end
@@ -187,8 +190,52 @@ conn = RunService.Heartbeat:Connect(function()
 			end
 		end
 
+		-- Teleport Farm Mode Logic
+		if GH_Sys.Cfg.FarmMode == "Teleport" then
+			if teleportProcessing then return end
+
+			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
+			if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
+				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+				hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
+				hum.PlatformStand = true
+				return 
+			end
+
+			local node = ScanGrid()
+			if node then
+				teleportProcessing = true
+				task.spawn(function()
+					att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+					hum.PlatformStand = true
+					hrp.CFrame = node.CFrame
+					task.wait(0.5)
+					hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
+					task.wait(2)
+					teleportProcessing = false
+				end)
+			else
+				hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
+			end
+			return
+		end
+
+		-- Bag Full & Survive Round Logic
+		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
+			local safePos = Vector3.new(1.076589, 504.818115, -25.737610)
+			mov.VectorVelocity = (safePos - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
+			
+			if (safePos - hrp.Position).Magnitude > 2 then 
+				rot.CFrame = CFrame.lookAt(hrp.Position, safePos) * CFrame.Angles(math.rad(90), 0, 0)
+			else
+				mov.VectorVelocity = Vector3.zero
+			end
+			
+			Runtime.Farm.Node = nil -- Disable coin detection
+			return 
+		end
+
 		if Runtime.Farm.Node and not Runtime.Farm.Node.Parent then Runtime.Farm.Node = nil end
-		-- Removed the 1.3 second timeout to ensure commitment to a single coin target.
 		if not Runtime.Farm.Node then Runtime.Farm.Node = ScanGrid(); Runtime.Farm.Tick = tick() end
 
 		if Runtime.Farm.Node then
@@ -222,6 +269,10 @@ end
 function module.SetSpeed(value)
 	local v = tonumber(value) or GH_Sys.Cfg.Walk or 35
 	GH_Sys.Cfg.Walk = v
+end
+
+function module.SetMode(v)
+	GH_Sys.Cfg.FarmMode = v
 end
 
 function module.SetReset(state)

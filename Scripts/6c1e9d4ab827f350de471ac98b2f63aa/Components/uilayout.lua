@@ -67,6 +67,19 @@ function UILayout.Create()
             Coins.Toggle(state)
         end
     })
+    coinsSection:CreateDropdown({
+        Title = "Farm Mode",
+        Options = {"Teleport", "Tween"},
+        Column = "Left",
+        Default = "Tween",
+        Callback = function(value)
+            if not Coins then
+                warn("Coins module not loaded; cannot change mode")
+                return
+            end
+            Coins.SetMode(value)
+        end
+    })
     coinsSection:CreateToggle({
         Title = "Auto Reset (Full Bag)",
         SubTitle = "Resets if bag full",
@@ -107,7 +120,17 @@ function UILayout.Create()
     local sheriffLabel = statusSection:CreateLabel("Sheriff:", "Wait...")
     local heroLabel = statusSection:CreateLabel("Hero:", "nil")
     local otherSection = mainTab:CreateSection("Other", "Right")
-    
+
+    otherSection:CreateToggle({
+        Title = "Survive Round",
+        Column = "Right",
+        Default = true,
+        Callback = function(state)
+            getgenv().GH_Sys = getgenv().GH_Sys or {}
+            getgenv().GH_Sys.State = getgenv().GH_Sys.State or {}
+            getgenv().GH_Sys.State.SurviveRound = state
+        end
+    })
     otherSection:CreateToggle({
         Title = "Auto Evade Murderer",
         Column = "Right",
