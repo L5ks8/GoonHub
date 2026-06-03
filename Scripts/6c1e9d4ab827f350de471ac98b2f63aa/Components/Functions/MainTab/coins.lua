@@ -188,9 +188,7 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		if Runtime.Farm.Node and not Runtime.Farm.Node.Parent then Runtime.Farm.Node = nil end
-		if Runtime.Farm.Node and (tick() - Runtime.Farm.Tick) > 1.3 then
-			Runtime.Farm.Ignored[Runtime.Farm.Node] = true; Runtime.Farm.Node = nil
-		end
+		-- Removed the 1.3 second timeout to ensure commitment to a single coin target.
 		if not Runtime.Farm.Node then Runtime.Farm.Node = ScanGrid(); Runtime.Farm.Tick = tick() end
 
 		if Runtime.Farm.Node then
