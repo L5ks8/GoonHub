@@ -35,7 +35,7 @@ function module:Notify(data)
 	Holder.BackgroundTransparency = 1
 	Holder.Size = UDim2.new(1, 0, 0, 0) 
 	Holder.AutomaticSize = Enum.AutomaticSize.Y
-	Holder.LayoutOrder = -os.clock() * 1000
+	Holder.LayoutOrder = os.clock() * 1000
 	Holder.Parent = Container
 
 	local Banner = Instance.new("CanvasGroup")
@@ -48,13 +48,6 @@ function module:Notify(data)
 	Banner.Parent = Holder
 
 	Instance.new("UICorner", Banner).CornerRadius = UDim.new(0, 15)
-
-	local Stroke = Instance.new("UIStroke")
-	Stroke.Thickness = 2
-	Stroke.Color = UI.CurrentAccent
-	Stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	Stroke.Transparency = 0.6
-	Stroke.Parent = Banner
 
 	local Padding = Instance.new("UIPadding")
 	Padding.PaddingTop = UDim.new(0, 15)
@@ -101,7 +94,7 @@ function module:Notify(data)
 
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.Name = "title"
-	titleLabel.Text = title:upper()
+	titleLabel.Text = title
 	titleLabel.TextColor3 = UI.CurrentAccent
 	titleLabel.TextSize = 15
 	titleLabel.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium)
