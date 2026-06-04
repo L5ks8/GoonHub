@@ -1,4 +1,3 @@
--- Instances: 18 | Scripts: 0 | Modules: 0 | Tags: 1
 local module = {}
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
@@ -14,14 +13,14 @@ ScreenGui.Parent = (gethui and gethui()) or LP:WaitForChild("PlayerGui")
 local Container = Instance.new("Frame")
 Container.Name = "Container"
 Container.Size = UDim2.new(0, 320, 1, -40)
-Container.Position = UDim2.new(0, 15, 0, 15)
+Container.Position = UDim2.new(1, -335, 0, 15) 
 Container.BackgroundTransparency = 1
 Container.Parent = ScreenGui
 
 local UIListLayout = Instance.new("UIListLayout")
 UIListLayout.Padding = UDim.new(0, 10)
 UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right 
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Parent = Container
 
@@ -34,7 +33,7 @@ function module:Notify(data)
 	local Holder = Instance.new("Frame")
 	Holder.Name = "NotificationHolder"
 	Holder.BackgroundTransparency = 1
-	Holder.Size = UDim2.new(0, 300, 0, 0)
+	Holder.Size = UDim2.new(1, 0, 0, 0) 
 	Holder.AutomaticSize = Enum.AutomaticSize.Y
 	Holder.LayoutOrder = -os.clock() * 1000
 	Holder.Parent = Container
@@ -43,7 +42,7 @@ function module:Notify(data)
 	Banner.Name = "Banner"
 	Banner.BackgroundColor3 = UI.CurrentMain or Color3.fromRGB(37, 37, 37)
 	Banner.BorderSizePixel = 0
-	Banner.Size = UDim2.new(0, 300, 0, 0)
+	Banner.Size = UDim2.new(1, 0, 0, 0) 
 	Banner.AutomaticSize = Enum.AutomaticSize.Y
 	Banner.GroupTransparency = 1
 	Banner.Parent = Holder
@@ -121,12 +120,12 @@ function module:Notify(data)
 	descLabel.FontFace = Font.new("rbxassetid://12187365364")
 	descLabel.TextXAlignment = Enum.TextXAlignment.Left
 	descLabel.BackgroundTransparency = 1
-	descLabel.Size = UDim2.new(0, 210, 0, 0)
+	descLabel.Size = UDim2.new(1, 0, 0, 0) -- Breite des Informations-Frames füllen
 	descLabel.AutomaticSize = Enum.AutomaticSize.Y
 	descLabel.Parent = information
 
 	-- Slide-in Animation
-	Banner.Position = UDim2.new(0, -320, 0, 0)
+	Banner.Position = UDim2.new(1, 0, 0, 0) -- Startet am rechten Rand des Holders
 	
 	TweenService:Create(Banner, TweenInfo.new(0.7, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
 		Position = UDim2.new(0, 0, 0, 0),
@@ -135,7 +134,7 @@ function module:Notify(data)
 
 	task.delay(duration, function()
 		local fade = TweenService:Create(Banner, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-			Position = UDim2.new(0, -320, 0, 0),
+			Position = UDim2.new(1, 0, 0, 0), -- Slidet zurück zum rechten Rand des Holders
 			GroupTransparency = 1
 		})
 		fade:Play()
