@@ -13,8 +13,8 @@ ScreenGui.Parent = (gethui and gethui()) or LP:WaitForChild("PlayerGui")
 
 local Container = Instance.new("Frame")
 Container.Name = "Container"
-Container.Size = UDim2.new(0, 350, 1, -40)
-Container.Position = UDim2.new(0, 20, 0, 20)
+Container.Size = UDim2.new(0, 320, 1, -40)
+Container.Position = UDim2.new(0, 15, 0, 15)
 Container.BackgroundTransparency = 1
 Container.Parent = ScreenGui
 
@@ -34,7 +34,7 @@ function module:Notify(data)
 	local Holder = Instance.new("Frame")
 	Holder.Name = "NotificationHolder"
 	Holder.BackgroundTransparency = 1
-	Holder.Size = UDim2.new(1, 0, 0, 0)
+	Holder.Size = UDim2.new(0, 300, 0, 0)
 	Holder.AutomaticSize = Enum.AutomaticSize.Y
 	Holder.LayoutOrder = -os.clock() * 1000
 	Holder.Parent = Container
@@ -43,7 +43,8 @@ function module:Notify(data)
 	Banner.Name = "Banner"
 	Banner.BackgroundColor3 = UI.CurrentMain or Color3.fromRGB(37, 37, 37)
 	Banner.BorderSizePixel = 0
-	Banner.AutomaticSize = Enum.AutomaticSize.XY
+	Banner.Size = UDim2.new(0, 300, 0, 0)
+	Banner.AutomaticSize = Enum.AutomaticSize.Y
 	Banner.GroupTransparency = 1
 	Banner.Parent = Holder
 
@@ -95,13 +96,13 @@ function module:Notify(data)
 	information.Parent = Banner
 
 	local infolist = Instance.new("UIListLayout")
-	infolist.Padding = UDim.new(0, 2)
+	infolist.Padding = UDim.new(0, 1)
 	infolist.SortOrder = Enum.SortOrder.LayoutOrder
 	infolist.Parent = information
 
 	local titleLabel = Instance.new("TextLabel")
 	titleLabel.Name = "title"
-	titleLabel.Text = title
+	titleLabel.Text = title:upper()
 	titleLabel.TextColor3 = UI.CurrentAccent
 	titleLabel.TextSize = 15
 	titleLabel.FontFace = Font.new("rbxassetid://12187365364", Enum.FontWeight.Medium)
@@ -113,31 +114,33 @@ function module:Notify(data)
 	local descLabel = Instance.new("TextLabel")
 	descLabel.Name = "description"
 	descLabel.Text = desc
+	descLabel.TextWrapped = true
 	descLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	descLabel.TextTransparency = 0.5
-	descLabel.TextSize = 12
+	descLabel.TextSize = 13
 	descLabel.FontFace = Font.new("rbxassetid://12187365364")
 	descLabel.TextXAlignment = Enum.TextXAlignment.Left
 	descLabel.BackgroundTransparency = 1
-	descLabel.AutomaticSize = Enum.AutomaticSize.XY
+	descLabel.Size = UDim2.new(0, 210, 0, 0)
+	descLabel.AutomaticSize = Enum.AutomaticSize.Y
 	descLabel.Parent = information
 
 	-- Slide-in Animation
-	Banner.Position = UDim2.new(0, -350, 0, 0)
+	Banner.Position = UDim2.new(0, -320, 0, 0)
 	
-	TweenService:Create(Banner, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+	TweenService:Create(Banner, TweenInfo.new(0.7, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
 		Position = UDim2.new(0, 0, 0, 0),
 		GroupTransparency = 0
 	}):Play()
 
 	task.delay(duration, function()
-		local fade = TweenService:Create(Banner, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-			Position = UDim2.new(0, -350, 0, 0),
+		local fade = TweenService:Create(Banner, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
+			Position = UDim2.new(0, -320, 0, 0),
 			GroupTransparency = 1
 		})
 		fade:Play()
 		fade.Completed:Wait()
-		Banner:Destroy()
+		Holder:Destroy()
 	end)
 end
 
