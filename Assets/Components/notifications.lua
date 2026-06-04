@@ -13,15 +13,15 @@ ScreenGui.Parent = (gethui and gethui()) or LP:WaitForChild("PlayerGui")
 
 local Container = Instance.new("Frame")
 Container.Name = "Container"
-Container.Size = UDim2.new(0, 300, 1, -40)
-Container.Position = UDim2.new(1, -310, 0, 20)
+Container.Size = UDim2.new(0, 350, 1, -40)
+Container.Position = UDim2.new(0, 20, 0, 20)
 Container.BackgroundTransparency = 1
 Container.Parent = ScreenGui
 
 local UIListLayout = Instance.new("UIListLayout")
 UIListLayout.Padding = UDim.new(0, 10)
 UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Parent = Container
 
@@ -31,14 +31,21 @@ function module:Notify(data)
 	local icon = data.Icon or "rbxassetid://135630585467568"
 	local duration = data.Duration or 5
 
+	local Holder = Instance.new("Frame")
+	Holder.Name = "NotificationHolder"
+	Holder.BackgroundTransparency = 1
+	Holder.Size = UDim2.new(1, 0, 0, 0)
+	Holder.AutomaticSize = Enum.AutomaticSize.Y
+	Holder.LayoutOrder = -os.clock() * 1000
+	Holder.Parent = Container
+
 	local Banner = Instance.new("CanvasGroup")
 	Banner.Name = "Banner"
 	Banner.BackgroundColor3 = UI.CurrentMain or Color3.fromRGB(37, 37, 37)
 	Banner.BorderSizePixel = 0
 	Banner.AutomaticSize = Enum.AutomaticSize.XY
 	Banner.GroupTransparency = 1
-	Banner.LayoutOrder = -os.clock() * 1000
-	Banner.Parent = Container
+	Banner.Parent = Holder
 
 	Instance.new("UICorner", Banner).CornerRadius = UDim.new(0, 15)
 
@@ -116,7 +123,7 @@ function module:Notify(data)
 	descLabel.Parent = information
 
 	-- Slide-in Animation
-	Banner.Position = UDim2.new(1, 100, 0, 0)
+	Banner.Position = UDim2.new(0, -350, 0, 0)
 	
 	TweenService:Create(Banner, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
 		Position = UDim2.new(0, 0, 0, 0),
@@ -125,7 +132,7 @@ function module:Notify(data)
 
 	task.delay(duration, function()
 		local fade = TweenService:Create(Banner, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-			Position = UDim2.new(1, 100, 0, 0),
+			Position = UDim2.new(0, -350, 0, 0),
 			GroupTransparency = 1
 		})
 		fade:Play()
