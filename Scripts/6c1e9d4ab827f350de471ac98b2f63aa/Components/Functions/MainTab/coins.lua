@@ -178,9 +178,10 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
-		hum.PlatformStand = true
-		for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
-		-- Enable collision for Teleport mode so we can fall onto coins
+		hum.PlatformStand = not teleportProcessing
+		if not teleportProcessing then
+			for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
+		end
 		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") end end
 
 		if GH_Sys.State.Evade then
@@ -195,7 +196,7 @@ conn = RunService.Heartbeat:Connect(function()
 
 		-- Teleport Farm Mode Logic
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
-			mov.VectorVelocity = Vector3.zero -- Stop drift from Tween mode
+			mov.VectorVelocity = Vector3.zero
 			if teleportProcessing then return end
 
 			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
@@ -211,9 +212,9 @@ conn = RunService.Heartbeat:Connect(function()
 				teleportProcessing = true
 				task.spawn(function()
 					att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-					hum.PlatformStand = true
-					
-					-- Teleport 2.5 studs above to fall onto the coin
+					hum.PlatformStand = false
+
+					-- Teleport 2.5 studs above the coin to fall on it
 					hrp.CFrame = node.CFrame * CFrame.new(0, 2.5, 0)
 					task.wait(0.5)
 					

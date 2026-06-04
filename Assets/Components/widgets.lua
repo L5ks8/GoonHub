@@ -646,30 +646,36 @@ function Widgets.Init(window, G2L)
 
             local listLayout = New("UIListLayout", {Padding = UDim.new(0, 5)}, list)
             
-            for _, opt in pairs(cfg.Options) do
-                local optBtn = New("TextButton", {
-                    Size = UDim2.new(1, 0, 0, 30),
-                    BackgroundColor3 = Color3.fromRGB(45, 45, 45),
-                    Text = opt,
-                    TextColor3 = Color3.new(0.8, 0.8, 0.8), 
-                    FontFace = fonts.bold,
-                    TextSize = 14,
-                    AutoButtonColor = false
-                }, list)
-                
-                New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
-                optBtn.MouseButton1Click:Connect(function()
-                    selected = opt 
-                    btn.Text = "  " .. opt 
-                    dropped = false 
-                    list.Visible = false
-                    if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
-                    -- Adjusted targetHeight for closed state
-                    TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
-                    TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
-                    if cfg.Callback then cfg.Callback(opt) end
-                end)
+            local function updateOptions(newOptions)
+                for _, v in pairs(list:GetChildren()) do
+                    if v:IsA("TextButton") then v:Destroy() end
+                end
+                for _, opt in pairs(newOptions) do
+                    local optBtn = New("TextButton", {
+                        Size = UDim2.new(1, 0, 0, 30),
+                        BackgroundColor3 = Color3.fromRGB(45, 45, 45),
+                        Text = opt,
+                        TextColor3 = Color3.new(0.8, 0.8, 0.8), 
+                        FontFace = fonts.bold,
+                        TextSize = 14,
+                        AutoButtonColor = false
+                    }, list)
+                    
+                    New("UICorner", {CornerRadius = UDim.new(0, 4)}, optBtn)
+                    optBtn.MouseButton1Click:Connect(function()
+                        selected = opt 
+                        btn.Text = "  " .. opt 
+                        dropped = false 
+                        list.Visible = false
+                        if self.currentParent[col] then self.currentParent[col].ScrollingEnabled = true end
+                        TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 44)}):Play()
+                        TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = 0}):Play()
+                        if cfg.Callback then cfg.Callback(opt) end
+                    end)
+                end
             end
+            
+            updateOptions(cfg.Options)
             
             btn.MouseButton1Click:Connect(function()
                 dropped = not dropped
@@ -680,6 +686,12 @@ function Widgets.Init(window, G2L)
                 TweenService:Create(f, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, targetHeight)}):Play()
                 TweenService:Create(arrow, TweenInfo.new(0.3, Enum.EasingStyle.Quart), {Rotation = dropped and 180 or 0}):Play()
             end)
+
+            return {
+                Refresh = function(_, newList)
+                    updateOptions(newList)
+                end
+            }
         end
 
         return tObj

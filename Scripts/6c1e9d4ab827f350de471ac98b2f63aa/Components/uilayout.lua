@@ -246,14 +246,6 @@ function UILayout.Create()
             if PlayerLogic then PlayerLogic.ToggleLoopFling(state) end
         end
     })
-    PlayerSection:CreateButton({
-        Title = "Stop Fling",
-        Column = "Right",
-        Callback = function()
-            if PlayerLogic then PlayerLogic.StopFling() end
-        end
-    })
-
     -- Misc Tab
 
     local misc = MiscTab:CreateSection("Misc", "Left")
