@@ -323,7 +323,7 @@ conn = RunService.Heartbeat:Connect(function()
 				return 
 			end
 
-			if Runtime.Farm.Cur >= Runtime.Farm.Max and 
+			if GH_Sys.State.AutoKillAllActive and Runtime.Farm.Cur >= Runtime.Farm.Max and 
 				not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
 				
 				att.Parent = nil
