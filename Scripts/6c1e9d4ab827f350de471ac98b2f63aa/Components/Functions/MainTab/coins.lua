@@ -23,8 +23,7 @@ local GH_Sys = getgenv().GH_Sys or {
 		Evade = true,
 		Rage = false,
 		Reset = false,
-		SurviveRound = true,
-		EvasionInProgress = false
+		SurviveRound = true
 	},
 	Cfg = {
 		Walk = 35,
@@ -273,13 +272,6 @@ conn = RunService.Heartbeat:Connect(function()
 	if GH_Sys.State.Farming and Runtime.Match and 
 		Runtime.Match.Alive and hum.Health > 0 then
 		
-		if GH_Sys.State.EvasionInProgress then
-			att.Parent = nil
-			rot.Parent = nil
-			mov.Parent = nil
-			return
-		end
-
 		if GH_Sys.State.Rage then
 			att.Parent = nil
 			rot.Parent = nil
@@ -300,7 +292,7 @@ conn = RunService.Heartbeat:Connect(function()
 		att.Parent = hrp
 		rot.Parent = hrp
 		mov.Parent = hrp
-		hum.PlatformStand = not teleportProcessing
+		hum.PlatformStand = true
 		
 		if not teleportProcessing then
 			for _, t in pairs(hum:GetPlayingAnimationTracks()) do 
@@ -312,6 +304,17 @@ conn = RunService.Heartbeat:Connect(function()
 			if v:IsA("BasePart") then 
 				v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") 
 			end 
+		end
+
+		if GH_Sys.State.Evade then
+			local d = GetEnemy()
+			if d and (hrp.Position - d).Magnitude < 22 then
+				local esc = (hrp.Position - d).Unit
+				local walkSpeed = (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
+				mov.VectorVelocity = esc * (walkSpeed * 1.5) * SPEED_MULT
+				rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
+				return
+			end
 		end
 
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
@@ -338,7 +341,7 @@ conn = RunService.Heartbeat:Connect(function()
 					att.Parent = nil
 					rot.Parent = nil
 					mov.Parent = nil
-					hum.PlatformStand = false
+					hum.PlatformStand = true
 
 					hrp.CFrame = node.CFrame * CFrame.new(0, 2.5, 0)
 					task.wait(0.5)

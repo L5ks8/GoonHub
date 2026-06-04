@@ -22,9 +22,14 @@ local function KillLoop()
     if not LP.Character then return end
 
     while GH_Sys.State.AutoKillAllActive do
+        if Runtime.Roles.Me ~= "Murderer" or not Runtime.Match.Active or not Runtime.Match.Alive then
+            GH_Sys.State.AutoKillAllActive = false
+            break
+        end
+
         local killedSomeoneThisIteration = false
         for _, v in pairs(Players:GetPlayers()) do
-            if not GH_Sys.State.AutoKillAllActive then break end
+            if not GH_Sys.State.AutoKillAllActive or Runtime.Roles.Me ~= "Murderer" or not Runtime.Match.Active then break end
             if v ~= LP and v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health > 0 then
                 killedSomeoneThisIteration = true
                 local targetHRP = v.Character.HumanoidRootPart
@@ -42,7 +47,7 @@ local function KillLoop()
                     VirtualInputManager:SendMouseButtonEvent(0,0,0,false,game,false,0)
                     local attackStart = tick()
                     while tick() - attackStart < 0.75 do
-                        if not GH_Sys.State.AutoKillAllActive or not v.Parent or not v.Character or not v.Character:FindFirstChild("HumanoidRootPart") or v.Character.Humanoid.Health <= 0 then
+                        if not GH_Sys.State.AutoKillAllActive or Runtime.Roles.Me ~= "Murderer" or not Runtime.Match.Active or not v.Parent or not v.Character or not v.Character:FindFirstChild("HumanoidRootPart") or v.Character.Humanoid.Health <= 0 then
                             break
                         end
                         LP.Character.HumanoidRootPart.CFrame = targetHRP.CFrame
@@ -52,6 +57,12 @@ local function KillLoop()
                 
             end
         end
+
+        if not GH_Sys.State.AutoKillAllActive or Runtime.Roles.Me ~= "Murderer" or not Runtime.Match.Active then
+            GH_Sys.State.AutoKillAllActive = false
+            break
+        end
+
         if not killedSomeoneThisIteration then
             task.wait(1)
         end
