@@ -293,10 +293,9 @@ conn = RunService.Heartbeat:Connect(function()
 		att.Parent = hrp
 		rot.Parent = hrp
 		mov.Parent = hrp
+		hum.PlatformStand = not teleportProcessing
 		
-		local shouldLieDown = (GH_Sys.Cfg.FarmMode == "Tween") or (GH_Sys.Cfg.FarmMode == "Teleport" and teleportProcessing)
-		hum.PlatformStand = shouldLieDown
-		if shouldLieDown then
+		if not teleportProcessing then
 			for _, t in pairs(hum:GetPlayingAnimationTracks()) do 
 				t:Stop() 
 			end
@@ -332,7 +331,7 @@ conn = RunService.Heartbeat:Connect(function()
 				rot.Parent = nil
 				mov.Parent = nil
 				hrp.CFrame = Save_Position
-				hum.PlatformStand = false
+				hum.PlatformStand = true
 				return 
 			end
 
@@ -343,8 +342,9 @@ conn = RunService.Heartbeat:Connect(function()
 					att.Parent = nil
 					rot.Parent = nil
 					mov.Parent = nil
-					
-					hrp.CFrame = node.CFrame * CFrame.Angles(math.rad(90), 0, 0)
+					hum.PlatformStand = false
+
+					hrp.CFrame = node.CFrame * CFrame.new(0, 2, 0)
 					task.wait(0.5)
 					
 					hrp.CFrame = Save_Position
