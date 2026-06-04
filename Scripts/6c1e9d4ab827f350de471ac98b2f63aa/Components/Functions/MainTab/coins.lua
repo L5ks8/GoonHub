@@ -24,6 +24,8 @@ local att = Instance.new("Attachment"); att.Name = "GH_Force"
 local rot = Instance.new("AlignOrientation"); rot.Mode = Enum.OrientationAlignmentMode.OneAttachment; rot.RigidityEnabled = true; rot.Attachment0 = att
 local mov = Instance.new("LinearVelocity"); mov.Attachment0 = att; mov.MaxForce = math.huge; mov.VectorVelocity = Vector3.zero; mov.RelativeTo = Enum.ActuatorRelativeTo.World
 
+local SAFE_POSITION = Vector3.new(1.076589, 504.818115, -25.737610)
+
 -- slow multiplier to make farm movement less twitchy (0.0 - 1.0)
 local SPEED_MULT = 0.5
 
@@ -198,7 +200,7 @@ conn = RunService.Heartbeat:Connect(function()
 			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
 			if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
 				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-				hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
+				hrp.CFrame = CFrame.new(SAFE_POSITION)
 				hum.PlatformStand = true
 				return 
 			end
@@ -219,28 +221,21 @@ conn = RunService.Heartbeat:Connect(function()
 					task.wait(0.5)
 					if firetouchinterest then firetouchinterest(hrp, node, 1) end
 					
-					hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
+					hrp.CFrame = CFrame.new(SAFE_POSITION)
 					task.wait(2)
 					teleportProcessing = false
 				end)
 			else
-				hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
+				hrp.CFrame = CFrame.new(SAFE_POSITION)
 			end
 			return
 		end
 
 		-- Bag Full & Survive Round Logic
 		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
-			att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
-			local safePos = Vector3.new(1.076589, 504.818115, -25.737610)
-			mov.VectorVelocity = (safePos - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
-			
-			if (safePos - hrp.Position).Magnitude > 2 then 
-				rot.CFrame = CFrame.lookAt(hrp.Position, safePos) * CFrame.Angles(math.rad(90), 0, 0)
-			else
-				mov.VectorVelocity = Vector3.zero
-			end
-			
+			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+			hrp.CFrame = CFrame.new(SAFE_POSITION)
+			hum.PlatformStand = true
 			Runtime.Farm.Node = nil -- Disable coin detection
 			return 
 		end
