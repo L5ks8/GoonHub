@@ -295,6 +295,7 @@ conn = RunService.Heartbeat:Connect(function()
 		mov.Parent = hrp
 		hum.PlatformStand = not teleportProcessing
 		
+		
 		if not teleportProcessing then
 			for _, t in pairs(hum:GetPlayingAnimationTracks()) do 
 				t:Stop() 
@@ -330,7 +331,7 @@ conn = RunService.Heartbeat:Connect(function()
 				att.Parent = nil
 				rot.Parent = nil
 				mov.Parent = nil
-				hrp.CFrame = Save_Position
+				hrp.CFrame = Save_Position * CFrame.Angles(math.rad(90), 0, 0)
 				hum.PlatformStand = true
 				return 
 			end
@@ -342,17 +343,17 @@ conn = RunService.Heartbeat:Connect(function()
 					att.Parent = nil
 					rot.Parent = nil
 					mov.Parent = nil
-					hum.PlatformStand = false
+					hum.PlatformStand = true
 
-					hrp.CFrame = node.CFrame * CFrame.new(0, 2, 0)
+					hrp.CFrame = node.CFrame * CFrame.new(0, 2, 0) * CFrame.Angles(math.rad(90), 0, 0)
 					task.wait(0.5)
 					
-					hrp.CFrame = Save_Position
+					hrp.CFrame = Save_Position * CFrame.Angles(math.rad(90), 0, 0)
 					task.wait(2)
 					teleportProcessing = false
 				end)
 			else
-				hrp.CFrame = Save_Position
+				hrp.CFrame = Save_Position * CFrame.Angles(math.rad(90), 0, 0)
 			end
 			return
 		end
