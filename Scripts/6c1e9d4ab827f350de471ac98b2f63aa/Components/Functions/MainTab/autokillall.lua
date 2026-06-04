@@ -37,11 +37,17 @@ local function KillLoop()
                 
                 if LP.Character:FindFirstChild("Knife") then
                     LP.Character.HumanoidRootPart.CFrame = targetHRP.CFrame
-                    
                     VirtualInputManager:SendMouseButtonEvent(0,0,0,true,game,false,0)
                     task.wait()
                     VirtualInputManager:SendMouseButtonEvent(0,0,0,false,game,false,0)
-                    task.wait(0.75)
+                    local attackStart = tick()
+                    while tick() - attackStart < 0.75 do
+                        if not GH_Sys.State.AutoKillAllActive or not v.Parent or not v.Character or not v.Character:FindFirstChild("HumanoidRootPart") or v.Character.Humanoid.Health <= 0 then
+                            break
+                        end
+                        LP.Character.HumanoidRootPart.CFrame = targetHRP.CFrame
+                        RunService.Heartbeat:Wait()
+                    end
                 end
                 
             end
@@ -49,7 +55,7 @@ local function KillLoop()
         if not killedSomeoneThisIteration then
             task.wait(1)
         end
-        task.wait(0.1) -- Small delay between full player scans
+        task.wait(0.1) 
     end
     GH_Sys.State.AutoKillAllActive = false
 end
