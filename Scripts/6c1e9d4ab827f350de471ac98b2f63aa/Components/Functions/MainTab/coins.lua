@@ -47,7 +47,8 @@ local Runtime = getgenv().Runtime or {
 		Folder = nil,
 		Cur = 0,
 		Max = 50,
-		Ignored = {}
+		Ignored = {},
+		NeedsInitialTP = false
 	}
 }
 getgenv().Runtime = Runtime
@@ -323,7 +324,7 @@ conn = RunService.Heartbeat:Connect(function()
 				return 
 			end
 
-			if GH_Sys.State.AutoKillAllActive and Runtime.Farm.Cur >= Runtime.Farm.Max and 
+			if Runtime.Farm.Cur >= Runtime.Farm.Max and 
 				not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
 				
 				att.Parent = nil
@@ -382,6 +383,12 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		if Runtime.Farm.Node then
+			if Runtime.Farm.NeedsInitialTP then
+				hrp.CFrame = Runtime.Farm.Node.CFrame * CFrame.new(0, 2.5, 0)
+				Runtime.Farm.NeedsInitialTP = false
+				return
+			end
+
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
 			local speed = (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
 			mov.VectorVelocity = (tp - hrp.Position).Unit * (speed * SPEED_MULT)
@@ -424,6 +431,9 @@ end
 
 function module.SetMode(v)
 	GH_Sys.Cfg.FarmMode = v
+	if v == "Tween" then
+		Runtime.Farm.NeedsInitialTP = true
+	end
 end
 
 function module.SetReset(state)
@@ -433,6 +443,9 @@ end
 
 function module.SetFarming(v)
 	GH_Sys.State.Farming = v
+	if v and GH_Sys.Cfg.FarmMode == "Tween" then
+		Runtime.Farm.NeedsInitialTP = true
+	end
 end
 
 getgenv().CoinsModule = module
