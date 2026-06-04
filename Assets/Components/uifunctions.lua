@@ -179,6 +179,15 @@ function UIFunctions.Init(G2L, window)
     end
 
     local function closeUI()
+        local Notifications = GoonHub.Import("Assets/Components/notifications")
+        if Notifications then
+            Notifications:Notify({
+                Title = "Success",
+                Description = "Script successfully closed",
+                Icon = "rbxassetid://135630585467568"
+            })
+        end
+
         local closeTween = TweenService:Create(
             G2L["2"], 
             TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.In), 
