@@ -1,4 +1,8 @@
+if getgenv().GoonHubUI then
+    return getgenv().GoonHubUI
+end
 local UI = {}
+getgenv().GoonHubUI = UI
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
