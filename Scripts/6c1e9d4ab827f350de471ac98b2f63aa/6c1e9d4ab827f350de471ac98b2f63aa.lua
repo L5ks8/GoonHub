@@ -61,5 +61,5 @@ local Notifications = GoonHub.Import("Assets/Components/notifications")
 Notifications:Notify({
     Title = "Success",
     Description = "Murder Mystery successfully loaded",
-    Icon = "rbxassetid://75580472770311"
+    Icon = "rbxassetid://135630585467568"
 })
