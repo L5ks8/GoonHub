@@ -6,7 +6,7 @@ local RunService = game:GetService("RunService")
 local LP = Players.LocalPlayer
 if not LP then repeat task.wait() LP = Players.LocalPlayer until LP end
 
-local GH_Sys = getgenv().GH_Sys or { State = { Evade = true }, Cfg = { EvadeDist = 22, Walk = 35 } }
+local GH_Sys = getgenv().GH_Sys or { State = { Evade = true, EvasionInProgress = false }, Cfg = { EvadeDist = 22, Walk = 35 } }
 getgenv().GH_Sys = GH_Sys
 local Runtime = getgenv().Runtime or { Roles = { Murd = "None", Sher = "None", Me = "Innocent" } }
 getgenv().Runtime = Runtime
@@ -15,8 +15,11 @@ local att = Instance.new("Attachment") att.Name = "GH_Evade_Att"
 local rot = Instance.new("AlignOrientation") rot.Mode = Enum.OrientationAlignmentMode.OneAttachment rot.RigidityEnabled = true rot.Attachment0 = att
 local mov = Instance.new("LinearVelocity") mov.Attachment0 = att mov.MaxForce = math.huge mov.VectorVelocity = Vector3.zero mov.RelativeTo = Enum.ActuatorRelativeTo.World
 
+local Save_Position = CFrame.new(1.076589, 504.818115, -25.737610)
+
 local conn
 local running = false
+local evading = false
 
 local function GetMurdererPos()
     if not Runtime.Roles or not Runtime.Roles.Murd then return nil end
@@ -28,7 +31,7 @@ end
 local function startLoop()
     if conn then return end
     conn = RunService.Heartbeat:Connect(function()
-        if not running then return end
+        if not running or evading then return end
         if not LP.Character then return end
         local hrp = LP.Character:FindFirstChild("HumanoidRootPart")
         local hum = LP.Character:FindFirstChild("Humanoid")
@@ -38,11 +41,20 @@ local function startLoop()
         if GH_Sys.State.Evade and mpos then
             local dist = (hrp.Position - mpos).Magnitude
             if dist < (GH_Sys.Cfg.EvadeDist or 22) then
-                att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
-                hum.PlatformStand = true
-                local esc = (hrp.Position - mpos).Unit
-                mov.VectorVelocity = esc * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * 1.5)
-                rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
+                evading = true
+                GH_Sys.State.EvasionInProgress = true
+                
+                local oldCF = hrp.CFrame
+                hrp.CFrame = Save_Position
+                
+                task.delay(3.5, function() -- Wartezeit am Safe-Point
+                    if LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") then
+                        LP.Character.HumanoidRootPart.CFrame = oldCF
+                    end
+                    task.wait(1.5) -- Kurze Pause zum Re-evaluieren
+                    evading = false
+                    GH_Sys.State.EvasionInProgress = false
+                end)
                 return
             end
         end

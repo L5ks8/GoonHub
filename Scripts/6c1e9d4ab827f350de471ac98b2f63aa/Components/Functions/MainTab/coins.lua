@@ -23,7 +23,8 @@ local GH_Sys = getgenv().GH_Sys or {
 		Evade = true,
 		Rage = false,
 		Reset = false,
-		SurviveRound = true
+		SurviveRound = true,
+		EvasionInProgress = false
 	},
 	Cfg = {
 		Walk = 35,
@@ -47,8 +48,7 @@ local Runtime = getgenv().Runtime or {
 		Folder = nil,
 		Cur = 0,
 		Max = 50,
-		Ignored = {},
-		NeedsInitialTP = false
+		Ignored = {}
 	}
 }
 getgenv().Runtime = Runtime
@@ -273,6 +273,13 @@ conn = RunService.Heartbeat:Connect(function()
 	if GH_Sys.State.Farming and Runtime.Match and 
 		Runtime.Match.Alive and hum.Health > 0 then
 		
+		if GH_Sys.State.EvasionInProgress then
+			att.Parent = nil
+			rot.Parent = nil
+			mov.Parent = nil
+			return
+		end
+
 		if GH_Sys.State.Rage then
 			att.Parent = nil
 			rot.Parent = nil
@@ -305,17 +312,6 @@ conn = RunService.Heartbeat:Connect(function()
 			if v:IsA("BasePart") then 
 				v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") 
 			end 
-		end
-
-		if GH_Sys.State.Evade then
-			local d = GetEnemy()
-			if d and (hrp.Position - d).Magnitude < 22 then
-				local esc = (hrp.Position - d).Unit
-				local walkSpeed = (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
-				mov.VectorVelocity = esc * (walkSpeed * 1.5) * SPEED_MULT
-				rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
-				return
-			end
 		end
 
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
@@ -383,12 +379,6 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		if Runtime.Farm.Node then
-			if Runtime.Farm.NeedsInitialTP then
-				hrp.CFrame = Runtime.Farm.Node.CFrame * CFrame.new(0, 2.5, 0)
-				Runtime.Farm.NeedsInitialTP = false
-				return
-			end
-
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
 			local speed = (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
 			mov.VectorVelocity = (tp - hrp.Position).Unit * (speed * SPEED_MULT)
@@ -431,9 +421,6 @@ end
 
 function module.SetMode(v)
 	GH_Sys.Cfg.FarmMode = v
-	if v == "Tween" then
-		Runtime.Farm.NeedsInitialTP = true
-	end
 end
 
 function module.SetReset(state)
@@ -443,9 +430,6 @@ end
 
 function module.SetFarming(v)
 	GH_Sys.State.Farming = v
-	if v and GH_Sys.Cfg.FarmMode == "Tween" then
-		Runtime.Farm.NeedsInitialTP = true
-	end
 end
 
 getgenv().CoinsModule = module
