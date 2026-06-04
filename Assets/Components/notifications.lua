@@ -13,8 +13,8 @@ ScreenGui.Parent = (gethui and gethui()) or LP:WaitForChild("PlayerGui")
 
 local Container = Instance.new("Frame")
 Container.Name = "Container"
-Container.Size = UDim2.new(0, 300, 1, 0)
-Container.Position = UDim2.new(1, -320, 0, 0)
+Container.Size = UDim2.new(0, 300, 1, -40)
+Container.Position = UDim2.new(1, -310, 0, 20)
 Container.BackgroundTransparency = 1
 Container.Parent = ScreenGui
 
@@ -24,8 +24,6 @@ UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Parent = Container
-
-Instance.new("UIPadding", Container).PaddingTop = UDim.new(0, 20)
 
 function module:Notify(data)
 	local title = data.Title or "Notification"
@@ -39,6 +37,7 @@ function module:Notify(data)
 	Banner.BorderSizePixel = 0
 	Banner.AutomaticSize = Enum.AutomaticSize.XY
 	Banner.GroupTransparency = 1
+	Banner.LayoutOrder = -os.clock() * 1000
 	Banner.Parent = Container
 
 	Instance.new("UICorner", Banner).CornerRadius = UDim.new(0, 15)
@@ -117,16 +116,16 @@ function module:Notify(data)
 	descLabel.Parent = information
 
 	-- Slide-in Animation
-	Banner.Position = UDim2.new(1, 50, 0, 0)
+	Banner.Position = UDim2.new(1, 100, 0, 0)
 	
-	TweenService:Create(Banner, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+	TweenService:Create(Banner, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
 		Position = UDim2.new(0, 0, 0, 0),
 		GroupTransparency = 0
 	}):Play()
 
 	task.delay(duration, function()
 		local fade = TweenService:Create(Banner, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {
-			Position = UDim2.new(1, 50, 0, 0),
+			Position = UDim2.new(1, 100, 0, 0),
 			GroupTransparency = 1
 		})
 		fade:Play()
