@@ -59,7 +59,7 @@ local window = UILayout.Create()
 
 local Notifications = GoonHub.Import("Assets/Components/notifications")
 Notifications:Notify({
-    Title = "Success",
+    Title = "Goon Hub",
     Description = "Murder Mystery successfully loaded",
-    Icon = "rbxassetid://135630585467568"
+    Icon = "rbxassetid://97029457619267"
 })
