@@ -24,10 +24,10 @@ local att = Instance.new("Attachment"); att.Name = "GH_Force"
 local rot = Instance.new("AlignOrientation"); rot.Mode = Enum.OrientationAlignmentMode.OneAttachment; rot.RigidityEnabled = true; rot.Attachment0 = att
 local mov = Instance.new("LinearVelocity"); mov.Attachment0 = att; mov.MaxForce = math.huge; mov.VectorVelocity = Vector3.zero; mov.RelativeTo = Enum.ActuatorRelativeTo.World
 
-local SAFE_POSITION = Vector3.new(1.076589, 504.818115, -25.737610)
-
 -- slow multiplier to make farm movement less twitchy (0.0 - 1.0)
 local SPEED_MULT = 0.5
+
+local Save_Position = CFrame.new(1.076589, 504.818115, -25.737610)
 
 local function FindBag()
 	if Runtime.Farm.Folder and Runtime.Farm.Folder.Parent then return Runtime.Farm.Folder end
@@ -177,15 +177,15 @@ conn = RunService.Heartbeat:Connect(function()
 			return
 		end
 
+		att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 		hum.PlatformStand = true
 		for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
-		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end
+		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") end end
 
 		if GH_Sys.State.Evade then
 			local d = GetEnemy()
 			if d and (hrp.Position - d).Magnitude < 22 then
 				local esc = (hrp.Position - d).Unit
-				att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 				mov.VectorVelocity = esc * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * 1.5) * SPEED_MULT
 				rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
 				return
@@ -194,13 +194,12 @@ conn = RunService.Heartbeat:Connect(function()
 
 		-- Teleport Farm Mode Logic
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
-			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			if teleportProcessing then return end
 
 			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
 			if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
 				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-				hrp.CFrame = CFrame.new(SAFE_POSITION)
+				hrp.CFrame = Save_Position
 				hum.PlatformStand = true
 				return 
 			end
@@ -212,30 +211,31 @@ conn = RunService.Heartbeat:Connect(function()
 					att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 					hum.PlatformStand = true
 					
-					-- Teleport slightly above and then to the node to trigger touch
-					hrp.CFrame = node.CFrame * CFrame.new(0, 0.5, 0)
-					task.wait()
-					hrp.CFrame = node.CFrame
-					
-					if firetouchinterest then firetouchinterest(hrp, node, 0) end
+					-- Teleport above the node to fall onto it
+					hrp.CFrame = node.CFrame * CFrame.new(0, 2.5, 0)
 					task.wait(0.5)
-					if firetouchinterest then firetouchinterest(hrp, node, 1) end
 					
-					hrp.CFrame = CFrame.new(SAFE_POSITION)
+					hrp.CFrame = Save_Position
 					task.wait(2)
 					teleportProcessing = false
 				end)
 			else
-				hrp.CFrame = CFrame.new(SAFE_POSITION)
+				hrp.CFrame = Save_Position
 			end
 			return
 		end
 
 		-- Bag Full & Survive Round Logic
 		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
-			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-			hrp.CFrame = CFrame.new(SAFE_POSITION)
-			hum.PlatformStand = true
+			local safePos = Save_Position.Position
+			mov.VectorVelocity = (safePos - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
+			
+			if (safePos - hrp.Position).Magnitude > 2 then 
+				rot.CFrame = CFrame.lookAt(hrp.Position, safePos) * CFrame.Angles(math.rad(90), 0, 0)
+			else
+				mov.VectorVelocity = Vector3.zero
+			end
+			
 			Runtime.Farm.Node = nil -- Disable coin detection
 			return 
 		end
@@ -244,7 +244,6 @@ conn = RunService.Heartbeat:Connect(function()
 		if not Runtime.Farm.Node then Runtime.Farm.Node = ScanGrid(); Runtime.Farm.Tick = tick() end
 
 		if Runtime.Farm.Node then
-			att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
 			mov.VectorVelocity = (tp - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
 			if (tp - hrp.Position).Magnitude > 2 then rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0) end
