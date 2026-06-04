@@ -344,7 +344,7 @@ conn = RunService.Heartbeat:Connect(function()
 					mov.Parent = nil
 					hum.PlatformStand = false
 
-					hrp.CFrame = node.CFrame * CFrame.new(0, 2.5, 0)
+					hrp.CFrame = node.CFrame * CFrame.new(0, 2, 0)
 					task.wait(0.5)
 					
 					hrp.CFrame = Save_Position
