@@ -163,11 +163,14 @@ conn = RunService.Heartbeat:Connect(function()
 	local hrp, hum = c:FindFirstChild("HumanoidRootPart"), c:FindFirstChild("Humanoid")
 	if not hrp or not hum then return end
 
-	if teleportProcessing then 
+	if teleportProcessing then
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
 			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			hum.PlatformStand = false
-			for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = true end end
+			for _, v in pairs(c:GetDescendants()) do 
+				if v:IsA("BasePart") then v.CanCollide = true end 
+			end
+			hum:ChangeState(Enum.HumanoidStateType.Freefall)
 			return
 		else
 			teleportProcessing = false
@@ -199,9 +202,11 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
-		hum.PlatformStand = true
+		hum.PlatformStand = (GH_Sys.Cfg.FarmMode == "Tween")
 		for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
-		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") end end
+		for _, v in pairs(c:GetDescendants()) do 
+			if v:IsA("BasePart") then v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") end 
+		end
 
 		if GH_Sys.State.Evade then
 			local d = GetEnemy()
@@ -213,17 +218,19 @@ conn = RunService.Heartbeat:Connect(function()
 			end
 		end
 
+		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
+			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+			if (hrp.Position - Save_Position.Position).Magnitude > 5 then
+				hrp.CFrame = Save_Position
+			end
+			hum.PlatformStand = false
+			Runtime.Farm.Node = nil 
+			return 
+		end
+
 		-- Teleport Farm Mode Logic
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
 			mov.VectorVelocity = Vector3.zero
-
-			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
-			if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
-				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-				hrp.CFrame = Save_Position
-				hum.PlatformStand = true
-				return 
-			end
 
 			local node = ScanGrid()
 			if node then
@@ -233,34 +240,22 @@ conn = RunService.Heartbeat:Connect(function()
 					hum.PlatformStand = false
 					for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = true end end
 
-					-- Teleport 4 studs above the coin and force falling state to collect it
 					hrp.CFrame = node.CFrame * CFrame.new(0, 4, 0)
 					hum:ChangeState(Enum.HumanoidStateType.Freefall)
-					task.wait(0.7)
+					task.wait(0.6)
 					
 					hrp.CFrame = Save_Position
-					task.wait(1.3)
+					task.wait(1.2)
 					teleportProcessing = false
 				end)
 			else
-				hrp.CFrame = Save_Position
+				if (hrp.Position - Save_Position.Position).Magnitude > 5 then
+					hrp.CFrame = Save_Position
+				end
+				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+				hum.PlatformStand = false
 			end
 			return
-		end
-
-		-- Bag Full & Survive Round Logic
-		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
-			local safePos = Save_Position.Position
-			mov.VectorVelocity = (safePos - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
-			
-			if (safePos - hrp.Position).Magnitude > 2 then 
-				rot.CFrame = CFrame.lookAt(hrp.Position, safePos) * CFrame.Angles(math.rad(90), 0, 0)
-			else
-				mov.VectorVelocity = Vector3.zero
-			end
-			
-			Runtime.Farm.Node = nil -- Disable coin detection
-			return 
 		end
 
 		if Runtime.Farm.Node and not Runtime.Farm.Node.Parent then Runtime.Farm.Node = nil end
@@ -275,9 +270,12 @@ conn = RunService.Heartbeat:Connect(function()
 				rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0)
 			else
 				mov.VectorVelocity = Vector3.zero
+				hum.PlatformStand = false
 			end
 		else
+			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			mov.VectorVelocity = Vector3.zero
+			hum.PlatformStand = false
 		end
 	else
 		att.Parent = nil; rot.Parent = nil; mov.Parent = nil
