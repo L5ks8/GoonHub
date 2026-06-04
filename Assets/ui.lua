@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
 UI.CurrentAccent = Color3.fromRGB(248, 191, 212)
+UI.CurrentMain = Color3.fromRGB(36, 36, 36)
 UI.Themes = {
     Dark = { Main = Color3.fromRGB(36, 36, 36), Accent = Color3.fromRGB(248, 191, 212) },
     Blue = { Main = Color3.fromRGB(25, 30, 45), Accent = Color3.fromRGB(0, 160, 255) },
@@ -29,6 +30,7 @@ function UI.SetTheme(G2L, themeName)
     local theme = UI.Themes[themeName] or UI.Themes.Dark
     local newAccent = theme.Accent
     
+    UI.CurrentMain = theme.Main
     if G2L["2"] then G2L["2"].BackgroundColor3 = theme.Main end
     
     for _, v in pairs(G2L["1"]:GetDescendants()) do

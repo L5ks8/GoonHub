@@ -13,12 +13,41 @@ if not LP then
 	repeat task.wait() LP = Players.LocalPlayer until LP
 end
 
-local GH_Sys = getgenv().GH_Sys or { State = { Farming = false, Evade = true, Rage = false, Reset = false, SurviveRound = true }, Cfg = { Walk = 35, FarmMode = "Tween" } }
+local GH_Sys = getgenv().GH_Sys or {
+	State = {
+		Farming = false,
+		Evade = true,
+		Rage = false,
+		Reset = false,
+		SurviveRound = true
+	},
+	Cfg = {
+		Walk = 35,
+		FarmMode = "Tween"
+	}
+}
 getgenv().GH_Sys = GH_Sys
-local Runtime = getgenv().Runtime or { Roles = { Murd = "None", Sher = "None", Me = "Innocent" }, Match = { Alive = true, Active = true }, Farm = { Node = nil, Tick = 0, Folder = nil, Cur = 0, Max = 50, Ignored = {} } }
+local Runtime = getgenv().Runtime or {
+	Roles = {
+		Murd = "None",
+		Sher = "None",
+		Me = "Innocent"
+	},
+	Match = {
+		Alive = true,
+		Active = true
+	},
+	Farm = {
+		Node = nil,
+		Tick = 0,
+		Folder = nil,
+		Cur = 0,
+		Max = 50,
+		Ignored = {}
+	}
+}
 getgenv().Runtime = Runtime
 local BagLbl = getgenv().BagLbl
-local firstCoin = true
 local teleportProcessing = false
 
 local att = Instance.new("Attachment"); att.Name = "GH_Force"
@@ -149,6 +178,7 @@ if Remotes and Remotes:FindFirstChild("Gameplay") then
 				task.wait(4)
 				Runtime.Farm.Cur = 0; Runtime.Farm.Ignored = {}; GH_Sys.State.Farming = true
 			elseif GH_Sys.State.SurviveRound then
+				-- Keep farming state active to move to safe spot
 			else
 				GH_Sys.State.Farming = false
 			end
@@ -163,31 +193,7 @@ conn = RunService.Heartbeat:Connect(function()
 	local hrp, hum = c:FindFirstChild("HumanoidRootPart"), c:FindFirstChild("Humanoid")
 	if not hrp or not hum then return end
 
-	if teleportProcessing then
-		if GH_Sys.Cfg.FarmMode == "Teleport" then
-			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-			hum.PlatformStand = false
-			for _, v in pairs(c:GetDescendants()) do 
-				if v:IsA("BasePart") then v.CanCollide = true end 
-			end
-			hum:ChangeState(Enum.HumanoidStateType.Freefall)
-			return
-		else
-			teleportProcessing = false
-		end
-	end
-
 	if GH_Sys.State.Farming and Runtime.Match and Runtime.Match.Alive and hum.Health > 0 then
-		if GH_Sys.Cfg.FarmMode == "Tween" and firstCoin then
-			local node = ScanGrid()
-			if node then
-				Runtime.Farm.Node = node
-				Runtime.Farm.Tick = tick()
-				firstCoin = false
-				hrp.CFrame = node.CFrame * CFrame.new(0, 2, 0)
-			end
-		end
-
 		if GH_Sys.State.Rage then
 			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			hum.PlatformStand = false
@@ -202,11 +208,11 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
-		hum.PlatformStand = (GH_Sys.Cfg.FarmMode == "Tween")
-		for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
-		for _, v in pairs(c:GetDescendants()) do 
-			if v:IsA("BasePart") then v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") end 
+		hum.PlatformStand = not teleportProcessing
+		if not teleportProcessing then
+			for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
 		end
+		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = (GH_Sys.Cfg.FarmMode == "Teleport") end end
 
 		if GH_Sys.State.Evade then
 			local d = GetEnemy()
@@ -218,19 +224,18 @@ conn = RunService.Heartbeat:Connect(function()
 			end
 		end
 
-		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
-			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-			if (hrp.Position - Save_Position.Position).Magnitude > 5 then
-				hrp.CFrame = Save_Position
-			end
-			hum.PlatformStand = false
-			Runtime.Farm.Node = nil 
-			return 
-		end
-
 		-- Teleport Farm Mode Logic
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
 			mov.VectorVelocity = Vector3.zero
+			if teleportProcessing then return end
+
+			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
+			if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
+				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+				hrp.CFrame = Save_Position
+				hum.PlatformStand = true
+				return 
+			end
 
 			local node = ScanGrid()
 			if node then
@@ -238,24 +243,34 @@ conn = RunService.Heartbeat:Connect(function()
 				task.spawn(function()
 					att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 					hum.PlatformStand = false
-					for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = true end end
 
-					hrp.CFrame = node.CFrame * CFrame.new(0, 4, 0)
-					hum:ChangeState(Enum.HumanoidStateType.Freefall)
-					task.wait(0.6)
+					-- Teleport 2.5 studs above the coin to fall on it
+					hrp.CFrame = node.CFrame * CFrame.new(0, 2.5, 0)
+					task.wait(0.5)
 					
 					hrp.CFrame = Save_Position
-					task.wait(1.2)
+					task.wait(2)
 					teleportProcessing = false
 				end)
 			else
-				if (hrp.Position - Save_Position.Position).Magnitude > 5 then
-					hrp.CFrame = Save_Position
-				end
-				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
-				hum.PlatformStand = false
+				hrp.CFrame = Save_Position
 			end
 			return
+		end
+
+		-- Bag Full & Survive Round Logic
+		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
+			local safePos = Save_Position.Position
+			mov.VectorVelocity = (safePos - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
+			
+			if (safePos - hrp.Position).Magnitude > 2 then 
+				rot.CFrame = CFrame.lookAt(hrp.Position, safePos) * CFrame.Angles(math.rad(90), 0, 0)
+			else
+				mov.VectorVelocity = Vector3.zero
+			end
+			
+			Runtime.Farm.Node = nil -- Disable coin detection
+			return 
 		end
 
 		if Runtime.Farm.Node and not Runtime.Farm.Node.Parent then Runtime.Farm.Node = nil end
@@ -263,19 +278,10 @@ conn = RunService.Heartbeat:Connect(function()
 
 		if Runtime.Farm.Node then
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
-			local diff = (tp - hrp.Position)
-			
-			if diff.Magnitude > 0.1 then
-				mov.VectorVelocity = diff.Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
-				rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0)
-			else
-				mov.VectorVelocity = Vector3.zero
-				hum.PlatformStand = false
-			end
+			mov.VectorVelocity = (tp - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
+			if (tp - hrp.Position).Magnitude > 2 then rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0) end
 		else
-			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			mov.VectorVelocity = Vector3.zero
-			hum.PlatformStand = false
 		end
 	else
 		att.Parent = nil; rot.Parent = nil; mov.Parent = nil
@@ -305,7 +311,6 @@ end
 
 function module.SetMode(v)
 	GH_Sys.Cfg.FarmMode = v
-	if v == "Tween" then firstCoin = true end
 end
 
 function module.SetReset(state)
@@ -315,7 +320,6 @@ end
 
 function module.SetFarming(v)
 	GH_Sys.State.Farming = v
-	if v then firstCoin = true end
 end
 
 getgenv().CoinsModule = module
