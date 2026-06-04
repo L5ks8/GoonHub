@@ -172,6 +172,16 @@ conn = RunService.Heartbeat:Connect(function()
 	end
 
 	if GH_Sys.State.Farming and Runtime.Match and Runtime.Match.Alive and hum.Health > 0 then
+		if GH_Sys.Cfg.FarmMode == "Tween" and firstCoin then
+			local node = ScanGrid()
+			if node then
+				firstCoin = false
+				att.Parent = nil; rot.Parent = nil; mov.Parent = nil
+				hrp.CFrame = node.CFrame * CFrame.new(0, 2, 0)
+				return
+			end
+		end
+		
 		if GH_Sys.State.Rage then
 			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			hum.PlatformStand = false
@@ -220,12 +230,13 @@ conn = RunService.Heartbeat:Connect(function()
 					hum.PlatformStand = false
 					for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = true end end
 
-					-- Teleport 3 studs above the coin to fall on it
-					hrp.CFrame = node.CFrame * CFrame.new(0, 3, 0)
-					task.wait(0.6)
+					-- Teleport 4 studs above the coin and force falling state to collect it
+					hrp.CFrame = node.CFrame * CFrame.new(0, 4, 0)
+					hum:ChangeState(Enum.HumanoidStateType.Falling)
+					task.wait(0.7)
 					
 					hrp.CFrame = Save_Position
-					task.wait(1.5)
+					task.wait(1.3)
 					teleportProcessing = false
 				end)
 			else
@@ -254,13 +265,6 @@ conn = RunService.Heartbeat:Connect(function()
 
 		if Runtime.Farm.Node then
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
-			
-			if GH_Sys.Cfg.FarmMode == "Tween" and firstCoin then
-				hrp.CFrame = CFrame.new(tp + Vector3.new(0, 2, 0))
-				firstCoin = false
-				task.wait(0.1)
-			end
-
 			mov.VectorVelocity = (tp - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
 			if (tp - hrp.Position).Magnitude > 2 then rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0) end
 		else
