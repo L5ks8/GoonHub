@@ -53,6 +53,7 @@ local Runtime = getgenv().Runtime or {
 getgenv().Runtime = Runtime
 local BagLbl = getgenv().BagLbl
 local teleportProcessing = false
+local firstCoinTp = false
 
 local att = Instance.new("Attachment")
 att.Name = "GH_Force"
@@ -343,7 +344,7 @@ conn = RunService.Heartbeat:Connect(function()
 					mov.Parent = nil
 					hum.PlatformStand = false
 
-					hrp.CFrame = node.CFrame
+					hrp.CFrame = node.CFrame * CFrame.new(0, 2.5, 0)
 					task.wait(0.5)
 					
 					hrp.CFrame = Save_Position
@@ -382,6 +383,11 @@ conn = RunService.Heartbeat:Connect(function()
 		end
 
 		if Runtime.Farm.Node then
+			if firstCoinTp then
+				hrp.CFrame = Runtime.Farm.Node.CFrame * CFrame.new(0, -1.5, 0.1) * CFrame.Angles(math.rad(90), 0, 0)
+				firstCoinTp = false
+			end
+
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
 			local speed = (GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35)
 			mov.VectorVelocity = (tp - hrp.Position).Unit * (speed * SPEED_MULT)
@@ -424,6 +430,9 @@ end
 
 function module.SetMode(v)
 	GH_Sys.Cfg.FarmMode = v
+	if v == "Tween" and GH_Sys.State.Farming then
+		firstCoinTp = true
+	end
 end
 
 function module.SetReset(state)
@@ -433,6 +442,9 @@ end
 
 function module.SetFarming(v)
 	GH_Sys.State.Farming = v
+	if v and GH_Sys.Cfg.FarmMode == "Tween" then
+		firstCoinTp = true
+	end
 end
 
 getgenv().CoinsModule = module
