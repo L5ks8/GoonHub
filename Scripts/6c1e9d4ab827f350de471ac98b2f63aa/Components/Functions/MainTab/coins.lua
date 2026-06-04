@@ -175,7 +175,6 @@ conn = RunService.Heartbeat:Connect(function()
 			return
 		end
 
-		att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 		hum.PlatformStand = true
 		for _, t in pairs(hum:GetPlayingAnimationTracks()) do t:Stop() end
 		for _, v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.CanCollide = false end end
@@ -184,6 +183,7 @@ conn = RunService.Heartbeat:Connect(function()
 			local d = GetEnemy()
 			if d and (hrp.Position - d).Magnitude < 22 then
 				local esc = (hrp.Position - d).Unit
+				att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 				mov.VectorVelocity = esc * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * 1.5) * SPEED_MULT
 				rot.CFrame = CFrame.lookAt(hrp.Position, hrp.Position + esc)
 				return
@@ -192,6 +192,7 @@ conn = RunService.Heartbeat:Connect(function()
 
 		-- Teleport Farm Mode Logic
 		if GH_Sys.Cfg.FarmMode == "Teleport" then
+			att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 			if teleportProcessing then return end
 
 			-- Bag Full & Survive Round Logic (Instant TP to safe spot)
@@ -208,8 +209,16 @@ conn = RunService.Heartbeat:Connect(function()
 				task.spawn(function()
 					att.Parent = nil; rot.Parent = nil; mov.Parent = nil
 					hum.PlatformStand = true
+					
+					-- Teleport slightly above and then to the node to trigger touch
+					hrp.CFrame = node.CFrame * CFrame.new(0, 0.5, 0)
+					task.wait()
 					hrp.CFrame = node.CFrame
+					
+					if firetouchinterest then firetouchinterest(hrp, node, 0) end
 					task.wait(0.5)
+					if firetouchinterest then firetouchinterest(hrp, node, 1) end
+					
 					hrp.CFrame = CFrame.new(1.076589, 504.818115, -25.737610)
 					task.wait(2)
 					teleportProcessing = false
@@ -222,6 +231,7 @@ conn = RunService.Heartbeat:Connect(function()
 
 		-- Bag Full & Survive Round Logic
 		if Runtime.Farm.Cur >= Runtime.Farm.Max and not GH_Sys.State.Reset and GH_Sys.State.SurviveRound then
+			att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 			local safePos = Vector3.new(1.076589, 504.818115, -25.737610)
 			mov.VectorVelocity = (safePos - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
 			
@@ -239,6 +249,7 @@ conn = RunService.Heartbeat:Connect(function()
 		if not Runtime.Farm.Node then Runtime.Farm.Node = ScanGrid(); Runtime.Farm.Tick = tick() end
 
 		if Runtime.Farm.Node then
+			att.Parent = hrp; rot.Parent = hrp; mov.Parent = hrp
 			local tp = Runtime.Farm.Node.Position + Vector3.new(0, -1.5, 0)
 			mov.VectorVelocity = (tp - hrp.Position).Unit * ((GH_Sys.Cfg and GH_Sys.Cfg.Walk or 35) * SPEED_MULT)
 			if (tp - hrp.Position).Magnitude > 2 then rot.CFrame = CFrame.lookAt(hrp.Position, tp) * CFrame.Angles(math.rad(90), 0, 0) end
