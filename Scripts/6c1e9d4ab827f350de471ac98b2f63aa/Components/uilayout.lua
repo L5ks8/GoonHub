@@ -9,6 +9,13 @@ if not _ok then
     Coins = nil
 end
 
+local _okP, PlayerLogic = pcall(function()
+    return GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/PlayerTab/players")
+end)
+if not _okP then
+    PlayerLogic = nil
+end
+
 local Misc = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MiscTab/misc")
 local Status = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/MainTab/status")
 local Visuals = GoonHub.Import("Scripts/6c1e9d4ab827f350de471ac98b2f63aa/Components/Functions/EspTab/visuals")
@@ -49,7 +56,7 @@ function UILayout.Create()
 
     -- Game Tabs
     local mainTab = window:CreateTab("Main", false)
-    local EspTab = window:CreateTab("Esp", false)
+    local EspTab = window:CreateTab("Player", false)
     local MiscTab = window:CreateTab("Misc", false)
     local ShopTab = window:CreateTab("Shop", false)
     
@@ -158,8 +165,8 @@ function UILayout.Create()
     end)
 
     -- Esp Tab
-    local esp = EspTab:CreateSection("Visuals", "Left")
-    esp:CreateToggle({
+    local VisualSection = EspTab:CreateSection("Visuals", "Left")
+    VisualSection:CreateToggle({
         Title = "Esp",
         Column = "Left",
         Default = false,
@@ -167,7 +174,7 @@ function UILayout.Create()
             Visuals.ToggleEsp(state)
         end
     })
-    esp:CreateToggle({
+    VisualSection:CreateToggle({
         Title = "Self Esp",
         Column = "Left",
         Default = false,
@@ -175,6 +182,78 @@ function UILayout.Create()
             Visuals.SetSelfEsp(state)
         end
     })
+    
+    local PlayerSection = EspTab:CreateSection("Player", "Right")
+    local playerDropdown = PlayerSection:CreateDropdown({
+        Title = "Select Player",
+        Options = {},
+        Column = "Right",
+        Callback = function(value)
+            if PlayerLogic then PlayerLogic.SetSelectedPlayer(value) end
+        end
+    })
+    -- Auto-refresh player list
+    task.spawn(function()
+        while task.wait(5) do
+            if PlayerLogic and playerDropdown then
+                playerDropdown:Refresh(PlayerLogic.GetPlayerNames())
+            end
+        end
+    end)
+
+    PlayerSection:CreateToggle({
+        Title = "Spectate Selected",
+        Column = "Right",
+        Default = false,
+        Callback = function(state)
+            if PlayerLogic then PlayerLogic.ToggleSpectate(state) end
+        end
+    })
+    PlayerSection:CreateToggle({
+        Title = "Fling Selected",
+        Column = "Right",
+        Default = false,
+        Callback = function(state)
+            if PlayerLogic then PlayerLogic.ToggleFling(state) end
+        end
+    })
+    PlayerSection:CreateButton({
+        Title = "Fling Random",
+        Column = "Right",
+        Callback = function()
+            if PlayerLogic then PlayerLogic.FlingRandom() end
+        end
+    })
+    PlayerSection:CreateButton({
+        Title = "Fling Murderer",
+        Column = "Right",
+        Callback = function()
+            if PlayerLogic then PlayerLogic.FlingMurderer() end
+        end
+    })
+    PlayerSection:CreateButton({
+        Title = "Fling Sheriff",
+        Column = "Right",
+        Callback = function()
+            if PlayerLogic then PlayerLogic.FlingSheriff() end
+        end
+    })
+    PlayerSection:CreateToggle({
+        Title = "Loop Fling All",
+        Column = "Right",
+        Default = false,
+        Callback = function(state)
+            if PlayerLogic then PlayerLogic.ToggleLoopFling(state) end
+        end
+    })
+    PlayerSection:CreateButton({
+        Title = "Stop Fling",
+        Column = "Right",
+        Callback = function()
+            if PlayerLogic then PlayerLogic.StopFling() end
+        end
+    })
+
     -- Misc Tab
 
     local misc = MiscTab:CreateSection("Misc", "Left")
@@ -192,14 +271,6 @@ function UILayout.Create()
         Default = false,
         Callback = function(state)
             Misc.ToggleAntiFling(state)
-        end
-    })
-    misc:CreateToggle({
-        Title = "Auto Fling Murderer",
-        Column = "Left",
-        Default = false,
-        Callback = function(state)
-            Misc.ToggleAutoFling(state)
         end
     })
     misc:CreateButton({
